@@ -1,0 +1,41 @@
+service: nursefax
+frameworkVersion: "3"
+
+provider:
+ name: aws
+ runtime: nodejs14.x
+ region: ap-southeast-1
+ httpApi:
+  cors:
+   allowedOrigins: "*"
+   allowedHeaders: "*"
+   allowedMethods: "*"
+ iam:
+  role:
+   statements:
+    - Effect: Allow
+      Action:
+       - ses:*
+       - s3:*
+      Resource: "*"
+
+functions:
+ api:
+  handler: handler.handler
+  timeout: 15
+  events:
+   - httpApi: "*"
+
+resources:
+ Resources:
+  NurseFaxBucket:
+   Type: AWS::S3::Bucket
+   Properties:
+    BucketName: nursefaxbucket
+    AccessControl: PublicReadWrite
+plugins:
+ - serverless-offline
+
+custom:
+ serverless-offline:
+  httpPort: 4000
