@@ -97,8 +97,8 @@ async function saveUserBlogs(request) {
       ins.MetaKeyword = request.body.MetaKeyword;
       ins.user_id = request.body.user_id;
       ins.Status = request.body.Status;
-      ins.createDt = request.body.createDt;
-      ins.modifyDt = request.body.modifyDt;
+      ins.createDt =   new Date();
+      ins.modifyDt =  new Date();
       console.log("ins", ins);
 
       let insert = new UserBlogsTable(ins)
@@ -162,7 +162,7 @@ async function updateUserBlogs(request) {
       upd.MetaKeyword = request.body.MetaKeyword;
       upd.user_id = request.body.user_id;
       upd.Status = request.body.Status;
-      upd.modifyDt = request.body.modifyDt;
+      upd.modifyDt =  new Date();
       console.log("upd", upd);
 
       await UserBlogsTable.updateMany({
