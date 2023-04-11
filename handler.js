@@ -1,7 +1,7 @@
 const serverless = require("serverless-http");
 const express = require("express");
 const cors = require("cors");
-const upload = require('express-fileupload')
+const upload = require("express-fileupload");
 const app = express();
 const auth = require("./controller/auth");
 const spAdmin = require("./controller/sp-admin");
@@ -31,8 +31,7 @@ app.use(bodyParser.urlencoded({ extended: false, limit: "50mb" }));
 app.use(cors());
 app.use(express.json());
 app.use(upload());
-app.use(express.static('../Backend/uploads/'))
-
+app.use(express.static("../Backend/uploads/"));
 
 app.use("/api", auth);
 app.use("/api", spAdmin);
@@ -55,17 +54,15 @@ app.use("/api/blogcategories", BlogCategories);
 // app.use("/api", invoice);
 // app.use("/api", updateUserPassword);
 
-
-var PORT=4000 || process.env.PORT
+var PORT = 4000 || process.env.PORT;
 app.listen(PORT, () => {
-  console.log(`Example app listening at localhost:${PORT}`)
-})
+  console.log(`Example app listening at localhost:${PORT}`);
+});
 app.use((req, res, next) => {
   return res.status(404).json({
     error: "Api Not Found",
   });
 });
-
 
 module.exports.handler = serverless(app);
 

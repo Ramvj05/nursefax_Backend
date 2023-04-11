@@ -11,11 +11,12 @@ const authorizer = async (req, res, next) => {
   const { authorization } = req.headers;
   console.log
   if (authorization) {
-    console.log("Authorization", authorization);
-    const token = authorization.split(' ')[1]
-    const decodeToken = jwt.decode(token);
+    // console.log("Authorization", authorization);
+    const token = authorization.split(' ')[0]
+    console.log("token", token);
+    const decodeToken = jwt.verify(token,process.env.KEY_FOR_AUTH);
     let data = null;
-    console.log("decodeToken", decodeToken);
+    // console.log("decodeToken", decodeToken);
     if (decodeToken.userType === 1) {
       data = await CourseAdminModel.findOne({
         deleted: false,
@@ -37,7 +38,7 @@ const authorizer = async (req, res, next) => {
     if (data) {
       req.headers.user = { decodeToken, authorization, user: data };
       next();
-      // return
+      return
     } else {
       res
         .header({
@@ -54,7 +55,7 @@ const authorizer = async (req, res, next) => {
           },
         });
     }
-    // return
+    return
   } else {
     res
       .header({

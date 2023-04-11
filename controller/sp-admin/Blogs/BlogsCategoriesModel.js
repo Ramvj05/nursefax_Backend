@@ -4,69 +4,87 @@ const CategoryClass = require("../../../class/admin/course_category.class");
 const { dbUri } = require("../../../endpoints/endpoints");
 const authorizer = require("../../../middleware/authorizer");
 const BlogsCategoriesTable = require("../../../model/BlogsModel/TableCategories");
+const BlogsTable = require("../../../model/BlogsModel/TableBlogs");
 const router = express.Router();
-const FileHandler = require('../../../Helpers/FileHandler');
-
+const FileHandler = require("../../../Helpers/FileHandler");
+const { ObjectId } = require("mongodb");
 
 async function getBlogCategoriesData(request) {
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
-console.log(request.params.id,"request.params.id")
       const category = {};
-      if (typeof request.params.id !== 'undefined') {
+      if (typeof request.params.id !== "undefined") {
         await BlogsCategoriesTable.findById({
-          _id: request.params.id
-        })
-          .then(response => {
+          _id: request.params.id,
+        }).then(
+          (response) => {
             resultSet = {
-              "msg": "success",
-              "list": response,
-              "statusCode": 200
-            }
-
-          }, err => {
-            console.log('err: ', err);
+              msg: "success",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            console.log("err: ", err);
             resultSet = {
-              "msg": err.message,
-              "statusCode": 500
-            }
-          });
-        console.log("22222", category)
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
+        console.log("22222", category);
       } else {
-        await BlogsCategoriesTable.find({ is_delete: false }).then(response => {
-          resultSet = {
-            "msg": "success",
-            "list": response,
-            "statusCode": 200
-          }
+        var Resultsdata = [];
+        const datastest = await BlogsCategoriesTable.find({ is_delete: false });
+        if (datastest.length > 0) {
+          for (let category of datastest) {
+            var countblogssss = await BlogsTable.find({ is_delete: false });
+            var datasseeww = countblogssss.filter(
+              (irere) => irere.PrimaryCategory == ObjectId(category._id)
+            );
 
-        }, err => {
-          console.log('err: ', err);
-          resultSet = {
-            "msg": err.message,
-            "statusCode": 500
+            Resultsdata.push({
+              _id: category._id,
+              CategoryName: category.CategoryName,
+              FeaturedCategory: category.FeaturedCategory,
+              CateURL: category.CateURL,
+              SEOTitle: category.SEOTitle,
+              SEODescription: category.SEODescription,
+              Description: category.Description,
+              BlogCategoryImage: category.BlogCategoryImage,
+              SEOKeyword: category.SEOKeyword,
+              Status: category.Status,
+              createDt: category.createDt,
+              modifyDt: category.modifyDt,
+              is_active: category.is_active,
+              count: datasseeww.length,
+              is_delete: category.is_delete,
+            });
           }
-        });
+        }
+        resultSet = {
+          msg: "success",
+          list: Resultsdata,
+          statusCode: 200,
+        };
       }
 
       return resultSet;
-
-
     } catch (Error) {
+      console.log(Error, "ooooooooooooooooooooooo");
       resultSet = {
-        "msg": Error,
-        "statusCode": 500
-      }
+        msg: Error,
+        statusCode: 500,
+      };
       return resultSet;
     }
-
   } else {
     resultSet = {
-      "msg": "No direct Access Allowed",
-      "statusCode": 500
-    }
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
     return resultSet;
   }
 }
@@ -77,9 +95,12 @@ async function saveBlogCategories(request) {
     try {
       let ins = {};
       if (request.files) {
-        uploadpath = __dirname + '/../../../uploads/BlogsCategories/';
-        ins.BlogCategoryImage = await FileHandler.uploadAvatar(request, uploadpath, "BlogCategoryImage")
-
+        uploadpath = __dirname + "/../../../uploads/BlogsCategories/";
+        ins.BlogCategoryImage = await FileHandler.uploadAvatar(
+          request,
+          uploadpath,
+          "BlogCategoryImage"
+        );
       }
 
       ins.CategoryName = request.body.CategoryName;
@@ -93,37 +114,36 @@ async function saveBlogCategories(request) {
       ins.createDt = new Date();
       ins.modifyDt = new Date();
 
-      let insert = new BlogsCategoriesTable(ins)
-      await insert.save().then(response => {
-        resultSet = {
-          "msg": "Category Created successfully",
-          "statusCode": 200
+      let insert = new BlogsCategoriesTable(ins);
+      await insert.save().then(
+        (response) => {
+          resultSet = {
+            msg: "Category Created successfully",
+            statusCode: 200,
+          };
+        },
+        (err) => {
+          console.log("err: ", err);
+          resultSet = {
+            msg: err.message,
+            statusCode: 500,
+          };
         }
-
-      }, err => {
-        console.log('err: ', err);
-        resultSet = {
-          "msg": err.message,
-          "statusCode": 500
-        }
-      });
+      );
 
       return resultSet;
-
-
     } catch (Error) {
       resultSet = {
-        "msg": Error,
-        "statusCode": 400
-      }
+        msg: Error,
+        statusCode: 400,
+      };
       return resultSet;
     }
-
   } else {
     resultSet = {
-      "msg": "No direct Access Allowed",
-      "statusCode": 500
-    }
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
     return resultSet;
   }
 }
@@ -135,9 +155,12 @@ async function updateBlogCategories(request) {
       await mongoose.connect(uri);
       let upd = {};
       if (request.files) {
-        uploadpath = __dirname + '/../../../uploads/BlogsCategories/';
-        ins.BlogCategoryImage = await FileHandler.uploadAvatar(request, uploadpath, "BlogCategoryImage")
-
+        uploadpath = __dirname + "/../../../uploads/BlogsCategories/";
+        upd.BlogCategoryImage = await FileHandler.uploadAvatar(
+          request,
+          uploadpath,
+          "BlogCategoryImage"
+        );
       }
       upd.CategoryName = request.body.CategoryName;
       upd.FeaturedCategory = request.body.FeaturedCategory;
@@ -148,41 +171,42 @@ async function updateBlogCategories(request) {
       upd.SEOKeyword = request.body.SEOKeyword;
       upd.Status = request.body.Status;
       upd.modifyDt = new Date();
-      await BlogsCategoriesTable.updateMany({
-        _id: request.params.id
-      }, {
-        $set: upd
-      })
-        .then(response => {
+      await BlogsCategoriesTable.updateMany(
+        {
+          _id: request.params.id,
+        },
+        {
+          $set: upd,
+        }
+      ).then(
+        (response) => {
           resultSet = {
-            "msg": "Category updated successfully",
-            "statusCode": 200
-          }
-
-        }, err => {
-          console.log('err: ', err);
+            msg: "Category updated successfully",
+            statusCode: 200,
+          };
+        },
+        (err) => {
+          console.log("err: ", err);
           resultSet = {
-            "msg": err.message,
-            "statusCode": 500
-          }
-        });
+            msg: err.message,
+            statusCode: 500,
+          };
+        }
+      );
 
       return resultSet;
-
-
     } catch (Error) {
       resultSet = {
-        "msg": Error,
-        "statusCode": 400
-      }
+        msg: Error,
+        statusCode: 400,
+      };
       return resultSet;
     }
-
   } else {
     resultSet = {
-      "msg": "No direct Access Allowed",
-      "statusCode": 500
-    }
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
     return resultSet;
   }
 }
@@ -191,42 +215,44 @@ async function deleteBlogCategories(request) {
     const uri = dbUri;
     await mongoose.connect(uri);
     try {
-      await BlogsCategoriesTable.updateMany({
-        _id: request.params.id
-      }, {
-        $set: {
-          is_delete: true
+      await BlogsCategoriesTable.updateMany(
+        {
+          _id: request.params.id,
+        },
+        {
+          $set: {
+            is_delete: true,
+          },
         }
-      }).then(response => {
-        resultSet = {
-          "msg": "Category Deleted Successfully",
-          "statusCode": 200
+      ).then(
+        (response) => {
+          resultSet = {
+            msg: "Category Deleted Successfully",
+            statusCode: 200,
+          };
+        },
+        (err) => {
+          console.log("err: ", err);
+          resultSet = {
+            msg: err.message,
+            statusCode: 500,
+          };
         }
-
-      }, err => {
-        console.log('err: ', err);
-        resultSet = {
-          "msg": err.message,
-          "statusCode": 500
-        }
-      })
+      );
 
       return resultSet;
-
-
     } catch (Error) {
       resultSet = {
-        "msg": Error,
-        "statusCode": 400
-      }
+        msg: Error,
+        statusCode: 400,
+      };
       return resultSet;
     }
-
   } else {
     resultSet = {
-      "msg": "No direct Access Allowed",
-      "statusCode": 500
-    }
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
     return resultSet;
   }
 }
@@ -236,107 +262,118 @@ async function deleteBlogCategoriesImg(request) {
       const uri = dbUri;
       await mongoose.connect(uri);
       await BlogsCategoriesTable.findById({
-        _id: request.params.id
-      }).then(response => {
-        if (request.body.imageName == "UploadImage") {
-          uploadpath = __dirname + '/../../../uploads/BlogsCategories/';
-          var filePath = uploadpath + response.UploadImage;
-          var unl = fs.unlinkSync(filePath);
-          let upd = {};
-          upd.UploadImage = "";
-          let id = mongoose.Types.ObjectId(request.params.id);
-          BlogsCategoriesTable.updateMany({
-            _id: id
-          }, {
-            $set: upd
-          })
-            // BlogsCategoriesTable.updateMany({_id:request.params.id},
-            //     {
-            //         $set : upd
-            //         }
-            //      )
-
-            .then(response1 => {
-              resultSet = {
-                "msg": "Upload Image Deleted Successfully!!",
-                "statusCode": 200
+        _id: request.params.id,
+      }).then(
+        (response) => {
+          if (request.body.imageName == "UploadImage") {
+            uploadpath = __dirname + "/../../../uploads/BlogsCategories/";
+            var filePath = uploadpath + response.UploadImage;
+            var unl = fs.unlinkSync(filePath);
+            let upd = {};
+            upd.UploadImage = "";
+            let id = mongoose.Types.ObjectId(request.params.id);
+            BlogsCategoriesTable.updateMany(
+              {
+                _id: id,
+              },
+              {
+                $set: upd,
               }
-              return resultSet;
-            }, err => {
-              console.log('err: ', err);
-              resultSet = {
-                "msg": err.message,
-                "statusCode": 500
+            )
+              // BlogsCategoriesTable.updateMany({_id:request.params.id},
+              //     {
+              //         $set : upd
+              //         }
+              //      )
+
+              .then(
+                (response1) => {
+                  resultSet = {
+                    msg: "Upload Image Deleted Successfully!!",
+                    statusCode: 200,
+                  };
+                  return resultSet;
+                },
+                (err) => {
+                  console.log("err: ", err);
+                  resultSet = {
+                    msg: err.message,
+                    statusCode: 500,
+                  };
+                  return resultSet;
+                }
+              );
+
+            //return resultSet;
+          } else if (request.body.imageName == "CategoryIcon") {
+            uploadpath = __dirname + "/../../../uploads/BlogsCategories/";
+            var filePath = uploadpath + response.CategoryIcon;
+            fs.unlinkSync(filePath);
+            let upd = {};
+            upd.CategoryIcon = "";
+
+            BlogsCategoriesTable.updateMany(
+              {
+                _id: request.params.id,
+              },
+              {
+                $set: upd,
               }
-              return resultSet;
-            });
-
-          //return resultSet;
-        } else if (request.body.imageName == "CategoryIcon") {
-          uploadpath = __dirname + '/../../../uploads/BlogsCategories/';
-          var filePath = uploadpath + response.CategoryIcon;
-          fs.unlinkSync(filePath);
-          let upd = {};
-          upd.CategoryIcon = "";
-
-          BlogsCategoriesTable.updateMany({
-            _id: request.params.id
-          }, {
-            $set: upd
-          })
-            // BlogsCategoriesTable.updateMany({_id:request.params.id},
-            //     {
-            //         $set : upd
-            //         }
-            //      )
-            .then(response1 => {
-              resultSet = {
-                "msg": "CategoryIcon Deleted Successfully!!",
-                "statusCode": 200
-              }
-
-            }, err => {
-              console.log('err: ', err);
-              resultSet = {
-                "msg": err.message,
-                "statusCode": 500
-              }
-            });
-        }
-        //return resultSet;
-        resultSet = { "msg": " Upload Image Deleted Successfully!!", "statusCode": 200 }
-
-      }
-        , err => {
-          console.log('err: ', err);
-          resultSet = {
-            "msg": err.message,
-            "statusCode": 500
+            )
+              // BlogsCategoriesTable.updateMany({_id:request.params.id},
+              //     {
+              //         $set : upd
+              //         }
+              //      )
+              .then(
+                (response1) => {
+                  resultSet = {
+                    msg: "CategoryIcon Deleted Successfully!!",
+                    statusCode: 200,
+                  };
+                },
+                (err) => {
+                  console.log("err: ", err);
+                  resultSet = {
+                    msg: err.message,
+                    statusCode: 500,
+                  };
+                }
+              );
           }
-        });
+          //return resultSet;
+          resultSet = {
+            msg: " Upload Image Deleted Successfully!!",
+            statusCode: 200,
+          };
+        },
+        (err) => {
+          console.log("err: ", err);
+          resultSet = {
+            msg: err.message,
+            statusCode: 500,
+          };
+        }
+      );
 
       return resultSet;
-
-
     } catch (Error) {
       resultSet = {
-        "msg": Error,
-        "statusCode": 400
-      }
+        msg: Error,
+        statusCode: 400,
+      };
       return resultSet;
     }
-
   } else {
     resultSet = {
-      "msg": "No direct Access Allowed",
-      "statusCode": 500
-    }
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
     return resultSet;
   }
 
   return resultSet;
 }
-
 
 // router.post("/create", authorizer, async function (req, res) {
 //   const { decodeToken, user } = req.headers.user;
@@ -404,7 +441,7 @@ module.exports = {
   saveBlogCategories,
   updateBlogCategories,
   deleteBlogCategories,
-  deleteBlogCategoriesImg
+  deleteBlogCategoriesImg,
 };
 
 // module.exports = router;

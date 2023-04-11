@@ -5,6 +5,7 @@ const { dbUri } = require("../../../endpoints/endpoints");
 const authorizer = require("../../../middleware/authorizer");
 const UserBlogsTable = require("../../../model/BlogsModel/TableUserBlogs");
 const router = express.Router();
+const FileHandler = require('../../../Helpers/FileHandler');
 
 
 async function getUserBlogsData(request) {
@@ -97,8 +98,8 @@ async function saveUserBlogs(request) {
       ins.MetaKeyword = request.body.MetaKeyword;
       ins.user_id = request.body.user_id;
       ins.Status = request.body.Status;
-      ins.createDt =   new Date();
-      ins.modifyDt =  new Date();
+      ins.createDt = new Date();
+      ins.modifyDt = new Date();
       console.log("ins", ins);
 
       let insert = new UserBlogsTable(ins)
@@ -162,7 +163,7 @@ async function updateUserBlogs(request) {
       upd.MetaKeyword = request.body.MetaKeyword;
       upd.user_id = request.body.user_id;
       upd.Status = request.body.Status;
-      upd.modifyDt =  new Date();
+      upd.modifyDt = new Date();
       console.log("upd", upd);
 
       await UserBlogsTable.updateMany({
