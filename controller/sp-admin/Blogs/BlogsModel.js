@@ -8,25 +8,21 @@ const router = express.Router();
 const FileHandler = require("../../../Helpers/FileHandler");
 
 async function getBlogsData(request) {
+  //console.log("request",request);
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
       const category = {};
       if (typeof request.params.id !== "undefined") {
-        
         Where = {};
+
         if(typeof request.params.id !== 'undefined'){
-          Where._id = mongoose.Types.ObjectId(request.params.id);
-          console.log(request.params.id,"kkkiuyyvtytyvtyvtyvyv")
+          Where._id = new mongoose.Types.ObjectId(request.params.id);
         }else{
-          Where._id = mongoose.Types.ObjectId(request.params.id);
-          // console.log( typeof request.params.id,"kkkiuyyvtytyvtyvtyvyv")
+          Where._id = new mongoose.Types.ObjectId(request.params.id);
         }
-        
-        
-        console.log("Where",Where._id)
-                
+                        
                 var data = await BlogsTable.aggregate([
                     {
                         $match:Where
@@ -36,12 +32,13 @@ async function getBlogsData(request) {
                             from:"users",
                             localField:"user_id",
                             foreignField:"_id",
-                            as:"customers"
+                            as:"userdetails"
                         }
                     },    
 
                 ]).then(
                   (response) => {
+                    console.log("response: " + response)
                     resultSet = {
                       msg: "success",
                       list: response,
@@ -57,29 +54,45 @@ async function getBlogsData(request) {
                   }
                 ); 
       } else {
-        await BlogsTable.find({ is_delete: false }).then(
-          (response) => {
-            resultSet = {
-              msg: "success",
-              list: response,
-              statusCode: 200,
-            };
-          },
-          (err) => {
-            // console.log("err: ", err);
-            resultSet = {
-              msg: err.message,
-              statusCode: 500,
-            };
-          }
-        );
+                               
+                var data = await BlogsTable.aggregate([
+                    // {
+                    //     $match:Where
+                    // },
+                    {
+                        $lookup:{
+                            from:"users",
+                            localField:"user_id",
+                            foreignField:"_id",
+                            as:"userdetails"
+                        }
+                    },    
+
+                ]).then(
+                  (response) => {
+                    console.log("response: " + response)
+                    resultSet = {
+                      msg: "success",
+                      list: response,
+                      statusCode: 200,
+                    };
+                  },
+                  (err) => {
+                    console.log("err: ", err);
+                    resultSet = {
+                      msg: err.message,
+                      statusCode: 500,
+                    };
+                  }
+                );
       }
 
       return resultSet;
     } catch (Error) {
+      console.log("error: " + Error)
       resultSet = {
         msg: Error,
-        statusCode: 500,
+        statusCode: 501,
       };
       return resultSet;
     }

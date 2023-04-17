@@ -10,12 +10,12 @@ const authorizer = async (req, res, next) => {
 
   const { authorization } = req.headers;
   // console.log
-  console.log("Authorization", authorization);
-  console.log("reqreqreqreqreqreqreq", req.headers);
+  // console.log("Authorization", authorization);
+  // console.log("reqreqreqreqreqreqreq", req.headers);
   if (authorization) {
     const token = authorization.split(' ')[0]
-    console.log('bharath',authorization.split(' '))
-    console.log("token", token);
+    // console.log('bharath',authorization.split(' '))
+    // console.log("token", token);
     const decodeToken = jwt.verify(token,process.env.KEY_FOR_AUTH);
     let data = null;
     // console.log("decodeToken", decodeToken);
