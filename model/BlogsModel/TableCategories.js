@@ -28,7 +28,7 @@ const BlogCategoriesSchema = new Schema({
     type: String,
   },
   SEOKeyword: {
-    type: Array,
+    type: String,
   },
   Status: {
     type: Boolean,

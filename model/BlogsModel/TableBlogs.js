@@ -18,11 +18,12 @@ const BlogsSchema = Schema({
     type: String,
   },
   PrimaryCategory: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
   },
 
   OtherCategory: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+
   },
   ShortDescription: {
     type: String,
@@ -44,7 +45,7 @@ const BlogsSchema = Schema({
     type: String,
   },
   user_id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
   },
   user_type: {
     type: String,
@@ -53,7 +54,7 @@ const BlogsSchema = Schema({
     type: String,
   },
   MetaKeyword: {
-    type: Array,
+    type: String,
   },
   Status: {
     type: Boolean,

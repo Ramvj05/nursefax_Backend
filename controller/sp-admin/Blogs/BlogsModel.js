@@ -14,25 +14,48 @@ async function getBlogsData(request) {
       await mongoose.connect(uri);
       const category = {};
       if (typeof request.params.id !== "undefined") {
-        await BlogsTable.findById({
-          _id: request.params.id,
-        }).then(
-          (response) => {
-            resultSet = {
-              msg: "success",
-              list: response,
-              statusCode: 200,
-            };
-          },
-          (err) => {
-            // console.log("err: ", err);
-            resultSet = {
-              msg: err.message,
-              statusCode: 500,
-            };
-          }
-        );
-        // console.log("22222", category);
+        
+        Where = {};
+        if(typeof request.params.id !== 'undefined'){
+          Where._id = mongoose.Types.ObjectId(request.params.id);
+          console.log(request.params.id,"kkkiuyyvtytyvtyvtyvyv")
+        }else{
+          Where._id = mongoose.Types.ObjectId(request.params.id);
+          // console.log( typeof request.params.id,"kkkiuyyvtytyvtyvtyvyv")
+        }
+        
+        
+        console.log("Where",Where._id)
+                
+                var data = await BlogsTable.aggregate([
+                    {
+                        $match:Where
+                    },
+                    {
+                        $lookup:{
+                            from:"users",
+                            localField:"user_id",
+                            foreignField:"_id",
+                            as:"customers"
+                        }
+                    },    
+
+                ]).then(
+                  (response) => {
+                    resultSet = {
+                      msg: "success",
+                      list: response,
+                      statusCode: 200,
+                    };
+                  },
+                  (err) => {
+                    console.log("err: ", err);
+                    resultSet = {
+                      msg: err.message,
+                      statusCode: 500,
+                    };
+                  }
+                ); 
       } else {
         await BlogsTable.find({ is_delete: false }).then(
           (response) => {

@@ -11,9 +11,9 @@ router.post("/bypass", async function (req, res) {
   try {
     const uri = dbUri;
     await mongoose.connect(uri);
-
+console.log(req.body,"req.body.id_token");
     const token = jwt.decode(req.body.id_token);
-    console.log(token);
+    console.log(token,"hhhhhhhhhhhh");
     const { email, given_name, family_name, name, sub, picture } = token;
 
     const userName = name?.toLowerCase()?.split(" ").join("") || "";

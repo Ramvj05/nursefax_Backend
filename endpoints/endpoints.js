@@ -5,7 +5,8 @@ const app = express();
 require('dotenv').config();
 const mongoose = require('mongoose')
 // require('dotenv').config({ path: 'ENV_FILENAME' });
-let host = "http://localhost:4000/api/";
+// let host = "http://localhost:4000/api/";
+let host="http://3.111.169.246/:4000/api/"
 // let host = "https://api.nursefax.com/api/";
 let userHost = "https://nursefax.com/";
 // let userHost = "http://localhost:3000/";

@@ -11,6 +11,7 @@ class UserClass {
     country,
     countryCode,
     mcc,
+    UserCountry,
     userType,
     active,
   }) {
@@ -24,6 +25,7 @@ class UserClass {
     this.mobileVerified = mobileVerified;
     this.country = country;
     this.countryCode = countryCode;
+    this.UserCountry = UserCountry;
     this.mcc = mcc;
     this.userType = userType;
     this.active = active;

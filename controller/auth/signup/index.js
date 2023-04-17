@@ -8,32 +8,40 @@ const { generateHash, generateSalt } = require("../../../utils/encrypt");
 const decrypy = require("../../../utils/decrypt");
 const courseAdminModel = require("../../../model/courseAdmin.model");
 const router = express.Router();
+var geoip = require('geoip-lite');
 
 router.post("/signup", async function (req, res) {
   let body = new UserClass(req.body).getModel();
   const uri = dbUri;
   await mongoose.connect(uri);
 
-  console.log(body);
-
+  // console.log(body);
+  const ip = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress
+  const location = geoip.lookup(ip)
+  const Country = location.country
   body = {
     ...body,
     createdBy:
       body.userType === 2 ? "student" : body.userType === 1 ? "user" : "admin",
     roles:
       body.userType === 0 ? ["ADMIN"] : body.userType === 1 ? [] : ["STUDENT"],
-  };
+    UserCountry:
+      body.userType === 2 ? Country: ""
+    };
+    console.log(body,"ppppppppppppppppppp");
 
   let salt = generateSalt();
   const hashPassword = generateHash(body.password, salt);
+  
+
   body = {
     ...body,
     password: hashPassword,
+    // Country:Country,
   };
 
   let presentUser;
   let newUser;
-
   if (body.userType === 1) {
     newUser = new courseAdminModel(body);
     presentUser = await courseAdminModel.findOne(
