@@ -42,8 +42,11 @@ async function getBlogCategoriesData(request) {
           for (let category of datastest) {
             var countblogssss = await BlogsTable.find({ is_delete: false });
             var datasseeww = countblogssss.filter(
-              (irere) => irere.PrimaryCategory == ObjectId(category._id)
-            );
+              (irere) => 
+                irere.PrimaryCategory.toString() == ObjectId(category._id).toString() 
+              );
+              console.log("datasseeww", datasseeww.length);
+                 
 
             Resultsdata.push({
               _id: category._id,
@@ -64,13 +67,14 @@ async function getBlogCategoriesData(request) {
             });
           }
         }
+        const Resultdata=Resultsdata.sort((a,b) => b.count - a.count);
+
         resultSet = {
           msg: "success",
-          list: Resultsdata,
+          list: Resultdata,
           statusCode: 200,
         };
       }
-
       return resultSet;
     } catch (Error) {
       console.log(Error, "ooooooooooooooooooooooo");

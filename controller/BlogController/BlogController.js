@@ -13,6 +13,15 @@ if (Auth.Verify(req, res, next)) {
   
 
 }
+const getUserBlogsData = async (req, res, next) => {
+// if (Auth.Verify(req, res, next)) {
+    var data = await BlogsModel.getUserBlogsData(req);
+    // console.log(data)
+    res.status(data.statusCode).send(data);
+    // }
+  
+
+}
 
 
 const saveBlogs = async (req, res, next) => {
@@ -64,5 +73,6 @@ module.exports = {
     saveBlogs,
     updateBlogs,
     deleteBlogs,
-      deleteBlogsImg
+      deleteBlogsImg,
+      getUserBlogsData
 };

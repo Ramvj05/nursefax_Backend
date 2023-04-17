@@ -17,74 +17,171 @@ async function getBlogsData(request) {
       if (typeof request.params.id !== "undefined") {
         Where = {};
 
-        if(typeof request.params.id !== 'undefined'){
+        if (typeof request.params.id !== 'undefined') {
           Where._id = new mongoose.Types.ObjectId(request.params.id);
-        }else{
+        } else {
           Where._id = new mongoose.Types.ObjectId(request.params.id);
         }
-                        
-                var data = await BlogsTable.aggregate([
-                    {
-                        $match:Where
-                    },
-                    {
-                        $lookup:{
-                            from:"users",
-                            localField:"user_id",
-                            foreignField:"_id",
-                            as:"userdetails"
-                        }
-                    },    
 
-                ]).then(
-                  (response) => {
-                    console.log("response: " + response)
-                    resultSet = {
-                      msg: "success",
-                      list: response,
-                      statusCode: 200,
-                    };
-                  },
-                  (err) => {
-                    console.log("err: ", err);
-                    resultSet = {
-                      msg: err.message,
-                      statusCode: 500,
-                    };
-                  }
-                ); 
+        var data = await BlogsTable.aggregate([
+          {
+            $match: Where
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "user_id",
+              foreignField: "_id",
+              as: "userdetails"
+            }
+          },
+
+        ]).then(
+          (response) => {
+            console.log("response: " + response)
+            resultSet = {
+              msg: "success",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
       } else {
-                               
-                var data = await BlogsTable.aggregate([
-                    // {
-                    //     $match:Where
-                    // },
-                    {
-                        $lookup:{
-                            from:"users",
-                            localField:"user_id",
-                            foreignField:"_id",
-                            as:"userdetails"
-                        }
-                    },    
 
-                ]).then(
-                  (response) => {
-                    console.log("response: " + response)
-                    resultSet = {
-                      msg: "success",
-                      list: response,
-                      statusCode: 200,
-                    };
-                  },
-                  (err) => {
-                    console.log("err: ", err);
-                    resultSet = {
-                      msg: err.message,
-                      statusCode: 500,
-                    };
-                  }
-                );
+        var data = await BlogsTable.aggregate([
+          // {
+          //     $match:Where
+          // },
+          {
+            $lookup: {
+              from: "users",
+              localField: "user_id",
+              foreignField: "_id",
+              as: "userdetails"
+            }
+          },
+
+        ]).then(
+          (response) => {
+            console.log("response: " + response)
+            resultSet = {
+              msg: "success",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
+      }
+
+      return resultSet;
+    } catch (Error) {
+      console.log("error: " + Error)
+      resultSet = {
+        msg: Error,
+        statusCode: 501,
+      };
+      return resultSet;
+    }
+  } else {
+    resultSet = {
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
+    return resultSet;
+  }
+}
+async function getUserBlogsData(request) {
+  //console.log("request",request);
+  if (request != "" && typeof request !== "undefined") {
+    try {
+      const uri = dbUri;
+      await mongoose.connect(uri);
+      const category = {};
+      if (typeof request.params.id !== "undefined") {
+        Where = {};
+
+        if (typeof request.params.id !== 'undefined') {
+          Where._id = new mongoose.Types.ObjectId(request.params.id);
+        } else {
+          Where._id = new mongoose.Types.ObjectId(request.params.id);
+        }
+
+        var data = await BlogsTable.aggregate([
+          {
+            $match: Where
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "user_id",
+              foreignField: "_id",
+              as: "userdetails"
+            }
+          },
+
+        ]).then(
+          (response) => {
+            console.log("response: " + response)
+            resultSet = {
+              msg: "success",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
+      } else {
+
+        var data = await BlogsTable.aggregate([
+          // {
+          //     $match:Where
+          // },
+          {
+            $lookup: {
+              from: "users",
+              localField: "user_id",
+              foreignField: "_id",
+              as: "userdetails"
+            }
+          },
+
+        ]).then(
+          (response) => {
+            console.log("response: " + response)
+            resultSet = {
+              msg: "success",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
       }
 
       return resultSet;
@@ -481,7 +578,7 @@ module.exports = {
   saveBlogs,
   updateBlogs,
   deleteBlogs,
-  deleteBlogsImg,
+  deleteBlogsImg,getUserBlogsData
 };
 
 // module.exports = router;
