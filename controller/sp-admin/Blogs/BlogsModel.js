@@ -4,8 +4,10 @@ const CategoryClass = require("../../../class/admin/course_category.class");
 const { dbUri } = require("../../../endpoints/endpoints");
 const authorizer = require("../../../middleware/authorizer");
 const BlogsTable = require("../../../model/BlogsModel/TableBlogs");
+const BlogsViewTable = require("../../../model/BlogsModel/TableBlogViews");
 const router = express.Router();
 const FileHandler = require("../../../Helpers/FileHandler");
+var geoip = require('geoip-lite');
 
 async function getBlogsData(request) {
   //console.log("request",request);
@@ -25,7 +27,10 @@ async function getBlogsData(request) {
 
         var data = await BlogsTable.aggregate([
           {
-            $match: Where
+            $match:{
+              Where,
+              is_delete:false
+            } 
           },
           {
             $lookup: {
@@ -33,6 +38,14 @@ async function getBlogsData(request) {
               localField: "user_id",
               foreignField: "_id",
               as: "userdetails"
+            }
+          },
+          {
+            $lookup: {
+              from: "blogcategories",
+              localField: "PrimaryCategory",
+              foreignField: "_id",
+              as: "categordetails"
             }
           },
 
@@ -56,15 +69,26 @@ async function getBlogsData(request) {
       } else {
 
         var data = await BlogsTable.aggregate([
-          // {
-          //     $match:Where
-          // },
+          {
+              $match: {
+                is_delete:false
+              } 
+
+          },
           {
             $lookup: {
               from: "users",
               localField: "user_id",
               foreignField: "_id",
               as: "userdetails"
+            }
+          },
+          {
+            $lookup: {
+              from: "blogcategories",
+              localField: "PrimaryCategory",
+              foreignField: "_id",
+              as: "categordetails"
             }
           },
 
@@ -122,7 +146,10 @@ async function getUserBlogsData(request) {
 
         var data = await BlogsTable.aggregate([
           {
-            $match: Where
+            $match:{
+              Where,
+              is_delete:false
+            } 
           },
           {
             $lookup: {
@@ -130,6 +157,14 @@ async function getUserBlogsData(request) {
               localField: "user_id",
               foreignField: "_id",
               as: "userdetails"
+            }
+          },
+          {
+            $lookup: {
+              from: "blogcategories",
+              localField: "PrimaryCategory",
+              foreignField: "_id",
+              as: "categordetails"
             }
           },
 
@@ -153,15 +188,26 @@ async function getUserBlogsData(request) {
       } else {
 
         var data = await BlogsTable.aggregate([
-          // {
-          //     $match:Where
-          // },
+          {
+              $match: {
+                is_delete:false
+              } 
+
+          },
           {
             $lookup: {
               from: "users",
               localField: "user_id",
               foreignField: "_id",
               as: "userdetails"
+            }
+          },
+          {
+            $lookup: {
+              from: "blogcategories",
+              localField: "PrimaryCategory",
+              foreignField: "_id",
+              as: "categordetails"
             }
           },
 
@@ -255,6 +301,62 @@ async function saveBlogs(request) {
       );
 
       return resultSet;
+    } catch (Error) {
+      console.log(Error, "ooooooooooooooo");
+      resultSet = {
+        msg: Error,
+        statusCode: 400,
+      };
+      return resultSet;
+    }
+  } else {
+    resultSet = {
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
+    return resultSet;
+  }
+}
+async function saveViewBlogs(request) {
+  if (request != "" && typeof request !== "undefined") {
+    const uri = dbUri;
+    await mongoose.connect(uri);
+    try {
+
+      let ins = {};
+      const existUsername = await BlogsViewTable.findOne({ user_ip: req.body.user_ip});
+if(!existUsername){
+  const ip = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress
+  const location = geoip.lookup(ip)
+  console.log("location",location)
+  // const Country = location.country
+  ins.blog_id = request.body.blog_id;
+  ins.user_ip = request.body.user_ip;
+  ins.Status = request.body.Status;
+  ins.createDt = new Date();
+  ins.modifyDt = new Date();
+  // console.log("ins", ins);
+
+  let insert = new BlogsViewTable(ins);
+  await insert.save().then(
+    (response) => {
+      resultSet = {
+        msg: "Blog View Created successfully",
+        statusCode: 200,
+      };
+    },
+    (err) => {
+      // console.log("err: ", err);
+      resultSet = {
+        msg: err.message,
+        statusCode: 500,
+      };
+    }
+  );
+
+  return resultSet;
+}
+     
     } catch (Error) {
       console.log(Error, "ooooooooooooooo");
       resultSet = {
@@ -578,7 +680,7 @@ module.exports = {
   saveBlogs,
   updateBlogs,
   deleteBlogs,
-  deleteBlogsImg,getUserBlogsData
+  deleteBlogsImg, getUserBlogsData,saveViewBlogs
 };
 
 // module.exports = router;

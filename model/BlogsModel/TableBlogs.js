@@ -57,8 +57,8 @@ const BlogsSchema = Schema({
     type: String,
   },
   Status: {
-    type: Boolean,
-    default: true,
+    type: String,
+    // default: true, 
   },
   createDt: {
     type: Date,

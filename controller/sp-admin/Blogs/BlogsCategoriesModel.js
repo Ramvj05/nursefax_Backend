@@ -16,9 +16,7 @@ async function getBlogCategoriesData(request) {
       await mongoose.connect(uri);
       const category = {};
       if (typeof request.params.id !== "undefined") {
-        await BlogsCategoriesTable.findById({
-          _id: request.params.id,
-        }).then(
+        await BlogsCategoriesTable.findById({_id: request.params.id, is_delete: false}).then(
           (response) => {
             resultSet = {
               msg: "success",
@@ -27,14 +25,12 @@ async function getBlogCategoriesData(request) {
             };
           },
           (err) => {
-            console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
             };
           }
         );
-        console.log("22222", category);
       } else {
         var Resultsdata = [];
         const datastest = await BlogsCategoriesTable.find({ is_delete: false });
@@ -42,11 +38,10 @@ async function getBlogCategoriesData(request) {
           for (let category of datastest) {
             var countblogssss = await BlogsTable.find({ is_delete: false });
             var datasseeww = countblogssss.filter(
-              (irere) => 
-                irere.PrimaryCategory.toString() == ObjectId(category._id).toString() 
-              );
-              console.log("datasseeww", datasseeww.length);
-                 
+              (irere) =>
+                irere.PrimaryCategory.toString() == ObjectId(category._id).toString()
+            );
+
 
             Resultsdata.push({
               _id: category._id,
@@ -67,7 +62,7 @@ async function getBlogCategoriesData(request) {
             });
           }
         }
-        const Resultdata=Resultsdata.sort((a,b) => b.count - a.count);
+        const Resultdata = Resultsdata.sort((a, b) => b.count - a.count);
 
         resultSet = {
           msg: "success",
@@ -77,7 +72,6 @@ async function getBlogCategoriesData(request) {
       }
       return resultSet;
     } catch (Error) {
-      console.log(Error, "ooooooooooooooooooooooo");
       resultSet = {
         msg: Error,
         statusCode: 500,
@@ -127,7 +121,6 @@ async function saveBlogCategories(request) {
           };
         },
         (err) => {
-          console.log("err: ", err);
           resultSet = {
             msg: err.message,
             statusCode: 500,
@@ -177,7 +170,7 @@ async function updateBlogCategories(request) {
       upd.modifyDt = new Date();
       await BlogsCategoriesTable.updateMany(
         {
-          _id: request.params.id,
+          _id: request.params.id, is_delete: false
         },
         {
           $set: upd,
@@ -190,7 +183,6 @@ async function updateBlogCategories(request) {
           };
         },
         (err) => {
-          console.log("err: ", err);
           resultSet = {
             msg: err.message,
             statusCode: 500,
@@ -236,7 +228,6 @@ async function deleteBlogCategories(request) {
           };
         },
         (err) => {
-          console.log("err: ", err);
           resultSet = {
             msg: err.message,
             statusCode: 500,
@@ -299,7 +290,6 @@ async function deleteBlogCategoriesImg(request) {
                   return resultSet;
                 },
                 (err) => {
-                  console.log("err: ", err);
                   resultSet = {
                     msg: err.message,
                     statusCode: 500,
@@ -337,7 +327,6 @@ async function deleteBlogCategoriesImg(request) {
                   };
                 },
                 (err) => {
-                  console.log("err: ", err);
                   resultSet = {
                     msg: err.message,
                     statusCode: 500,
@@ -352,7 +341,6 @@ async function deleteBlogCategoriesImg(request) {
           };
         },
         (err) => {
-          console.log("err: ", err);
           resultSet = {
             msg: err.message,
             statusCode: 500,
@@ -382,7 +370,6 @@ async function deleteBlogCategoriesImg(request) {
 // router.post("/create", authorizer, async function (req, res) {
 //   const { decodeToken, user } = req.headers.user;
 //   let body = new CategoryClass(req.body).getModel();
-//   console.log(body);
 //   const uri = dbUri;
 //   await mongoose.connect(uri);
 
@@ -424,7 +411,6 @@ async function deleteBlogCategoriesImg(request) {
 //         });
 //     }
 //   } catch (err) {
-//     console.log(err);
 //     res
 //       .header({
 //         "Content-Type": "application/json",

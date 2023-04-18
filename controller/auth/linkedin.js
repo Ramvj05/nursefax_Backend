@@ -46,10 +46,10 @@ router.post("/linkedin", async function (req, res) {
         },
       }
     ).then(async(r)=>{
-      console.log("r",r.data)
       // const userName = name?.toLowerCase()?.split(" ").join("") || "";
       const ip = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress
       const location = geoip.lookup(ip)
+      console.log("location",location)
       // const Country = location.country
 
       const salt = generateSalt();
@@ -107,7 +107,7 @@ router.post("/linkedin", async function (req, res) {
           // firstName: given_name,
           // lastName: family_name,
           password: hash,
-          UserCountry:Country,
+          // UserCountry:Country,
           // picture,
           userType: 2,
           roles: ["STUDENT"],

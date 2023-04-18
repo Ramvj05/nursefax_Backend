@@ -6,6 +6,7 @@ router.get("/", Controller.getBlogsData);
 router.get("/userviewblog/", Controller.getUserBlogsData);
 router.get("/:id", Controller.getBlogsData);
 router.post("/", Controller.saveBlogs);
+router.post("/view/", Controller.saveViewBlogs);
 router.put("/:id", Controller.updateBlogs);
 router.put("/delete/:id", Controller.deleteBlogs);
 

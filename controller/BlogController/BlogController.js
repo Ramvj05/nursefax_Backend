@@ -34,6 +34,16 @@ const saveBlogs = async (req, res, next) => {
     // }
 
 }
+const saveViewBlogs = async (req, res, next) => {
+    if (Auth.Verify(req, res ,next )) {
+        var data = await BlogsModel.saveViewBlogs(req)
+        res.status(data.statusCode).send(data);
+    }
+    // else {
+    //     res.status(400).send({ msg: "invalid sessions" });
+    // }
+
+}
 
 const updateBlogs = async (req, res, next) => {
     if ( Auth.Verify(req, res)) {
@@ -74,5 +84,5 @@ module.exports = {
     updateBlogs,
     deleteBlogs,
       deleteBlogsImg,
-      getUserBlogsData
+      getUserBlogsData,saveViewBlogs
 };

@@ -7,69 +7,104 @@ const UserRatingsTable = require("../../../model/BlogsModel/TableUserRatings");
 const router = express.Router();
 const FileHandler = require('../../../Helpers/FileHandler');
 
-
 async function getUserRatingsData(request) {
+  //console.log("request",request);
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
       const category = {};
-      if (typeof request.params.id !== 'undefined') {
-        console.log("1111")
-        await UserRatingsTable.findById({
-          _id: request.params.id
-        })
-          .then(response => {
-            resultSet = {
-              "msg": "success",
-              "list": response,
-              "statusCode": 200
-            }
+      if (typeof request.params.id !== "undefined") {
+        Where = {};
 
-          }, err => {
-            console.log('err: ', err);
-            resultSet = {
-              "msg": err.message,
-              "statusCode": 500
+        if (typeof request.params.id !== 'undefined') {
+          Where._id = new mongoose.Types.ObjectId(request.params.id);
+        } else {
+          Where._id = new mongoose.Types.ObjectId(request.params.id);
+        }
+
+        var data = await UserRatingsTable.aggregate([
+          {
+            $match: Where
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "user_id",
+              foreignField: "_id",
+              as: "userdetails"
             }
-          });
-        console.log("22222", category)
+          },
+
+        ]).then(
+          (response) => {
+            console.log("response: " + response)
+            resultSet = {
+              msg: "success",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
       } else {
-        await UserRatingsTable.find({ is_delete: false }).then(response => {
-          resultSet = {
-            "msg": "success",
-            "list": response,
-            "statusCode": 200
-          }
 
-        }, err => {
-          console.log('err: ', err);
-          resultSet = {
-            "msg": err.message,
-            "statusCode": 500
+        var data = await UserRatingsTable.aggregate([
+          // {
+          //     $match:Where
+          // },
+          {
+            $lookup: {
+              from: "users",
+              localField: "user_id",
+              foreignField: "_id",
+              as: "userdetails"
+            }
+          },
+
+        ]).then(
+          (response) => {
+            console.log("response: " + response)
+            resultSet = {
+              msg: "success",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
           }
-        });
+        );
       }
 
       return resultSet;
-
-
     } catch (Error) {
+      console.log("error: " + Error)
       resultSet = {
-        "msg": Error,
-        "statusCode": 500
-      }
+        msg: Error,
+        statusCode: 501,
+      };
       return resultSet;
     }
-
   } else {
     resultSet = {
-      "msg": "No direct Access Allowed",
-      "statusCode": 500
-    }
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
     return resultSet;
   }
 }
+
 async function saveUserRatings(request) {
   // console.log(request.body);
 
@@ -177,6 +212,7 @@ async function updateUserRatings(request) {
     return resultSet;
   }
 }
+
 async function deleteUserRatings(request) {
   console.log(request.body);
   if (request != "" && typeof request !== "undefined") {
@@ -222,113 +258,7 @@ async function deleteUserRatings(request) {
     return resultSet;
   }
 }
-async function deleteUserRatingsImg(request) {
-  console.log(request.body);
-  if (request != "" && typeof request !== "undefined") {
-    try {
-      const uri = dbUri;
-      await mongoose.connect(uri);
-      await UserRatingsTable.findById({
-        _id: request.params.id
-      }).then(response => {
-        if (request.body.imageName == "BlogImage") {
-          uploadpath = __dirname + '/../../../uploads/Blogs/';
-          var filePath = uploadpath + response.BlogImage;
-          var unl = fs.unlinkSync(filePath);
-          let upd = {};
-          upd.BlogImage = "";
-          let id = mongoose.Types.ObjectId(request.params.id);
-          UserRatingsTable.updateMany({
-            _id: id
-          }, {
-            $set: upd
-          })
-            // UserRatingsTable.updateMany({_id:request.params.id},
-            //     {
-            //         $set : upd
-            //         }
-            //      )
 
-            .then(response1 => {
-              resultSet = {
-                "msg": "Upload Image Deleted Successfully!!",
-                "statusCode": 200
-              }
-              return resultSet;
-            }, err => {
-              console.log('err: ', err);
-              resultSet = {
-                "msg": err.message,
-                "statusCode": 500
-              }
-              return resultSet;
-            });
-
-          //return resultSet;
-        } else if (request.body.imageName == "CategoryIcon") {
-          uploadpath = __dirname + '/../../../uploads/Blogs/';
-          var filePath = uploadpath + response.CategoryIcon;
-          fs.unlinkSync(filePath);
-          let upd = {};
-          upd.CategoryIcon = "";
-
-          UserRatingsTable.updateMany({
-            _id: request.params.id
-          }, {
-            $set: upd
-          })
-            // UserRatingsTable.updateMany({_id:request.params.id},
-            //     {
-            //         $set : upd
-            //         }
-            //      )
-            .then(response1 => {
-              resultSet = {
-                "msg": "CategoryIcon Deleted Successfully!!",
-                "statusCode": 200
-              }
-
-            }, err => {
-              console.log('err: ', err);
-              resultSet = {
-                "msg": err.message,
-                "statusCode": 500
-              }
-            });
-        }
-        //return resultSet;
-        resultSet = { "msg": " Upload Image Deleted Successfully!!", "statusCode": 200 }
-
-      }
-        , err => {
-          console.log('err: ', err);
-          resultSet = {
-            "msg": err.message,
-            "statusCode": 500
-          }
-        });
-
-      return resultSet;
-
-
-    } catch (Error) {
-      resultSet = {
-        "msg": Error,
-        "statusCode": 400
-      }
-      return resultSet;
-    }
-
-  } else {
-    resultSet = {
-      "msg": "No direct Access Allowed",
-      "statusCode": 500
-    }
-    return resultSet;
-  }
-
-  return resultSet;
-}
 
 
 
@@ -338,6 +268,5 @@ module.exports = {
   saveUserRatings,
   updateUserRatings,
   deleteUserRatings,
-  deleteUserRatingsImg
 };
 // module.exports = router;
