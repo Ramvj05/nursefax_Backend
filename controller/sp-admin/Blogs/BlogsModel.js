@@ -24,13 +24,14 @@ async function getBlogsData(request) {
         } else {
           Where._id = new mongoose.Types.ObjectId(request.params.id);
         }
-
+        var count=BlogsViewTable.find({blog_id:Where}).count()
+        console.log(count,"oooooooooooooooooooo");
         var data = await BlogsTable.aggregate([
           {
-            $match:{
+            $match: {
               Where,
-              is_delete:false
-            } 
+              is_delete: false
+            }
           },
           {
             $lookup: {
@@ -70,9 +71,9 @@ async function getBlogsData(request) {
 
         var data = await BlogsTable.aggregate([
           {
-              $match: {
-                is_delete:false
-              } 
+            $match: {
+              is_delete: false
+            }
 
           },
           {
@@ -129,7 +130,7 @@ async function getBlogsData(request) {
   }
 }
 async function getUserBlogsData(request) {
-  //console.log("request",request);
+  // console.log("request",request);
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
@@ -143,13 +144,13 @@ async function getUserBlogsData(request) {
         } else {
           Where._id = new mongoose.Types.ObjectId(request.params.id);
         }
-
+        
         var data = await BlogsTable.aggregate([
           {
-            $match:{
+            $match: {
               Where,
-              is_delete:false
-            } 
+              is_delete: false
+            }
           },
           {
             $lookup: {
@@ -189,9 +190,9 @@ async function getUserBlogsData(request) {
 
         var data = await BlogsTable.aggregate([
           {
-              $match: {
-                is_delete:false
-              } 
+            $match: {
+              is_delete: false
+            }
 
           },
           {
@@ -324,39 +325,47 @@ async function saveViewBlogs(request) {
     try {
 
       let ins = {};
-      const existUsername = await BlogsViewTable.findOne({ user_ip: req.body.user_ip});
-if(!existUsername){
-  const ip = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress
-  const location = geoip.lookup(ip)
-  console.log("location",location)
-  // const Country = location.country
-  ins.blog_id = request.body.blog_id;
-  ins.user_ip = request.body.user_ip;
-  ins.Status = request.body.Status;
-  ins.createDt = new Date();
-  ins.modifyDt = new Date();
-  // console.log("ins", ins);
+      const ip = request.headers['x-forwarded-for']?.split(',').shift() || request.socket?.remoteAddress
+        const location = geoip.lookup(ip)
+        console.log("location", location)
+      const existUsername = await BlogsViewTable.findOne({ user_ip: ip });
+      console.log(existUsername == "","existUsername")
+      if (existUsername == "") {
+        
+        // const Country = location.country
+        ins.blog_id = request.body.blog_id;
+        ins.user_ip = ip;
+        // ins.Status = request.body.Status;
+        ins.createDt = new Date();
+        ins.modifyDt = new Date();
+        // console.log("ins", ins);
 
-  let insert = new BlogsViewTable(ins);
-  await insert.save().then(
-    (response) => {
-      resultSet = {
-        msg: "Blog View Created successfully",
-        statusCode: 200,
-      };
-    },
-    (err) => {
-      // console.log("err: ", err);
-      resultSet = {
-        msg: err.message,
-        statusCode: 500,
-      };
-    }
-  );
+        let insert = new BlogsViewTable(ins);
+        await insert.save().then(
+          (response) => {
+            resultSet = {
+              msg: "Blog View Created successfully",
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            // console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
 
-  return resultSet;
-}
-     
+        return resultSet;
+      }else{
+        resultSet = {
+          msg: "Already Viewed",
+          statusCode: 401,
+        };
+        return resultSet;
+      }
+
     } catch (Error) {
       console.log(Error, "ooooooooooooooo");
       resultSet = {
@@ -680,7 +689,7 @@ module.exports = {
   saveBlogs,
   updateBlogs,
   deleteBlogs,
-  deleteBlogsImg, getUserBlogsData,saveViewBlogs
+  deleteBlogsImg, getUserBlogsData, saveViewBlogs
 };
 
 // module.exports = router;
