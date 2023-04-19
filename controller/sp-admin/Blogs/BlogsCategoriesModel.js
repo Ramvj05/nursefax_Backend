@@ -16,8 +16,27 @@ async function getBlogCategoriesData(request) {
       await mongoose.connect(uri);
       const category = {};
       if (typeof request.params.id !== "undefined") {
-        await BlogsCategoriesTable.findById({_id: request.params.id, is_delete: false}).then(
+        // Where = {};
+        const _id = new mongoose.Types.ObjectId(request.params.id);
+        var data = await BlogsCategoriesTable.aggregate([
+          {
+            $match: {
+              _id,
+              is_delete:false
+            }
+          },
+          {
+            $lookup: {
+              from: "blogs",
+              localField: "_id",
+              foreignField: "PrimaryCategory",
+              as: "blogdetails"
+            }
+          },
+
+        ]).then(
           (response) => {
+            console.log("response: " + response)
             resultSet = {
               msg: "success",
               list: response,
@@ -25,13 +44,16 @@ async function getBlogCategoriesData(request) {
             };
           },
           (err) => {
+            console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
             };
           }
         );
-      } else {
+      }
+      
+      else {
         var Resultsdata = [];
         const datastest = await BlogsCategoriesTable.find({ is_delete: false });
         if (datastest.length > 0) {

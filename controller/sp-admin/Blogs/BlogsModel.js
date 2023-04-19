@@ -339,8 +339,9 @@ async function saveViewBlogs(request) {
       const ip = request.headers['x-forwarded-for']?.split(',').shift() || request.socket?.remoteAddress
         const location = geoip.lookup(ip)
         console.log("location", location)
-      const existUsername = await BlogsViewTable.findOne({ user_ip: ip });
-      if (existUsername == "") {
+      const existUsername = await BlogsViewTable.findOne({ user_ip: ip,blog_id:request.body.blog_id });
+      console.log(typeof existUsername,"existUsername");
+      if (existUsername == null) {
         
         // const Country = location.country
         ins.blog_id = request.body.blog_id;
