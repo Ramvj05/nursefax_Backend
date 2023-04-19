@@ -5,6 +5,8 @@ const authorizer = require("../../middleware/authorizer");
 const Auth = require("../../Helpers/Auth")
 
 const getBlogsData = async (req, res, next) => {
+    console.log("ddddddddddddddd");
+
 if (Auth.Verify(req, res, next)) {
     var data = await BlogsModel.getBlogsData(req);
     // console.log(data)

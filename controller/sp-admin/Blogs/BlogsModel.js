@@ -66,7 +66,6 @@ async function getBlogsData(request) {
             }
 
           },
-                  //  { $addFields: { "custom_field":counts } },
 
           {
             $lookup: {
