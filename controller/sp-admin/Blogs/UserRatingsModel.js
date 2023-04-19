@@ -15,17 +15,20 @@ async function getUserRatingsData(request) {
       await mongoose.connect(uri);
       const category = {};
       if (typeof request.params.id !== "undefined") {
-        Where = {};
-
-        if (typeof request.params.id !== 'undefined') {
-          Where._id = new mongoose.Types.ObjectId(request.params.id);
-        } else {
-          Where._id = new mongoose.Types.ObjectId(request.params.id);
-        }
+        // Where = {};
+        const blog_id = new mongoose.Types.ObjectId(request.params.id);
+        // if (typeof request.params.id !== 'undefined') {
+        //   var ids = new mongoose.Types.ObjectId(request.params.id);
+        // } else {
+        //   var ids = new mongoose.Types.ObjectId(request.params.id);
+        // }
 
         var data = await UserRatingsTable.aggregate([
           {
-            $match: Where
+            $match: {
+              blog_id,
+              is_delete:false
+            }
           },
           {
             $lookup: {
@@ -56,9 +59,12 @@ async function getUserRatingsData(request) {
       } else {
 
         var data = await UserRatingsTable.aggregate([
-          // {
-          //     $match:Where
-          // },
+          {
+              $match:{
+                is_delete:false
+              }
+              
+          },
           {
             $lookup: {
               from: "users",
@@ -175,7 +181,7 @@ async function updateUserRatings(request) {
       upd.modifyDt = new Date();
 
       await UserRatingsTable.updateMany({
-        _id: request.params.id
+        _id: request.params.id,is_delete:false
       }, {
         $set: upd
       })

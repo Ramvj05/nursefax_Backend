@@ -3,8 +3,8 @@ const router = express.Router();
 const Controller = require("../../BlogController/BlogController");;
 
 router.get("/", Controller.getBlogsData);
-router.get("/userviewblog/", Controller.getUserBlogsData);
 router.get("/:id", Controller.getBlogsData);
+router.get("/userviewblog/", Controller.getUserBlogsData);
 router.post("/", Controller.saveBlogs);
 router.post("/view/", Controller.saveViewBlogs);
 router.put("/:id", Controller.updateBlogs);

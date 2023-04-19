@@ -17,22 +17,18 @@ async function getBlogsData(request) {
       await mongoose.connect(uri);
       const category = {};
       if (typeof request.params.id !== "undefined") {
-        Where = {};
+        // Where = {};
+        const _id = new mongoose.Types.ObjectId(request.params.id);
 
-        if (typeof request.params.id !== 'undefined') {
-          Where._id = new mongoose.Types.ObjectId(request.params.id);
-        } else {
-          Where._id = new mongoose.Types.ObjectId(request.params.id);
-        }
-        var count=BlogsViewTable.find({blog_id:Where}).count()
-        console.log(count,"oooooooooooooooooooo");
+        var counts= await BlogsViewTable.find({blog_id:_id}).count()
         var data = await BlogsTable.aggregate([
           {
             $match: {
-              Where,
+              _id,
               is_delete: false
             }
           },
+          { $addFields: { "count":counts } },
           {
             $lookup: {
               from: "users",
@@ -52,23 +48,17 @@ async function getBlogsData(request) {
 
         ]).then(
           (response) => {
-            console.log("response: " + response)
-            resultSet = {
-              msg: "success",
-              list: response,
-              statusCode: 200,
-            };
+            console.log("response: " ,response)
+            resultSet = {msg: "success",list: response,statusCode: 200,};
           },
           (err) => {
             console.log("err: ", err);
-            resultSet = {
-              msg: err.message,
-              statusCode: 500,
-            };
+            resultSet = {msg: err.message,statusCode: 500,};
           }
         );
       } else {
 
+        // var counts= await BlogsViewTable.find({blog_id:_id}).count()
         var data = await BlogsTable.aggregate([
           {
             $match: {
@@ -76,6 +66,8 @@ async function getBlogsData(request) {
             }
 
           },
+                  //  { $addFields: { "custom_field":counts } },
+
           {
             $lookup: {
               from: "users",
@@ -92,6 +84,19 @@ async function getBlogsData(request) {
               as: "categordetails"
             }
           },
+          {
+            $lookup: {
+              from: "blogsviews",
+              localField: "_id",
+              foreignField: "blog_id",
+              as: "views"
+            }
+          },
+          {$project: { count: { $size:"$views" },"categordetails":1,"userdetails":1,BlogTitle:1,_id:1,TopStories:1,HomePage:1
+        ,BlogURL:1,OtherCategory:1,ShortDescription:1,BlogImage:1,Description:1,YouTubeURL:1,MetaTitle:1,MetaDescription:1,
+        MetaKeyword:1,createDt:1,modifyDt:1,Status:1}},
+          {$unwind:"$userdetails"},
+          {$unwind:"$categordetails"}
 
         ]).then(
           (response) => {
@@ -130,28 +135,26 @@ async function getBlogsData(request) {
   }
 }
 async function getUserBlogsData(request) {
-  // console.log("request",request);
+  //console.log("request",request);
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
       const category = {};
       if (typeof request.params.id !== "undefined") {
-        Where = {};
+        // Where = {};
+        const _id = new mongoose.Types.ObjectId(request.params.id);
 
-        if (typeof request.params.id !== 'undefined') {
-          Where._id = new mongoose.Types.ObjectId(request.params.id);
-        } else {
-          Where._id = new mongoose.Types.ObjectId(request.params.id);
-        }
-        
+        var counts= await BlogsViewTable.find({blog_id:_id}).count()
+        console.log(counts,"oooooooooooooooo");
         var data = await BlogsTable.aggregate([
           {
             $match: {
-              Where,
+              _id,
               is_delete: false
             }
           },
+          { $addFields: { "custom_field":counts } },
           {
             $lookup: {
               from: "users",
@@ -171,23 +174,17 @@ async function getUserBlogsData(request) {
 
         ]).then(
           (response) => {
-            console.log("response: " + response)
-            resultSet = {
-              msg: "success",
-              list: response,
-              statusCode: 200,
-            };
+            console.log("response: " ,response)
+            resultSet = {msg: "success",list: response,statusCode: 200,};
           },
           (err) => {
             console.log("err: ", err);
-            resultSet = {
-              msg: err.message,
-              statusCode: 500,
-            };
+            resultSet = {msg: err.message,statusCode: 500,};
           }
         );
       } else {
 
+        // var counts= await BlogsViewTable.find({blog_id:_id}).count()
         var data = await BlogsTable.aggregate([
           {
             $match: {
@@ -195,6 +192,8 @@ async function getUserBlogsData(request) {
             }
 
           },
+                  //  { $addFields: { "custom_field":counts } },
+
           {
             $lookup: {
               from: "users",
@@ -211,6 +210,19 @@ async function getUserBlogsData(request) {
               as: "categordetails"
             }
           },
+          {
+            $lookup: {
+              from: "blogsviews",
+              localField: "_id",
+              foreignField: "blog_id",
+              as: "views"
+            }
+          },
+          {$project: { count: { $size:"$views" },"categordetails":1,"userdetails":1,BlogTitle:1,_id:1,TopStories:1,HomePage:1
+        ,BlogURL:1,OtherCategory:1,ShortDescription:1,BlogImage:1,Description:1,YouTubeURL:1,MetaTitle:1,MetaDescription:1,
+        MetaKeyword:1,createDt:1,modifyDt:1,Status:1}},
+          {$unwind:"$userdetails"},
+          {$unwind:"$categordetails"}
 
         ]).then(
           (response) => {
@@ -329,7 +341,6 @@ async function saveViewBlogs(request) {
         const location = geoip.lookup(ip)
         console.log("location", location)
       const existUsername = await BlogsViewTable.findOne({ user_ip: ip });
-      console.log(existUsername == "","existUsername")
       if (existUsername == "") {
         
         // const Country = location.country
