@@ -4,6 +4,7 @@ const Controller = require("../../BlogController/BlogCategoriesController");;
 
 router.get("/", Controller.getBlogCategoriesData);
 router.get("/:id", Controller.getBlogCategoriesData);
+router.get("/catedetails/:id", Controller.getBlogCategoriesAllData);
 router.post("/", Controller.saveBlogCategories);
 router.put("/:id", Controller.updateBlogCategories);
 router.put("/delete/:id", Controller.deleteBlogCategories);

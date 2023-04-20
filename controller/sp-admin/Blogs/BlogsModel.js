@@ -142,26 +142,26 @@ async function getUserBlogsData(request) {
       const category = {};
       if (typeof request.params.id !== "undefined") {
         // Where = {};
-        const _id = new mongoose.Types.ObjectId(request.params.id);
+        const user_id = new mongoose.Types.ObjectId(request.params.id);
 
-        var counts= await BlogsViewTable.find({blog_id:_id}).count()
-        console.log(counts,"oooooooooooooooo");
+        // var counts= await BlogsViewTable.find({blog_id:_id}).count()
+        // console.log(counts,"oooooooooooooooo");
         var data = await BlogsTable.aggregate([
           {
             $match: {
-              _id,
+              user_id,
               is_delete: false
             }
           },
-          { $addFields: { "custom_field":counts } },
-          {
-            $lookup: {
-              from: "users",
-              localField: "user_id",
-              foreignField: "_id",
-              as: "userdetails"
-            }
-          },
+          // { $addFields: { "custom_field":counts } },
+          // {
+          //   $lookup: {
+          //     from: "users",
+          //     localField: "user_id",
+          //     foreignField: "_id",
+          //     as: "userdetails"
+          //   }
+          // },
           {
             $lookup: {
               from: "blogcategories",

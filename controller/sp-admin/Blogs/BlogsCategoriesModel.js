@@ -17,6 +17,7 @@ async function getBlogCategoriesData(request) {
       const category = {};
       if (typeof request.params.id !== "undefined") {
         // Where = {};
+        console.log(request.params.id,"request.params.id")
         const _id = new mongoose.Types.ObjectId(request.params.id);
         var data = await BlogsCategoriesTable.aggregate([
           {
@@ -33,10 +34,9 @@ async function getBlogCategoriesData(request) {
               as: "blogdetails"
             }
           },
-
-        ]).then(
+            ]).then(
           (response) => {
-            console.log("response: " + response)
+            console.log("response: " , response)
             resultSet = {
               msg: "success",
               list: response,
@@ -94,6 +94,117 @@ async function getBlogCategoriesData(request) {
       }
       return resultSet;
     } catch (Error) {
+      resultSet = {
+        msg: Error,
+        statusCode: 500,
+      };
+      return resultSet;
+    }
+  } else {
+    resultSet = {
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
+    return resultSet;
+  }
+}
+async function getBlogCategoriesAllData(request) {
+  // console.log(request,"request")
+  if (request != "" && typeof request !== "undefined") {
+    try {
+      const uri = dbUri;
+      await mongoose.connect(uri);
+      const category = {};
+      if(typeof request.params.id !== "undefined"){
+        console.log(request.params.id,"request.params.cate_id")
+        const _id = new mongoose.Types.ObjectId(request.params.id);
+        var data = await BlogsCategoriesTable.aggregate([
+          {
+            $match: {
+              _id,
+              is_delete:false
+            }
+          },
+          {
+            $lookup: {
+              from: "blogs",
+              localField: "_id",
+              foreignField: "PrimaryCategory",
+              as: "blogdetails"
+            }
+          },
+          {$unwind:"$blogdetails"},
+          {
+            $lookup: {
+              from: "users",
+              localField: "blogdetails.user_id",
+              foreignField: "_id",
+              as: "userdetails"
+            }
+          },
+
+
+        ]).then(
+          (response) => {
+            console.log("response: " , response)
+            resultSet = {
+              msg: "success",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
+      }
+      
+      else {
+        var Resultsdata = [];
+        const datastest = await BlogsCategoriesTable.find({ is_delete: false });
+        if (datastest.length > 0) {
+          for (let category of datastest) {
+            var countblogssss = await BlogsTable.find({ is_delete: false });
+            var datasseeww = countblogssss.filter(
+              (irere) =>
+                irere.PrimaryCategory.toString() == ObjectId(category._id).toString()
+            );
+
+
+            Resultsdata.push({
+              _id: category._id,
+              CategoryName: category.CategoryName,
+              FeaturedCategory: category.FeaturedCategory,
+              CateURL: category.CateURL,
+              SEOTitle: category.SEOTitle,
+              SEODescription: category.SEODescription,
+              Description: category.Description,
+              BlogCategoryImage: category.BlogCategoryImage,
+              SEOKeyword: category.SEOKeyword,
+              Status: category.Status,
+              createDt: category.createDt,
+              modifyDt: category.modifyDt,
+              is_active: category.is_active,
+              count: datasseeww.length,
+              is_delete: category.is_delete,
+            });
+          }
+        }
+        const Resultdata = Resultsdata.sort((a, b) => b.count - a.count);
+
+        resultSet = {
+          msg: "success",
+          list: Resultdata,
+          statusCode: 200,
+        };
+      }
+      return resultSet;
+    } catch (Error) {
+      console.log(Error,"iiiiiiiiiiiiii")
       resultSet = {
         msg: Error,
         statusCode: 500,
@@ -453,7 +564,7 @@ module.exports = {
   saveBlogCategories,
   updateBlogCategories,
   deleteBlogCategories,
-  deleteBlogCategoriesImg,
+  deleteBlogCategoriesImg,getBlogCategoriesAllData
 };
 
 // module.exports = router;

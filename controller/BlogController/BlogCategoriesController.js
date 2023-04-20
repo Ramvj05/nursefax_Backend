@@ -5,10 +5,21 @@ const authorizer = require("../../middleware/authorizer");
 
 const getBlogCategoriesData = async (req, res, next) => {
     
-    if ( Auth.Verify(req, res,next)) {
+    // if ( Auth.Verify(req, res,next)) {
         var data = await BlogCategoriesModel.getBlogCategoriesData(req);
         res.status(data.statusCode).send(data);
-    }
+    // }
+    // else {
+    //     res.status(400).send({ msg: "invalid sessions" });
+    // }
+
+}
+const getBlogCategoriesAllData = async (req, res, next) => {
+    
+    // if ( Auth.Verify(req, res,next)) {
+        var data = await BlogCategoriesModel.getBlogCategoriesAllData(req);
+        res.status(data.statusCode).send(data);
+    // }
     // else {
     //     res.status(400).send({ msg: "invalid sessions" });
     // }
@@ -65,5 +76,5 @@ module.exports = {
     saveBlogCategories,
     updateBlogCategories,
     deleteBlogCategories,
-      deleteBlogCategoriesImg
+      deleteBlogCategoriesImg,getBlogCategoriesAllData
 };

@@ -21,7 +21,7 @@ const UserRatingsSchema = Schema({
     },
     Status: {
         type: Boolean,
-        default: false,
+        default: true,
       },
     createDt:{
         type: Date,
