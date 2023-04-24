@@ -12,8 +12,9 @@ const trainingModel = require("../../../model/training.model");
 router.get("/get-licences/:id", authorizer, async (req, res) => {
   const { user } = req.headers.user;
   const { id } = req.params;
+  // console.log(user,"usersssss")
   await mongooes.connect(dbUri);
-  if (user.roles.includes("ADMIN")) {
+  if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
     let query = {
       _id: id,
       deleted: false,

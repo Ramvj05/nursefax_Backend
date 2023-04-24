@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-// const download = require("./download");
+const download = require("./download");
 const generate = require("./generate");
-// const getByUser = require("./getByUser");
+const getByUser = require("./getByUser");
 
-// router.use("/invoice", download);
+router.use("/invoice", download);
 router.use("/invoice", generate);
-// router.use("/invoice", getByUser);
+router.use("/invoice", getByUser);
 
 module.exports = router;

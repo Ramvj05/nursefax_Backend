@@ -16,6 +16,21 @@ const courseAdminSchema = new Schema({
   mobile: {
     type: String,
   },
+  location: {
+    type: String,
+  },
+  education: {
+    type: String,
+  },
+  speciality: {
+    type: String,
+  },
+  areaofinterest: {
+    type: String,
+  },
+  uploadcv: {
+    type: String,
+  },
   about: {
     type: String,
   },
@@ -57,9 +72,7 @@ const courseAdminSchema = new Schema({
     min: 0,
     max: 2,
   },
-  location: {
-    type: String,
-  },
+  
   country: {
     type: String,
   },

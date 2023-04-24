@@ -23,7 +23,7 @@ const Blog = require("./controller/common/Blog/Blogs");
 const UserRatings = require("./controller/common/Blog/UserRatings");
 const BlogCategories = require("./controller/common/Blog/BlogCategories");
 const invoice = require("./controller/common/invoice");
-// const updateUserPassword = require("./controller/updateUserPassword");
+const updateUserPassword = require("./controller/updateUserPassword");
 
 const bodyParser = require("body-parser");
 
@@ -60,8 +60,8 @@ app.use("/api", community);
 app.use("/api/blog", Blog);
 app.use("/api/userratings", UserRatings);
 app.use("/api/blogcategories", BlogCategories);
-// app.use("/api", invoice);
-// app.use("/api", updateUserPassword);
+app.use("/api", invoice);
+app.use("/api", updateUserPassword);
 
 
 var PORT=4000 || process.env.PORT
