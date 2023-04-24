@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.post("/create", authorizer, async function (req, res) {
   const { decodeToken, user } = req.headers.user;
+  console.log(req.headers.user,"req.headers.userreq.headers.userreq.headers.userreq.headers.userreq.headers.userreq.headers.user")
   let body = new CourseClass(req.body).getModel();
   console.log(body);
   const uri = dbUri;
@@ -38,7 +39,7 @@ router.post("/create", authorizer, async function (req, res) {
   console.log(body);
 
   try {
-    if (user.roles.includes("ADMIN")) {
+    if (user.roles.includes("CREATE_COURSE") || user.roles.includes("ADMIN")) {
       const newCourseModel = new CourseModel(body);
       const data = await newCourseModel.save();
       res

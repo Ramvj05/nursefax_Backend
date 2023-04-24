@@ -7,6 +7,7 @@ router.get("/roles", authorizer, async function (req, res) {
   try {
     const roles = [
       "CREATE_EXAM",
+      "CREATE_COURSE",
       "MODIFY_EXAM",
       "LIST_EXAM",
       "CREATE_COURSE",

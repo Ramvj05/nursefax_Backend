@@ -18,17 +18,17 @@ router.post("/signup", async function (req, res) {
   // console.log(body);
   const ip = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress
   const location = geoip.lookup(ip)
-  const Country = location.country
+  // const Country = location.country
   body = {
     ...body,
     createdBy:
       body.userType === 2 ? "student" : body.userType === 1 ? "user" : "admin",
     roles:
       body.userType === 0 ? ["ADMIN"] : body.userType === 1 ? [] : ["STUDENT"],
-    UserCountry:
-      body.userType === 2 ? Country: ""
+    // UserCountry:
+    //   body.userType === 2 ? Country: ""
     };
-    console.log(body,"ppppppppppppppppppp");
+    // console.log(body,"ppppppppppppppppppp");
 
   let salt = generateSalt();
   const hashPassword = generateHash(body.password, salt);

@@ -9,16 +9,10 @@ const authorizer = async (req, res, next) => {
   await mongooes.connect(dbUri);
 
   const { authorization } = req.headers;
-  // console.log
-  // console.log("Authorization", authorization);
-  // console.log("reqreqreqreqreqreqreq", req.headers);
   if (authorization) {
-    const token = authorization.split(' ')[0]
-    // console.log('bharath',authorization.split(' '))
-    // console.log("token", token);
+    const token = authorization.split(' ')[0] != "Bearer" ? authorization.split(' ')[0]:authorization.split(' ')[1]
     const decodeToken = jwt.verify(token,process.env.KEY_FOR_AUTH);
     let data = null;
-    // console.log("decodeToken", decodeToken);
     if (decodeToken?.userType === 1) {
       data = await CourseAdminModel.findOne({
         deleted: false,
@@ -36,7 +30,6 @@ const authorizer = async (req, res, next) => {
       );
     }
 
-    // console.log(data);
     if (data) {
       req.headers.user = { decodeToken, authorization, user: data };
       next();

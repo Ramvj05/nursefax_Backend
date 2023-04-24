@@ -22,7 +22,7 @@ const jobs = require("./controller/sp-admin/job");
 const Blog = require("./controller/common/Blog/Blogs");
 const UserRatings = require("./controller/common/Blog/UserRatings");
 const BlogCategories = require("./controller/common/Blog/BlogCategories");
-// const invoice = require("./controller/common/invoice");
+const invoice = require("./controller/common/invoice");
 // const updateUserPassword = require("./controller/updateUserPassword");
 
 const bodyParser = require("body-parser");

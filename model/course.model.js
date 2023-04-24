@@ -50,6 +50,9 @@ const courseSchema = new Schema({
   faqs: {
     type: String,
   },
+  description: {
+    type: String,
+  },
   price: {
     type: Number,
   },
@@ -87,7 +90,7 @@ const courseSchema = new Schema({
   live: {
     type: Boolean,
     required: true,
-    default: true,
+    default: false,
   },
   deleted: {
     type: Boolean,
@@ -95,7 +98,7 @@ const courseSchema = new Schema({
   },
   active: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   createdOn: {
     type: Date,

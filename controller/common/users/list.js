@@ -8,6 +8,7 @@ const pagination = require("../../../utils/pagination");
 const router = express.Router();
 
 router.get("/list", async function (req, res) {
+	console.log("dddddddddddddddddddddddddddddddddd",req.headers.user)
 	const { user } = req.headers.user;
 
 	const uri = dbUri;
