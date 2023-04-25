@@ -8,9 +8,7 @@ const router = express.Router();
 
 router.post("/create", authorizer, async function (req, res) {
   const { decodeToken, user } = req.headers.user;
-  console.log(req.headers.user,"req.headers.userreq.headers.userreq.headers.userreq.headers.userreq.headers.userreq.headers.user")
   let body = new CourseClass(req.body).getModel();
-  console.log(body);
   const uri = dbUri;
   await mongoose.connect(uri);
 
@@ -35,8 +33,6 @@ router.post("/create", authorizer, async function (req, res) {
     courseId,
     createdBy: decodeToken.id,
   };
-
-  console.log(body);
 
   try {
     if (user.roles.includes("CREATE_COURSE") || user.roles.includes("ADMIN")) {
@@ -71,7 +67,6 @@ router.post("/create", authorizer, async function (req, res) {
         });
     }
   } catch (err) {
-    console.log(err);
     res
       .header({
         "Content-Type": "application/json",

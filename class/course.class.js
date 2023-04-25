@@ -20,6 +20,7 @@ class Course {
     headings,
     name,
     live,
+    description,
     active,
   }) {
     this.name = name;
@@ -41,6 +42,7 @@ class Course {
     this.priority = priority;
     this.seo = seo;
     this.live = live;
+    this.description = description;
     this.active = active;
     this.headings = headings;
   }
