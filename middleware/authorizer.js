@@ -10,6 +10,7 @@ const authorizer = async (req, res, next) => {
 
   const { authorization } = req.headers;
   if (authorization) {
+    console.log(authorization,"authorization")
     const token = authorization.split(' ')[0] != "Bearer" ? authorization.split(' ')[0]:authorization.split(' ')[1]
     const decodeToken = jwt.verify(token,process.env.KEY_FOR_AUTH);
     let data = null;

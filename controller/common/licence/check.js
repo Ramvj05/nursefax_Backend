@@ -9,7 +9,6 @@ router.post("/check", async (req, res) => {
   try {
     await mongoo.connect(dbUri);
     const { courseId, userId } = req.body;
-console.log(req.body,"req.bodyreq.bodyreq.bodyreq.bodyreq.bodyreq.body");
     // if (user.roles.includes("STUDENT")) {
     const isExamPresent = await LicenceModel.findOne({
       $or: [
