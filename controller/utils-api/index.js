@@ -7,6 +7,7 @@ const roles = require("./roles");
 const otp = require("./otp");
 const paytm = require("./paytm");
 const email = require("./email");
+const stripepay = require("./stripepay");
 const verifyLink = require("./verify_link");
 
 router.use("/utils", uploadMedia);
@@ -15,6 +16,7 @@ router.use("/utils", deleteMedia);
 router.use("/utils", otp);
 router.use("/utils", paytm);
 router.use("/utils", verifyLink);
+router.use("/utils", stripepay);
 router.use("/utils", email);
 
 module.exports = router;

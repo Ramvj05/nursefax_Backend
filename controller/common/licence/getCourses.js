@@ -14,6 +14,7 @@ router.get("/get-courses", authorizer, async (req, res) => {
   await mongooes.connect(dbUri);
   try {
     const { user } = req.headers.user;
+    console.log(user.userType,"user.userType")
     if (user.userType === 3) {
       let testResult = await TestModel.find({ deleted: false });
       let courseResult = await courseModel.find({ deleted: false });

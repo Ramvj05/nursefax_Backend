@@ -15,7 +15,6 @@ router.post("/signup", async function (req, res) {
   const uri = dbUri;
   await mongoose.connect(uri);
 
-  // console.log(body);
   const ip = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress
   const location = geoip.lookup(ip)
   // const Country = location.country

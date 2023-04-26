@@ -14,7 +14,7 @@ router.get("/get-licences/:id", authorizer, async (req, res) => {
   const { id } = req.params;
   // console.log(user,"usersssss")
   await mongooes.connect(dbUri);
-  if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
+  if (user.roles.includes("ADMIN")) {
     let query = {
       _id: id,
       deleted: false,
@@ -80,7 +80,74 @@ router.get("/get-licences/:id", authorizer, async (req, res) => {
           error: err,
         });
     }
-  } else {
+  } else if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
+    let query = {
+      courseId: id,
+      deleted: false,
+    };
+    try {
+      const licenceData = await LicenseModel.findOne(query);
+      const userData = await userModel.findOne(
+        {
+          _id: licenceData?.studentId,
+          userType: 2,
+          deleted: false,
+        },
+        { password: 0 }
+      );
+      let courseData;
+      if (licenceData?.type === "COURSE") {
+        courseData = await courseModel.findOne({
+          _id: licenceData?.courseId,
+          deleted: false,
+        });
+      } else if (licenceData?.type === "TRAINING") {
+        courseData = await trainingModel.findOne({
+          _id: licenceData?.courseId,
+          deleted: false,
+        });
+      } else {
+        const findingId = licenceData?.courseId
+          ? licenceData?.courseId
+          : licenceData?.examId;
+        courseData = await examModel.findOne({
+          _id: findingId,
+          deleted: false,
+        });
+      }
+      res
+        .header({
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        })
+        .status(200)
+        .send({
+          statsCode: 200,
+          data: {
+            ...licenceData?._doc,
+            user: userData,
+            course: courseData,
+          },
+          message: "Data Found",
+          error: null,
+        });
+    } catch (err) {
+      console.log(err);
+      res
+        .header({
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        })
+        .status(500)
+        .send({
+          statsCode: 500,
+          data: null,
+          message: "Somthing went wrong",
+          error: err,
+        });
+    }
+  } 
+  else {
     res
       .header({
         "Content-Type": "application/json",

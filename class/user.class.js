@@ -11,6 +11,7 @@ class UserClass {
     country,
     countryCode,
     mcc,
+    billingAddress,
     UserCountry,
     userType,
     active,
@@ -26,6 +27,7 @@ class UserClass {
     this.country = country;
     this.countryCode = countryCode;
     this.UserCountry = UserCountry;
+    this.billingAddress = billingAddress;
     this.mcc = mcc;
     this.userType = userType;
     this.active = active;

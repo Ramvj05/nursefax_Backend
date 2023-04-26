@@ -59,6 +59,9 @@ const userSchema = new Schema({
   picture: {
     type: String,
   },
+  billingAddress: {
+    type: String,
+  },
   userType: {
     type: Number,
     required: true,
