@@ -14,52 +14,7 @@ const endpoints = require("../../endpoints/endpoints");
 const router = express.Router();
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
 
-router.post("/create-checkout-session", cors(), async (req, res) => {
-  let { amounts, id } = req.body
-  let amount = Math.round(amounts * 100)
-  // console.log(amount,"ooooooooooooooooo");
 
-	try {
-		const payment = await stripe.paymentIntents.create({
-			amount,
-			currency: "INR",
-			description: "NurseFax Course Enrolment",
-			payment_method: id,
-			confirm: true
-		})
-		// console.log("Paymentsssssssssssssss", payment.status)
-    if (payment.status === "succeeded") {
-      // Payment successful!
-       res.json({
-        status: 200,
-        success: true,
-        message: "Payment Successful!",
-        id: paymentIntent.id
-      });
-    } else
-    if (payment.status === "requires_action") {
-       res.json({ 
-        status: 200,
-        success: true,
-        message: "3D secure required",
-        actionRequired: true,
-        clientSecret: payment.client_secret
-      });
-    } else{
-        res.json({
-			message: "Payment successful",
-			success: true
-		})
-    }
-		
-	} catch (error) {
-		console.log("Error", error)
-		res.json({
-			message: "Payment failed",
-			success: false
-		})
-	} 
-})
 router.get("/check/:id", async (req, res) => {
   try {
     const id = req.params.id;

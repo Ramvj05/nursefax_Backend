@@ -11,6 +11,7 @@ const transactionsModel = require("../../../model/transactions.model");
 const User = require("../../../model/user.model");
 
 router.post("/buy", async (req, res) => {
+  
   try {
     await mongoo.connect(dbUri);
     const user = await User.findOne(

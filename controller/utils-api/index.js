@@ -8,6 +8,7 @@ const otp = require("./otp");
 const paytm = require("./paytm");
 const email = require("./email");
 const stripepay = require("./stripepay");
+const stripepaycheck = require("./stripepaycheck");
 const verifyLink = require("./verify_link");
 
 router.use("/utils", uploadMedia);
@@ -17,6 +18,7 @@ router.use("/utils", otp);
 router.use("/utils", paytm);
 router.use("/utils", verifyLink);
 router.use("/utils", stripepay);
+router.use("/utils", stripepaycheck);
 router.use("/utils", email);
 
 module.exports = router;
