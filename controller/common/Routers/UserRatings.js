@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Controller = require("../../BlogController/UserRatingController");;
+const Controller = require("../../Controllers/UserRatingController");;
 
 router.get("/", Controller.getUserRatingsData);
 router.get("/:id", Controller.getUserRatingsData);

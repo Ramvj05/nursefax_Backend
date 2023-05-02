@@ -10,7 +10,6 @@ const router = express.Router();
 router.put("/update/:id", authorizer, async function (req, res) {
   const { user } = req.headers.user;
   const { id } = req.params;
-
   const uri = dbUri;
   await mongoose.connect(uri);
 
@@ -94,5 +93,7 @@ router.put("/update/:id", authorizer, async function (req, res) {
       });
   }
 });
+
+
 
 module.exports = router;

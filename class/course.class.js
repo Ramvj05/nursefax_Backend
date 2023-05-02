@@ -20,6 +20,7 @@ class Course {
     headings,
     name,
     live,
+    wishlist,
     description,
     active,
   }) {
@@ -41,6 +42,7 @@ class Course {
     this.featured = featured;
     this.priority = priority;
     this.seo = seo;
+    this.wishlist = wishlist;
     this.live = live;
     this.description = description;
     this.active = active;

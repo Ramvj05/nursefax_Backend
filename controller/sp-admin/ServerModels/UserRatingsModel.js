@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const CategoryClass = require("../../../class/admin/course_category.class");
 const { dbUri } = require("../../../endpoints/endpoints");
 const authorizer = require("../../../middleware/authorizer");
-const UserRatingsTable = require("../../../model/BlogsModel/TableUserRatings");
+const UserRatingsTable = require("../../../model/TableCollections/TableUserRatings");
 const router = express.Router();
 const FileHandler = require('../../../Helpers/FileHandler');
 
@@ -15,14 +15,7 @@ async function getUserRatingsData(request) {
       await mongoose.connect(uri);
       const category = {};
       if (typeof request.params.id !== "undefined") {
-        // Where = {};
         const blog_id = new mongoose.Types.ObjectId(request.params.id);
-        // if (typeof request.params.id !== 'undefined') {
-        //   var ids = new mongoose.Types.ObjectId(request.params.id);
-        // } else {
-        //   var ids = new mongoose.Types.ObjectId(request.params.id);
-        // }
-
         var data = await UserRatingsTable.aggregate([
           {
             $match: {

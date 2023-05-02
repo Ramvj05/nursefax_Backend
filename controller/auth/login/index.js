@@ -6,12 +6,12 @@ const User = require("../../../model/user.model");
 const LoginClass = require("../../../class/login.class");
 const CourseAdminModel = require("../../../model/courseAdmin.model");
 const decrypy = require("../../../utils/decrypt");
+const EmployerModel = require("../../../model/TableCollections/TableEmployers");
 
 const router = express.Router();
 
 router.post("/login", async function (req, res) {
   try {
-    console.log("kkkkkkkkkkk",req.body)
     let body = new LoginClass(req.body).getModel();
     const uri = dbUri;
     await mongoose.connect(uri);
@@ -34,7 +34,24 @@ router.post("/login", async function (req, res) {
           },
         ],
       });
-    } else {
+    } else if (userType === 4) {
+      user = await EmployerModel.findOne({
+        deleted: false,
+        $or: [
+          {
+            email: userName,
+          },
+          {
+            mobile: userName,
+          },
+        ],
+        $and: [
+          {
+            userType,
+          },
+        ],
+      });
+    }{
       user = await User.findOne({
         deleted: false,
         $or: [

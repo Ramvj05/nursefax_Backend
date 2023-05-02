@@ -7,6 +7,7 @@ const User = require("../../../model/user.model");
 const { generateHash, generateSalt } = require("../../../utils/encrypt");
 const decrypy = require("../../../utils/decrypt");
 const courseAdminModel = require("../../../model/courseAdmin.model");
+const EmployerModel = require("../../../model/TableCollections/TableEmployers");
 const router = express.Router();
 var geoip = require('geoip-lite');
 
@@ -21,13 +22,13 @@ router.post("/signup", async function (req, res) {
   body = {
     ...body,
     createdBy:
-      body.userType === 2 ? "student" : body.userType === 1 ? "user" : "admin",
+      body.userType === 2 ? "student" : body.userType === 1 ? "user" : body.userType === 0 ? "admin" : "employer",
     roles:
-      body.userType === 0 ? ["ADMIN"] : body.userType === 1 ? [] : ["STUDENT"],
+    body.userType === 2 ? ["STUDENT"] : body.userType === 1 ? [] : body.userType === 0 ? ["ADMIN"] : ["EMPLOYER"],
+      // body.userType === 0 ? ["ADMIN"] : body.userType === 1 ? [] : ["STUDENT"],
     // UserCountry:
     //   body.userType === 2 ? Country: ""
     };
-    // console.log(body,"ppppppppppppppppppp");
 
   let salt = generateSalt();
   const hashPassword = generateHash(body.password, salt);
@@ -49,7 +50,16 @@ router.post("/signup", async function (req, res) {
       },
       { password: 0 }
     );
-  } else {
+  } else if (body.userType === 4) {
+    newUser = new EmployerModel(body);
+    presentUser = await EmployerModel.findOne(
+      {
+        mobile: newUser.mobile,
+      },
+      { password: 0 }
+    );
+  }
+  else{
     newUser = new User(body);
     presentUser = false;
     // presentUser = await User.findOne(

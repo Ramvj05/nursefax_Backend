@@ -19,9 +19,12 @@ const learningList = require("./controller/common/learning-list");
 const list = require("./controller/common/list");
 const community = require("./controller/common/community");
 const jobs = require("./controller/sp-admin/job");
-const Blog = require("./controller/common/Blog/Blogs");
-const UserRatings = require("./controller/common/Blog/UserRatings");
-const BlogCategories = require("./controller/common/Blog/BlogCategories");
+const Blog = require("./controller/common/Routers/Blogs");
+const UserRatings = require("./controller/common/Routers/UserRatings");
+const BlogCategories = require("./controller/common/Routers/BlogCategories");
+const wishlist = require("./controller/common/Routers/wishlist");
+const employer = require("./controller/common/Routers/employer");
+const postjob = require("./controller/common/Routers/PostJob");
 const invoice = require("./controller/common/invoice");
 const updateUserPassword = require("./controller/updateUserPassword");
 
@@ -57,11 +60,14 @@ app.use("/api", learningList);
 app.use("/api", jobs);
 app.use("/api", list);
 app.use("/api", community);
+app.use("/api", invoice);
+app.use("/api", updateUserPassword);
 app.use("/api/blog", Blog);
 app.use("/api/userratings", UserRatings);
 app.use("/api/blogcategories", BlogCategories);
-app.use("/api", invoice);
-app.use("/api", updateUserPassword);
+app.use("/api/wishlist", wishlist);
+app.use("/api/employer", employer);
+app.use("/api/postjob", postjob);
 
 
 var PORT=4000 || process.env.PORT

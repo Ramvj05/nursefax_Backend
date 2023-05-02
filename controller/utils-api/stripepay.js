@@ -62,6 +62,7 @@ router.post("/create-checkout-session", cors(), async (req, res) => {
 })
 router.get("/check/:id", async (req, res) => {
   try {
+    console.log("11111111111111111111");
     const id = req.params.id;
     const paymentIntent = await stripe.paymentIntents.retrieve(id);
     if (paymentIntent?.status === "succeeded") {

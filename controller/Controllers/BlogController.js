@@ -1,6 +1,5 @@
-const BlogsModel = require("../sp-admin/Blogs/BlogsModel")
+const BlogsModel = require("../sp-admin/ServerModels/BlogsModel")
 var jwt = require('jsonwebtoken');
-// var Auth = require("../Helpers/Auth")
 const authorizer = require("../../middleware/authorizer");
 const Auth = require("../../Helpers/Auth")
 

@@ -87,6 +87,10 @@ const courseSchema = new Schema({
     type: String,
     default: "COURSE",
   },
+  wishlist: {
+    type: Boolean,
+    default: false,
+  },
   live: {
     type: Boolean,
     required: true,

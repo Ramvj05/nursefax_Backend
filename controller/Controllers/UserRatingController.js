@@ -1,6 +1,5 @@
-const UserRatingsModel = require("../sp-admin/Blogs/UserRatingsModel")
+const UserRatingsModel = require("../sp-admin/ServerModels/UserRatingsModel")
 var jwt = require('jsonwebtoken');
-// var Auth = require("../Helpers/Auth")
 const authorizer = require("../../middleware/authorizer");
 const Auth = require("../../Helpers/Auth")
 
