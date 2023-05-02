@@ -3,10 +3,10 @@ const mongoose = require("mongoose");
 const CategoryClass = require("../../../class/admin/course_category.class");
 const { dbUri } = require("../../../endpoints/endpoints");
 const authorizer = require("../../../middleware/authorizer");
-const PostJobTable = require("../../../model/TableCollections/TablePostJob");
+const EmployersTable = require("../../../model/TableCollections/TableEmployers");
 const FileHandler = require("../../../Helpers/FileHandler");
 
-async function getPostJobData(request) {
+async function getEmployersData(request) {
   //console.log("request",request);
   if (request != "" && typeof request !== "undefined") {
     try {
@@ -14,7 +14,7 @@ async function getPostJobData(request) {
       await mongoose.connect(uri);
       if (typeof request.params.id !== "undefined") {
         const _id = new mongoose.Types.ObjectId(request.params.id);
-        var data = await PostJobTable.aggregate([
+        var data = await EmployersTable.aggregate([
           {
             $match: {
               _id,
@@ -50,8 +50,8 @@ async function getPostJobData(request) {
         );
       } else {
 
-        // var counts= await PostJobViewTable.find({blog_id:_id}).count()
-        var data = await PostJobTable.aggregate([
+        // var counts= await EmployersViewTable.find({blog_id:_id}).count()
+        var data = await EmployersTable.aggregate([
           {
             $match: {
               is_delete: false
@@ -77,7 +77,7 @@ async function getPostJobData(request) {
           //   },
           //   {
           //     $lookup: {
-          //       from: "PostJobviews",
+          //       from: "Employersviews",
           //       localField: "_id",
           //       foreignField: "blog_id",
           //       as: "views"
@@ -126,47 +126,42 @@ async function getPostJobData(request) {
   }
 }
 
-async function savePostJob(request) {
+async function saveEmployers(request) {
   if (request != "" && typeof request !== "undefined") {
     const uri = dbUri;
     await mongoose.connect(uri);
     try {
       // console.log(request.files, "request.files");
-
+      const data = request.body
       let ins = {};
       if (request.files) {
-        uploadpath = __dirname + "/../../../uploads/Blogs/";
-        // console.log(uploadpath, "uploadpath");
-        ins.BlogImage = await FileHandler.uploadAvatar(
-          request,
-          uploadpath,
-          "BlogImage"
-        );
+        uploadpath = __dirname + "/../../../uploads/Employers/";
+        ins.picture = await FileHandler.uploadAvatar(request,uploadpath,"picture");
       }
-      ins.BlogTitle = request.body.BlogTitle;
-      ins.TopStories = request.body.TopStories;
-      ins.BlogURL = request.body.BlogURL;
-      ins.PrimaryCategory = request.body.PrimaryCategory;
-      ins.OtherCategory = request.body.OtherCategory;
-      ins.ShortDescription = request.body.ShortDescription;
-      ins.HomePage = request.body.HomePage;
-      ins.Description = request.body.Description;
-      ins.YouTubeURL = request.body.YouTubeURL;
-      ins.MetaTitle = request.body.MetaTitle;
-      ins.user_id = request.body.user_id;
-      ins.user_type = request.body.user_type;
-      ins.MetaDescription = request.body.MetaDescription;
-      ins.MetaKeyword = request.body.MetaKeyword;
-      ins.Status = request.body.Status;
-      ins.createDt = new Date();
-      ins.modifyDt = new Date();
-      // console.log("ins", ins);
+      ins.fullName = data.fullName;
+      ins.userName = data.userName;
+      ins.mobile = data.mobile;
+      ins.hospitalname = data.hospitalname;
+      ins.bussinessname = data.bussinessname;
+      ins.companycantact = data.companycantact;
+      ins.website = data.website;
+      ins.gstregno = data.gstregno;
+      ins.about = data.about;
+      ins.companyemail = data.companyemail;
+      ins.email = data.email;
+      ins.password = data.password;
+      ins.country = data.country;
+      ins.Address = data.Address;
+      ins.userType = data.userType;
+      ins.createdBy = data.createdBy;
+      ins.createdOn = new Date();
+      ins.modifyOn = new Date();
 
-      let insert = new PostJobTable(ins);
+      let insert = new EmployersTable(ins);
       await insert.save().then(
         (response) => {
           resultSet = {
-            msg: "Blog Created successfully",
+            msg: "Employer Created successfully",
             statusCode: 200,
           };
         },
@@ -197,40 +192,36 @@ async function savePostJob(request) {
   }
 }
 
-async function updatePostJob(request) {
+async function updateEmployers(request) {
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
+      const data = request.body
       let upd = {};
       if (request.files) {
-        // console.log("coming 1");
-        uploadpath = __dirname + "/../../../uploads/Blogs/";
-        upd.BlogImage = await FileHandler.uploadAvatar(
-          request,
-          uploadpath,
-          "BlogImage"
-        );
+        uploadpath = __dirname + "/../../../uploads/Employers/";
+        ins.picture = await FileHandler.uploadAvatar(request,uploadpath,"picture");
       }
-      upd.BlogTitle = request.body.BlogTitle;
-      upd.TopStories = request.body.TopStories;
-      upd.BlogURL = request.body.BlogURL;
-      upd.PrimaryCategory = request.body.PrimaryCategory;
-      upd.OtherCategory = request.body.OtherCategory;
-      upd.ShortDescription = request.body.ShortDescription;
-      upd.HomePage = request.body.HomePage;
-      upd.Description = request.body.Description;
-      upd.YouTubeURL = request.body.YouTubeURL;
-      upd.MetaTitle = request.body.MetaTitle;
-      upd.MetaDescription = request.body.MetaDescription;
-      upd.user_id = request.body.user_id;
-      upd.user_type = request.body.user_type;
-      upd.MetaKeyword = request.body.MetaKeyword;
-      upd.Status = request.body.Status;
-      upd.modifyDt = new Date();
-      // console.log("upd", upd);
+      upd.fullName = data.fullName;
+      upd.userName = data.userName;
+      upd.mobile = data.mobile;
+      upd.hospitalname = data.hospitalname;
+      upd.bussinessname = data.bussinessname;
+      upd.companycantact = data.companycantact;
+      upd.website = data.website;
+      upd.gstregno = data.gstregno;
+      upd.about = data.about;
+      upd.companyemail = data.companyemail;
+      upd.email = data.email;
+      upd.password = data.password;
+      upd.country = data.country;
+      upd.Address = data.Address;
+      upd.userType = data.userType;
+      upd.createdBy = data.createdBy;
+      upd.modifyOn = new Date();
 
-      await PostJobTable.updateMany(
+      await EmployersTable.updateMany(
         {
           _id: request.params.id,
         },
@@ -270,13 +261,13 @@ async function updatePostJob(request) {
     return resultSet;
   }
 }
-async function deletePostJob(request) {
+async function deleteEmployers(request) {
   // console.log(request.body);
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
-      await PostJobTable.updateMany(
+      await EmployersTable.updateMany(
         {
           _id: request.params.id,
         },
@@ -317,24 +308,24 @@ async function deletePostJob(request) {
     return resultSet;
   }
 }
-async function deletePostJobImg(request) {
+async function deleteEmployersImg(request) {
   // console.log(request.body);
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
-      await PostJobTable.findById({
+      await EmployersTable.findById({
         _id: request.params.id,
       }).then(
         (response) => {
-          if (request.body.imageName == "BlogImage") {
-            uploadpath = __dirname + "/../../../uploads/PostJob/";
-            var filePath = uploadpath + response.BlogImage;
+          if (request.body.imageName == "picture") {
+            uploadpath = __dirname + "/../../../uploads/Employers/";
+            var filePath = uploadpath + response.picture;
             var unl = fs.unlinkSync(filePath);
             let upd = {};
-            upd.BlogImage = "";
+            upd.picture = "";
             let id = mongoose.Types.ObjectId(request.params.id);
-            PostJobTable.updateMany(
+            EmployersTable.updateMany(
               {
                 _id: id,
               },
@@ -342,7 +333,7 @@ async function deletePostJobImg(request) {
                 $set: upd,
               }
             )
-              // PostJobTable.updateMany({_id:request.params.id},
+              // EmployersTable.updateMany({_id:request.params.id},
               //     {
               //         $set : upd
               //         }
@@ -367,14 +358,14 @@ async function deletePostJobImg(request) {
               );
 
             //return resultSet;
-          } else if (request.body.imageName == "CategoryIcon") {
-            uploadpath = __dirname + "/../../../uploads/PostJob/";
+          } else if (request.body.imageName == "picture") {
+            uploadpath = __dirname + "/../../../uploads/Employers/";
             var filePath = uploadpath + response.CategoryIcon;
             fs.unlinkSync(filePath);
             let upd = {};
-            upd.CategoryIcon = "";
+            upd.picture = "";
 
-            PostJobTable.updateMany(
+            EmployersTable.updateMany(
               {
                 _id: request.params.id,
               },
@@ -382,7 +373,7 @@ async function deletePostJobImg(request) {
                 $set: upd,
               }
             )
-              // PostJobTable.updateMany({_id:request.params.id},
+              // EmployersTable.updateMany({_id:request.params.id},
               //     {
               //         $set : upd
               //         }
@@ -440,11 +431,11 @@ async function deletePostJobImg(request) {
 
 
 module.exports = {
-  getPostJobData,
-  savePostJob,
-  updatePostJob,
-  deletePostJob,
-  deletePostJobImg
+  getEmployersData,
+  saveEmployers,
+  updateEmployers,
+  deleteEmployers,
+  deleteEmployersImg
 };
 
 // module.exports = router;

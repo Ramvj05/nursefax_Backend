@@ -134,39 +134,34 @@ async function savePostJob(request) {
       // console.log(request.files, "request.files");
 
       let ins = {};
-      if (request.files) {
-        uploadpath = __dirname + "/../../../uploads/Blogs/";
-        // console.log(uploadpath, "uploadpath");
-        ins.BlogImage = await FileHandler.uploadAvatar(
-          request,
-          uploadpath,
-          "BlogImage"
-        );
-      }
-      ins.BlogTitle = request.body.BlogTitle;
-      ins.TopStories = request.body.TopStories;
-      ins.BlogURL = request.body.BlogURL;
-      ins.PrimaryCategory = request.body.PrimaryCategory;
-      ins.OtherCategory = request.body.OtherCategory;
-      ins.ShortDescription = request.body.ShortDescription;
-      ins.HomePage = request.body.HomePage;
-      ins.Description = request.body.Description;
-      ins.YouTubeURL = request.body.YouTubeURL;
-      ins.MetaTitle = request.body.MetaTitle;
-      ins.user_id = request.body.user_id;
-      ins.user_type = request.body.user_type;
-      ins.MetaDescription = request.body.MetaDescription;
-      ins.MetaKeyword = request.body.MetaKeyword;
-      ins.Status = request.body.Status;
-      ins.createDt = new Date();
-      ins.modifyDt = new Date();
+      // if (request.files) {
+      //   uploadpath = __dirname + "/../../../uploads/Blogs/";
+      //   // console.log(uploadpath, "uploadpath");
+      //   ins.BlogImage = await FileHandler.uploadAvatar(
+      //     request,
+      //     uploadpath,
+      //     "BlogImage"
+      //   );
+      // }
+      ins.posttitle = request.body.posttitle;
+      ins.description = request.body.description;
+      ins.postlable = request.body.postlable;
+      ins.employername = request.body.employername;
+      ins.employmenttype = request.body.employmenttype;
+      ins.hospitalname = request.body.hospitalname;
+      ins.country = request.body.country;
+      ins.city = request.body.city;
+      ins.email = request.body.email;
+      ins.createdBy = request.body.createdBy;
+      ins.createdOn = new Date();
+      ins.modifyOn = new Date();
       // console.log("ins", ins);
 
       let insert = new PostJobTable(ins);
       await insert.save().then(
         (response) => {
           resultSet = {
-            msg: "Blog Created successfully",
+            msg: "Job Created successfully",
             statusCode: 200,
           };
         },
@@ -203,32 +198,27 @@ async function updatePostJob(request) {
       const uri = dbUri;
       await mongoose.connect(uri);
       let upd = {};
-      if (request.files) {
-        // console.log("coming 1");
-        uploadpath = __dirname + "/../../../uploads/Blogs/";
-        upd.BlogImage = await FileHandler.uploadAvatar(
-          request,
-          uploadpath,
-          "BlogImage"
-        );
-      }
-      upd.BlogTitle = request.body.BlogTitle;
-      upd.TopStories = request.body.TopStories;
-      upd.BlogURL = request.body.BlogURL;
-      upd.PrimaryCategory = request.body.PrimaryCategory;
-      upd.OtherCategory = request.body.OtherCategory;
-      upd.ShortDescription = request.body.ShortDescription;
-      upd.HomePage = request.body.HomePage;
-      upd.Description = request.body.Description;
-      upd.YouTubeURL = request.body.YouTubeURL;
-      upd.MetaTitle = request.body.MetaTitle;
-      upd.MetaDescription = request.body.MetaDescription;
-      upd.user_id = request.body.user_id;
-      upd.user_type = request.body.user_type;
-      upd.MetaKeyword = request.body.MetaKeyword;
-      upd.Status = request.body.Status;
-      upd.modifyDt = new Date();
-      // console.log("upd", upd);
+      // if (request.files) {
+      //   // console.log("coming 1");
+      //   uploadpath = __dirname + "/../../../uploads/Blogs/";
+      //   upd.BlogImage = await FileHandler.uploadAvatar(
+      //     request,
+      //     uploadpath,
+      //     "BlogImage"
+      //   );
+      // }
+      upd.posttitle = request.body.posttitle;
+      upd.description = request.body.description;
+      upd.postlable = request.body.postlable;
+      upd.employername = request.body.employername;
+      upd.employmenttype = request.body.employmenttype;
+      upd.hospitalname = request.body.hospitalname;
+      upd.country = request.body.country;
+      upd.city = request.body.city;
+      upd.email = request.body.email;
+      upd.createdBy = request.body.createdBy;
+      upd.createdOn = new Date();
+      upd.modifyOn = new Date();
 
       await PostJobTable.updateMany(
         {
@@ -240,7 +230,7 @@ async function updatePostJob(request) {
       ).then(
         (response) => {
           resultSet = {
-            msg: "Blog updated successfully",
+            msg: "Job updated successfully",
             statusCode: 200,
           };
         },
@@ -317,125 +307,7 @@ async function deletePostJob(request) {
     return resultSet;
   }
 }
-async function deletePostJobImg(request) {
-  // console.log(request.body);
-  if (request != "" && typeof request !== "undefined") {
-    try {
-      const uri = dbUri;
-      await mongoose.connect(uri);
-      await PostJobTable.findById({
-        _id: request.params.id,
-      }).then(
-        (response) => {
-          if (request.body.imageName == "BlogImage") {
-            uploadpath = __dirname + "/../../../uploads/PostJob/";
-            var filePath = uploadpath + response.BlogImage;
-            var unl = fs.unlinkSync(filePath);
-            let upd = {};
-            upd.BlogImage = "";
-            let id = mongoose.Types.ObjectId(request.params.id);
-            PostJobTable.updateMany(
-              {
-                _id: id,
-              },
-              {
-                $set: upd,
-              }
-            )
-              // PostJobTable.updateMany({_id:request.params.id},
-              //     {
-              //         $set : upd
-              //         }
-              //      )
 
-              .then(
-                (response1) => {
-                  resultSet = {
-                    msg: "Upload Image Deleted Successfully!!",
-                    statusCode: 200,
-                  };
-                  return resultSet;
-                },
-                (err) => {
-                  // console.log("err: ", err);
-                  resultSet = {
-                    msg: err.message,
-                    statusCode: 500,
-                  };
-                  return resultSet;
-                }
-              );
-
-            //return resultSet;
-          } else if (request.body.imageName == "CategoryIcon") {
-            uploadpath = __dirname + "/../../../uploads/PostJob/";
-            var filePath = uploadpath + response.CategoryIcon;
-            fs.unlinkSync(filePath);
-            let upd = {};
-            upd.CategoryIcon = "";
-
-            PostJobTable.updateMany(
-              {
-                _id: request.params.id,
-              },
-              {
-                $set: upd,
-              }
-            )
-              // PostJobTable.updateMany({_id:request.params.id},
-              //     {
-              //         $set : upd
-              //         }
-              //      )
-              .then(
-                (response1) => {
-                  resultSet = {
-                    msg: "CategoryIcon Deleted Successfully!!",
-                    statusCode: 200,
-                  };
-                },
-                (err) => {
-                  // console.log("err: ", err);
-                  resultSet = {
-                    msg: err.message,
-                    statusCode: 500,
-                  };
-                }
-              );
-          }
-          //return resultSet;
-          resultSet = {
-            msg: " Upload Image Deleted Successfully!!",
-            statusCode: 200,
-          };
-        },
-        (err) => {
-          // console.log("err: ", err);
-          resultSet = {
-            msg: err.message,
-            statusCode: 500,
-          };
-        }
-      );
-
-      return resultSet;
-    } catch (Error) {
-      resultSet = {
-        msg: Error,
-        statusCode: 400,
-      };
-      return resultSet;
-    }
-  } else {
-    resultSet = {
-      msg: "No direct Access Allowed",
-      statusCode: 500,
-    };
-    return resultSet;
-  }
-
-  return resultSet;
-}
 
 
 
@@ -444,7 +316,7 @@ module.exports = {
   savePostJob,
   updatePostJob,
   deletePostJob,
-  deletePostJobImg
+  
 };
 
 // module.exports = router;

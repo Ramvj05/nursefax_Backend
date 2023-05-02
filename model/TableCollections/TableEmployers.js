@@ -7,12 +7,6 @@ const employerSchema = new Schema({
     type: String,
     // required: true,
   },
-  firstName: {
-    type: String,
-  },
-  lastName: {
-    type: String,
-  },
   userName: {
     type: String,
   },
@@ -75,9 +69,6 @@ const employerSchema = new Schema({
   token: {
     type: String,
   },
-  UserCountry: {
-    type: String
-  },
   picture: {
     type: String,
   },
@@ -90,12 +81,10 @@ const employerSchema = new Schema({
     min: 0,
     max: 3,
   },
-  roles: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
+  roles: {
+    type: String,
+    required: true,
+  },
   active: {
     type: Boolean,
     default: true,
@@ -106,7 +95,11 @@ const employerSchema = new Schema({
   },
   createdOn: {
     type: Date,
-    default: Date.now,
+    // default: Date.now,
+  },
+  modifyOn: {
+    type: Date,
+    // default: Date.now,
   },
   createdBy: {
     type: String,

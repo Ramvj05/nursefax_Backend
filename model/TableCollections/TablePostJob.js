@@ -40,18 +40,6 @@ const PostJobSchema = new Schema({
     },
   },
   
-  userType: {
-    type: Number,
-    required: true,
-    min: 0,
-    max: 3,
-  },
-  roles: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
   active: {
     type: Boolean,
     default: true,
@@ -62,10 +50,14 @@ const PostJobSchema = new Schema({
   },
   createdOn: {
     type: Date,
-    default: Date.now,
+    // default: Date.now,
   },
   createdBy: {
     type: String,
+  },
+  modifyOn: {
+    type: Date,
+    // default: Date.now,
   },
 });
 

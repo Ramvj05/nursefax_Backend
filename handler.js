@@ -20,13 +20,13 @@ const list = require("./controller/common/list");
 const community = require("./controller/common/community");
 const jobs = require("./controller/sp-admin/job");
 const Blog = require("./controller/common/Routers/Blogs");
+const invoice = require("./controller/common/invoice");
+const updateUserPassword = require("./controller/updateUserPassword");
 const UserRatings = require("./controller/common/Routers/UserRatings");
 const BlogCategories = require("./controller/common/Routers/BlogCategories");
 const wishlist = require("./controller/common/Routers/wishlist");
 const employer = require("./controller/common/Routers/employer");
 const postjob = require("./controller/common/Routers/PostJob");
-const invoice = require("./controller/common/invoice");
-const updateUserPassword = require("./controller/updateUserPassword");
 
 const bodyParser = require("body-parser");
 
