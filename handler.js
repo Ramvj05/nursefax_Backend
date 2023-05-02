@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const upload = require('express-fileupload')
 const app = express();
-const path=require('path');
+const path = require('path');
 const auth = require("./controller/auth");
 const spAdmin = require("./controller/sp-admin");
 const courseAdmin = require("./controller/course-admin");
@@ -37,14 +37,10 @@ app.use(express.json());
 app.use(upload());
 app.use(express.static('../Backend/uploads/'))
 
-app.use(
-  "/api/Banner_image/",
-  express.static(path.join(__dirname + `/uploads/Blogs/`))
-);
-app.use(
-  "/api/Banners_image/",
-  express.static(path.join(__dirname + `/uploads/BlogsCategories/`))
-);
+app.use("/api/Banner_image/",express.static(path.join(__dirname + `/uploads/Blogs/`)));
+app.use("/api/Banners_image/",express.static(path.join(__dirname + `/uploads/BlogsCategories/`)));
+app.use("/api/EmpPost/", express.static(path.join(__dirname + `/uploads/Employers/`)));
+
 app.use("/api", auth);
 app.use("/api", spAdmin);
 app.use("/api", courseAdmin);
@@ -70,7 +66,7 @@ app.use("/api/employer", employer);
 app.use("/api/postjob", postjob);
 
 
-var PORT=4000 || process.env.PORT
+var PORT = 4000 || process.env.PORT
 app.listen(PORT, () => {
   console.log(`Example app listening at localhost:${PORT}`)
 })

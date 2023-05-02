@@ -421,14 +421,61 @@ async function updateJobStatus(req, res) {
       });
   }
 }
+async function saveApplyJob(request) {
+  if (request != "" && typeof request !== "undefined") {
+    const uri = dbUri;
+    const { decodeToken, user } = req.headers.user;
 
+    await mongoose.connect(uri);
+    try {
+      ins.job_id = request.body.job_id;
+      ins.createdBy = decodeToken.id;
+      ins.createdOn = new Date();
+      ins.modifyOn = new Date();
+      // console.log("ins", ins);
+
+      let insert = new PostJobTable(ins);
+      await insert.save().then(
+        (response) => {
+          resultSet = {
+            msg: "Job Applied successfully",
+            statusCode: 200,
+          };
+        },
+        (err) => {
+          // console.log("err: ", err);
+          resultSet = {
+            msg: err.message,
+            statusCode: 500,
+          };
+        }
+      );
+
+      return resultSet;
+    } catch (Error) {
+      console.log(Error, "ooooooooooooooo");
+      resultSet = {
+        msg: Error,
+        statusCode: 400,
+      };
+      return resultSet;
+    }
+  } else {
+    resultSet = {
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
+    return resultSet;
+  }
+}
 
 module.exports = {
   getPostJobData,
   savePostJob,
   updatePostJob,
   deletePostJob,
-  updateJobStatus
+  updateJobStatus,
+  saveApplyJob
 
 };
 
