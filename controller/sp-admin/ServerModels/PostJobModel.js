@@ -129,30 +129,54 @@ async function getPostJobData(request) {
 async function savePostJob(request) {
   if (request != "" && typeof request !== "undefined") {
     const uri = dbUri;
+    const { decodeToken, user } = req.headers.user;
+
     await mongoose.connect(uri);
     try {
       // console.log(request.files, "request.files");
-
+      const count = await PostJobTable.find({}).count();
+      console.log(count);
+      let postId;
+      if (count < 10) {
+        postId = `JOBS-00000${count + 1}`;
+      } else if (count < 100) {
+        postId = `JOBS-0000${count + 1}`;
+      } else if (count < 1000) {
+        postId = `JOBS-000${count + 1}`;
+      } else if (count < 10000) {
+        postId = `JOBS-00${count + 1}`;
+      } else if (count < 100000) {
+        postId = `JOBS-0${count + 1}`;
+      } else {
+        postId = `JOBS-${count + 1}`;
+      }
       let ins = {};
-      // if (request.files) {
-      //   uploadpath = __dirname + "/../../../uploads/Blogs/";
-      //   // console.log(uploadpath, "uploadpath");
-      //   ins.BlogImage = await FileHandler.uploadAvatar(
-      //     request,
-      //     uploadpath,
-      //     "BlogImage"
-      //   );
-      // }
+      if (request.files) {
+        uploadpath = __dirname + "/../../../uploads/Employers/";
+        // console.log(uploadpath, "uploadpath");
+        ins.uploadfile = await FileHandler.uploadAvatar(
+          request,
+          uploadpath,
+          "uploadfile"
+        );
+      }
       ins.posttitle = request.body.posttitle;
+      ins.posttitle = postId;
       ins.description = request.body.description;
+      ins.smalldescription = request.body.smalldescription;
       ins.postlable = request.body.postlable;
+      ins.minsalary = request.body.minsalary;
+      ins.maxsalary = request.body.maxsalary;
       ins.employername = request.body.employername;
       ins.employmenttype = request.body.employmenttype;
       ins.hospitalname = request.body.hospitalname;
       ins.country = request.body.country;
       ins.city = request.body.city;
+      ins.state = request.body.state;
       ins.email = request.body.email;
-      ins.createdBy = request.body.createdBy;
+      ins.keyword = request.body.keyword;
+      ins.expiredOn = request.body.expiredOn;
+      ins.createdBy = decodeToken.id;
       ins.createdOn = new Date();
       ins.modifyOn = new Date();
       // console.log("ins", ins);
@@ -195,28 +219,36 @@ async function savePostJob(request) {
 async function updatePostJob(request) {
   if (request != "" && typeof request !== "undefined") {
     try {
+      const { decodeToken, user } = req.headers.user;
+
       const uri = dbUri;
       await mongoose.connect(uri);
       let upd = {};
-      // if (request.files) {
-      //   // console.log("coming 1");
-      //   uploadpath = __dirname + "/../../../uploads/Blogs/";
-      //   upd.BlogImage = await FileHandler.uploadAvatar(
-      //     request,
-      //     uploadpath,
-      //     "BlogImage"
-      //   );
-      // }
+      if (request.files) {
+        // console.log("coming 1");
+        uploadpath = __dirname + "/../../../uploads/Employers/";
+        upd.uploadfile = await FileHandler.uploadAvatar(
+          request,
+          uploadpath,
+          "uploadfile"
+        );
+      }
       upd.posttitle = request.body.posttitle;
       upd.description = request.body.description;
+      upd.smalldescription = request.body.smalldescription;
+      upd.minsalary = request.body.minsalary;
+      upd.maxsalary = request.body.maxsalary;
       upd.postlable = request.body.postlable;
       upd.employername = request.body.employername;
       upd.employmenttype = request.body.employmenttype;
       upd.hospitalname = request.body.hospitalname;
       upd.country = request.body.country;
+      upd.keyword = request.body.keyword;
       upd.city = request.body.city;
+      upd.state = request.body.state;
       upd.email = request.body.email;
-      upd.createdBy = request.body.createdBy;
+      upd.expiredOn = request.body.expiredOn;
+      upd.createdBy = decodeToken.id;
       upd.createdOn = new Date();
       upd.modifyOn = new Date();
 
@@ -308,7 +340,87 @@ async function deletePostJob(request) {
   }
 }
 
+async function updateJobStatus(req, res) {
+  const { user } = req.headers.user;
+  const { id } = req.params;
+  const data = req.body
+  const uri = dbUri;
+  await mongoose.connect(uri);
 
+  try {
+    console.log(id);
+    if (user.roles.includes("ADMIN")) {
+      const updatedstatus = await PostJobTable.findOneAndUpdate(
+        {
+          is_delete: false,
+          _id: id,
+        },
+        { $set: { active: data.Status } },
+
+      );
+
+      console.log(updatedstatus);
+      if (updatedstatus) {
+        res
+          .header({
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          })
+          .status(200)
+          .send({
+            // data: updatedstatus,
+            message: "Job Approved Successfully",
+            statsCode: 200,
+            error: null,
+          });
+      } else {
+        res
+          .header({
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          })
+          .status(404)
+          .send({
+            data: null,
+            message: "No test Found",
+            statsCode: 404,
+            error: {
+              message: "No data present",
+            },
+          });
+      }
+    } else {
+      res
+        .header({
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        })
+        .status(401)
+        .send({
+          data: null,
+          message: "You do not have access to modify course",
+          statsCode: 401,
+          error: {
+            message: "Access denied",
+          },
+        });
+    }
+  } catch (err) {
+    console.log(err);
+    res
+      .header({
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      })
+      .status(500)
+      .send({
+        statsCode: 500,
+        data: null,
+        message: "Somthing went wrong",
+        error: err,
+      });
+  }
+}
 
 
 module.exports = {
@@ -316,7 +428,8 @@ module.exports = {
   savePostJob,
   updatePostJob,
   deletePostJob,
-  
+  updateJobStatus
+
 };
 
 // module.exports = router;

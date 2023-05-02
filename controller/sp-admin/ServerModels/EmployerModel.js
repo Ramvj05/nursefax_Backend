@@ -131,12 +131,14 @@ async function saveEmployers(request) {
     const uri = dbUri;
     await mongoose.connect(uri);
     try {
+      const { decodeToken, user } = req.headers.user;
+
       // console.log(request.files, "request.files");
       const data = request.body
       let ins = {};
       if (request.files) {
         uploadpath = __dirname + "/../../../uploads/Employers/";
-        ins.picture = await FileHandler.uploadAvatar(request,uploadpath,"picture");
+        ins.picture = await FileHandler.uploadAvatar(request, uploadpath, "picture");
       }
       ins.fullName = data.fullName;
       ins.userName = data.userName;
@@ -153,7 +155,7 @@ async function saveEmployers(request) {
       ins.country = data.country;
       ins.Address = data.Address;
       ins.userType = data.userType;
-      ins.createdBy = data.createdBy;
+      ins.createdBy = decodeToken.id;
       ins.createdOn = new Date();
       ins.modifyOn = new Date();
 
@@ -195,13 +197,15 @@ async function saveEmployers(request) {
 async function updateEmployers(request) {
   if (request != "" && typeof request !== "undefined") {
     try {
+      const { decodeToken, user } = req.headers.user;
+
       const uri = dbUri;
       await mongoose.connect(uri);
       const data = request.body
       let upd = {};
       if (request.files) {
         uploadpath = __dirname + "/../../../uploads/Employers/";
-        ins.picture = await FileHandler.uploadAvatar(request,uploadpath,"picture");
+        ins.picture = await FileHandler.uploadAvatar(request, uploadpath, "picture");
       }
       upd.fullName = data.fullName;
       upd.userName = data.userName;
@@ -218,7 +222,7 @@ async function updateEmployers(request) {
       upd.country = data.country;
       upd.Address = data.Address;
       upd.userType = data.userType;
-      upd.createdBy = data.createdBy;
+      upd.createdBy = decodeToken.id;
       upd.modifyOn = new Date();
 
       await EmployersTable.updateMany(
@@ -427,7 +431,87 @@ async function deleteEmployersImg(request) {
 
   return resultSet;
 }
+async function updateEmployerStatus(req, res) {
+  const { user } = req.headers.user;
+  const { id } = req.params;
+  const data = req.body
+  const uri = dbUri;
+  await mongoose.connect(uri);
 
+  try {
+    console.log(id);
+    if (user.roles.includes("ADMIN")) {
+      const updatedstatus = await EmployersTable.findOneAndUpdate(
+        {
+          is_delete: false,
+          _id: id,
+        },
+        { $set: { active: data.Status } },
+
+      );
+
+      console.log(updatedstatus);
+      if (updatedstatus) {
+        res
+          .header({
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          })
+          .status(200)
+          .send({
+            // data: updatedstatus,
+            message: "Employer Approved Successfully",
+            statsCode: 200,
+            error: null,
+          });
+      } else {
+        res
+          .header({
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          })
+          .status(404)
+          .send({
+            data: null,
+            message: "No test Found",
+            statsCode: 404,
+            error: {
+              message: "No data present",
+            },
+          });
+      }
+    } else {
+      res
+        .header({
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        })
+        .status(401)
+        .send({
+          data: null,
+          message: "You do not have access to modify course",
+          statsCode: 401,
+          error: {
+            message: "Access denied",
+          },
+        });
+    }
+  } catch (err) {
+    console.log(err);
+    res
+      .header({
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      })
+      .status(500)
+      .send({
+        statsCode: 500,
+        data: null,
+        message: "Somthing went wrong",
+        error: err,
+      });
+  }
+}
 
 
 module.exports = {
@@ -435,7 +519,8 @@ module.exports = {
   saveEmployers,
   updateEmployers,
   deleteEmployers,
-  deleteEmployersImg
+  deleteEmployersImg,
+  updateEmployerStatus
 };
 
 // module.exports = router;

@@ -7,7 +7,20 @@ const PostJobSchema = new Schema({
     type: String,
     // required: true,
   },
+  postId: {
+    type: String,
+    // required: true,
+  },
   description: {
+    type: String,
+  },
+  smalldescription: {
+    type: String,
+  },
+  minsalary: {
+    type: String,
+  },
+  maxsalary: {
     type: String,
   },
   postlable: {
@@ -22,13 +35,19 @@ const PostJobSchema = new Schema({
   hospitalname: {
     type: String,
   },
+  keyword: {
+    type: Array,
+  },
   country: {
     type: String,
   },
   city: {
     type: String,
   },
-  
+  state: {
+    type: String,
+  },
+
   email: {
     type: String,
     required: true,
@@ -39,7 +58,7 @@ const PostJobSchema = new Schema({
       message: (props) => `${props.value} is not a valid email!`,
     },
   },
-  
+
   active: {
     type: Boolean,
     default: true,
@@ -48,7 +67,14 @@ const PostJobSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  uploadfile: {
+    type: String,
+  },
   createdOn: {
+    type: Date,
+    // default: Date.now,
+  },
+  expiredOn: {
     type: Date,
     // default: Date.now,
   },

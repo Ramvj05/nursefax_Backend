@@ -6,6 +6,7 @@ router.get("/", Controller.getEmployersData);
 router.get("/:id", Controller.getEmployersData);
 router.post("/", Controller.saveEmployers);
 router.put("/:id", Controller.updateEmployers);
+router.put("/active/:id", Controller.updateEmployerStatus);
 router.put("/delete/:id", Controller.deleteEmployers);
 
 module.exports = router;

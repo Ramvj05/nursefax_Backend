@@ -87,7 +87,7 @@ const employerSchema = new Schema({
   },
   active: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   is_delete: {
     type: Boolean,

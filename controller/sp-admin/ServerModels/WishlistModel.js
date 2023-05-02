@@ -16,7 +16,7 @@ async function getWishlistData(request) {
           {
             $match: {
               user_id,
-              is_delete:false
+              is_delete: false
             }
           },
           {
@@ -49,10 +49,10 @@ async function getWishlistData(request) {
 
         var data = await WishListModel.aggregate([
           {
-              $match:{
-                is_delete:false
-              }
-              
+            $match: {
+              is_delete: false
+            }
+
           },
           {
             $lookup: {
@@ -102,11 +102,11 @@ async function getWishlistData(request) {
 
 async function saveWishlist(request) {
   const { user } = req.headers.user;
-  const data=request.body
+  const data = request.body
   const uri = dbUri;
   await mongoose.connect(uri);
   if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
-   
+
     try {
       let ins = {};
       ins.user_id = data.user_id;
@@ -146,88 +146,88 @@ async function saveWishlist(request) {
   }
 }
 
-async function updateWishlist(req,res) {
+async function updateWishlist(req, res) {
   const { user } = req.headers.user;
-    const { id } = req.params;
-    const data=req.body
-    const uri = dbUri;
-    await mongoose.connect(uri);
-  
-    try {
-      console.log(id);
-      if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
-        const updatedstatus = await WishListModel.findOneAndUpdate(
-          {
-            is_delete: false,
-            _id: id,
-          },
-          {$set: {Status:data.Status}},
-         
-        );
-  
-        console.log(updatedstatus);
-        if (updatedstatus) {
-          res
-            .header({
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*",
-            })
-            .status(200)
-            .send({
-              // data: updatedstatus,
-              message: "Wishlist Added Successfully",
-              statsCode: 200,
-              error: null,
-            });
-        } else {
-          res
-            .header({
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*",
-            })
-            .status(404)
-            .send({
-              data: null,
-              message: "No test Found",
-              statsCode: 404,
-              error: {
-                message: "No data present",
-              },
-            });
-        }
+  const { id } = req.params;
+  const data = req.body
+  const uri = dbUri;
+  await mongoose.connect(uri);
+
+  try {
+    console.log(id);
+    if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
+      const updatedstatus = await WishListModel.findOneAndUpdate(
+        {
+          is_delete: false,
+          _id: id,
+        },
+        { $set: { Status: data.Status } },
+
+      );
+
+      console.log(updatedstatus);
+      if (updatedstatus) {
+        res
+          .header({
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          })
+          .status(200)
+          .send({
+            // data: updatedstatus,
+            message: "Wishlist Added Successfully",
+            statsCode: 200,
+            error: null,
+          });
       } else {
         res
           .header({
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
           })
-          .status(401)
+          .status(404)
           .send({
             data: null,
-            message: "You do not have access to modify course",
-            statsCode: 401,
+            message: "No test Found",
+            statsCode: 404,
             error: {
-              message: "Access denied",
+              message: "No data present",
             },
           });
       }
-    } catch (err) {
-      console.log(err);
+    } else {
       res
         .header({
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         })
-        .status(500)
+        .status(401)
         .send({
-          statsCode: 500,
           data: null,
-          message: "Somthing went wrong",
-          error: err,
+          message: "You do not have access to modify course",
+          statsCode: 401,
+          error: {
+            message: "Access denied",
+          },
         });
     }
+  } catch (err) {
+    console.log(err);
+    res
+      .header({
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      })
+      .status(500)
+      .send({
+        statsCode: 500,
+        data: null,
+        message: "Somthing went wrong",
+        error: err,
+      });
+  }
 }
-async function deleteWishlist(req,res) {
+async function deleteWishlist(req, res) {
   const { user } = req.headers.user;
   const { id } = req.params;
   const uri = dbUri;
@@ -241,7 +241,7 @@ async function deleteWishlist(req,res) {
           _id: id,
         },
         { is_delete: true },
-        
+
       );
 
       console.log(test);

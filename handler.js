@@ -25,7 +25,7 @@ const updateUserPassword = require("./controller/updateUserPassword");
 const UserRatings = require("./controller/common/Routers/UserRatings");
 const BlogCategories = require("./controller/common/Routers/BlogCategories");
 const wishlist = require("./controller/common/Routers/wishlist");
-const employer = require("./controller/common/Routers/employer");
+const employer = require("./controller/common/Routers/Employer");
 const postjob = require("./controller/common/Routers/PostJob");
 
 const bodyParser = require("body-parser");
