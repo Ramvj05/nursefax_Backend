@@ -49,7 +49,7 @@ async function getPostJobData(request) {
             resultSet = { msg: err.message, statusCode: 500, };
           }
         );
-      } 
+      }
       else if (typeof request.params.user_id !== "undefined") {
         const _id = new mongoose.Types.ObjectId(request.params.user_id);
         var data = await ApplyJobTable.aggregate([
@@ -86,8 +86,8 @@ async function getPostJobData(request) {
             resultSet = { msg: err.message, statusCode: 500, };
           }
         );
-      } 
-      else{
+      }
+      else {
         // var counts= await PostJobViewTable.find({blog_id:_id}).count()
         var data = await PostJobTable.aggregate([
           {
@@ -199,19 +199,20 @@ async function savePostJob(request) {
         );
       }
       ins.posttitle = request.body.posttitle;
-      ins.posttitle = postId;
+      ins.postId = postId;
       ins.description = request.body.description;
-      ins.smalldescription = request.body.smalldescription;
+      ins.section = request.body.section;
       ins.postlable = request.body.postlable;
       ins.minsalary = request.body.minsalary;
       ins.maxsalary = request.body.maxsalary;
       ins.employername = request.body.employername;
       ins.employmenttype = request.body.employmenttype;
-      ins.hospitalname = request.body.hospitalname;
+      ins.speciality = request.body.speciality;
+      ins.enabled = request.body.enabled;
       ins.country = request.body.country;
       ins.city = request.body.city;
       ins.state = request.body.state;
-      ins.email = request.body.email;
+      ins.navlink = request.body.navlink;
       ins.keyword = request.body.keyword;
       ins.expiredOn = request.body.expiredOn;
       ins.createdBy = decodeToken.id;
@@ -273,18 +274,19 @@ async function updatePostJob(request) {
       }
       upd.posttitle = request.body.posttitle;
       upd.description = request.body.description;
-      upd.smalldescription = request.body.smalldescription;
+      upd.section = request.body.section;
       upd.minsalary = request.body.minsalary;
       upd.maxsalary = request.body.maxsalary;
       upd.postlable = request.body.postlable;
       upd.employername = request.body.employername;
       upd.employmenttype = request.body.employmenttype;
-      upd.hospitalname = request.body.hospitalname;
+      upd.speciality = request.body.speciality;
       upd.country = request.body.country;
+      upd.enabled = request.body.enabled;
       upd.keyword = request.body.keyword;
       upd.city = request.body.city;
+      upd.navlink = request.body.navlink;
       upd.state = request.body.state;
-      upd.email = request.body.email;
       upd.expiredOn = request.body.expiredOn;
       upd.createdBy = decodeToken.id;
       upd.createdOn = new Date();

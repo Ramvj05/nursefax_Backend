@@ -14,9 +14,11 @@ const PostJobSchema = new Schema({
   description: {
     type: String,
   },
-  smalldescription: {
-    type: String,
-  },
+  section: [
+    {
+      type: Object,
+    },
+  ],
   minsalary: {
     type: String,
   },
@@ -32,7 +34,7 @@ const PostJobSchema = new Schema({
   employmenttype: {
     type: String,
   },
-  hospitalname: {
+  speciality: {
     type: String,
   },
   keyword: {
@@ -47,17 +49,23 @@ const PostJobSchema = new Schema({
   state: {
     type: String,
   },
-
-  email: {
+  navlink: {
     type: String,
-    required: true,
-    validate: {
-      validator: function (v) {
-        return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
-      },
-      message: (props) => `${props.value} is not a valid email!`,
-    },
   },
+  enabled: {
+    type: Boolean,
+  },
+
+  // email: {
+  //   type: String,
+  //   required: true,
+  //   validate: {
+  //     validator: function (v) {
+  //       return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
+  //     },
+  //     message: (props) => `${props.value} is not a valid email!`,
+  //   },
+  // },
 
   active: {
     type: Boolean,
