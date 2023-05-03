@@ -4,6 +4,7 @@ const Controller = require("../../Controllers/PostJobController");;
 
 router.get("/", Controller.getPostJobData);
 router.get("/:id", Controller.getPostJobData);
+router.get("/appliedjob/:user_id", Controller.getPostJobData);
 router.post("/", Controller.savePostJob);
 router.post("/applyjob/", Controller.saveApplyJob);
 router.put("/:id", Controller.updatePostJob);

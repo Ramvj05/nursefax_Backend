@@ -51,7 +51,8 @@ router.post("/login", async function (req, res) {
           },
         ],
       });
-    }{
+    }else
+    {
       user = await User.findOne({
         deleted: false,
         $or: [
@@ -70,7 +71,6 @@ router.post("/login", async function (req, res) {
       });
     }
 
-    console.log(user);
     if (!user) {
       res
         .header({
@@ -89,7 +89,6 @@ router.post("/login", async function (req, res) {
     } else {
       // const result = decrypy(password, user.password);
       result = decrypy(password, user.password);
-      // console.warn("==================>", result);
       if (!result) {
         res
           .header({
@@ -106,7 +105,6 @@ router.post("/login", async function (req, res) {
             message: "please check the username and password",
           });
       } else {
-        console.log("--------------------", user);
 
         const token = jwt.sign(
           {
@@ -130,7 +128,6 @@ router.post("/login", async function (req, res) {
           }
         );
 
-        console.log("token", token);
         res
           .header({
             "Content-Type": "application/json",

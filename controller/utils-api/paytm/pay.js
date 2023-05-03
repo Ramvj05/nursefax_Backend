@@ -12,7 +12,7 @@ const router = express.Router();
 router.post("/pay", async function (req, res) {
   const orderId = uuidv4();
   let data = req.body;
-
+console.log(data,"iiiiiiiiiiiiiiiiiiiiiii")
   const paytmParams = {};
 
   paytmParams.body = {

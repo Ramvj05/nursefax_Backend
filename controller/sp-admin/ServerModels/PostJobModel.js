@@ -4,6 +4,7 @@ const CategoryClass = require("../../../class/admin/course_category.class");
 const { dbUri } = require("../../../endpoints/endpoints");
 const authorizer = require("../../../middleware/authorizer");
 const PostJobTable = require("../../../model/TableCollections/TablePostJob");
+const ApplyJobTable = require("../../../model/TableCollections/TableApplyJob");
 const FileHandler = require("../../../Helpers/FileHandler");
 
 async function getPostJobData(request) {
@@ -48,8 +49,45 @@ async function getPostJobData(request) {
             resultSet = { msg: err.message, statusCode: 500, };
           }
         );
-      } else {
+      } 
+      else if (typeof request.params.user_id !== "undefined") {
+        const _id = new mongoose.Types.ObjectId(request.params.user_id);
+        var data = await ApplyJobTable.aggregate([
+          {
+            $match: {
+              user_id,
+              is_delete: false
+            }
+          },
+          {
+            $lookup: {
+              from: "PostJob",
+              localField: "job_id",
+              foreignField: "_id",
+              as: "jobdetails"
+            }
+          },
+          // {
+          //   $lookup: {
+          //     from: "blogcategories",
+          //     localField: "PrimaryCategory",
+          //     foreignField: "_id",
+          //     as: "categordetails"
+          //   }
+          // },
 
+        ]).then(
+          (response) => {
+            console.log("response: ", response)
+            resultSet = { msg: "success", list: response, statusCode: 200, };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = { msg: err.message, statusCode: 500, };
+          }
+        );
+      } 
+      else{
         // var counts= await PostJobViewTable.find({blog_id:_id}).count()
         var data = await PostJobTable.aggregate([
           {
@@ -434,7 +472,7 @@ async function saveApplyJob(request) {
       ins.modifyOn = new Date();
       // console.log("ins", ins);
 
-      let insert = new PostJobTable(ins);
+      let insert = new ApplyJobTable(ins);
       await insert.save().then(
         (response) => {
           resultSet = {
