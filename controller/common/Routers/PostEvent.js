@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Controller = require("../../Controllers/PostEventController");;
+const Controller = require("../../Controllers/PostEventController");
 
-router.get("/eventdate/", Controller.getPostEventDateData);
+router.get("/eventdate/:id", Controller.getPostEventDateData);
 router.get("/", Controller.getPostEventData);
 router.get("/:id", Controller.getPostEventData);
 router.post("/", Controller.savePostEvent);
