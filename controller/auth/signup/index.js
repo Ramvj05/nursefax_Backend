@@ -9,37 +9,49 @@ const decrypy = require("../../../utils/decrypt");
 const courseAdminModel = require("../../../model/courseAdmin.model");
 const EmployerModel = require("../../../model/TableCollections/TableEmployers");
 const router = express.Router();
-var geoip = require('geoip-lite');
+var geoip = require("geoip-lite");
 
 router.post("/signup", async function (req, res) {
   let body = new UserClass(req.body).getModel();
   const uri = dbUri;
   await mongoose.connect(uri);
 
-  const ip = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress
-  const location = geoip.lookup(ip)
+  const ip =
+    req.headers["x-forwarded-for"]?.split(",").shift() ||
+    req.socket?.remoteAddress;
+  const location = geoip.lookup(ip);
   // const Country = location.country
   body = {
     ...body,
     createdBy:
-      body.userType === 2 ? "student" : body.userType === 1 ? "user" : body.userType === 0 ? "admin" : "employer",
+      body.userType === 2
+        ? "student"
+        : body.userType === 1
+        ? "user"
+        : body.userType === 0
+        ? "admin"
+        : "employer",
     roles:
-    body.userType === 2 ? ["STUDENT"] : body.userType === 1 ? [] : body.userType === 0 ? ["ADMIN"] : ["EMPLOYER"],
-      // body.userType === 0 ? ["ADMIN"] : body.userType === 1 ? [] : ["STUDENT"],
+      body.userType === 2
+        ? ["STUDENT"]
+        : body.userType === 1
+        ? []
+        : body.userType === 0
+        ? ["ADMIN"]
+        : ["EMPLOYER"],
+    // body.userType === 0 ? ["ADMIN"] : body.userType === 1 ? [] : ["STUDENT"],
     // UserCountry:
     //   body.userType === 2 ? Country: ""
-    };
+  };
 
   let salt = generateSalt();
   const hashPassword = generateHash(body.password, salt);
-  
 
   body = {
     ...body,
     password: hashPassword,
     // Country:Country,
   };
-
   let presentUser;
   let newUser;
   if (body.userType === 1) {
@@ -50,7 +62,7 @@ router.post("/signup", async function (req, res) {
       },
       { password: 0 }
     );
-  } else if (body.userType === 4) {
+  } else if (parseInt(body.userType) === 4) {
     newUser = new EmployerModel(body);
     presentUser = await EmployerModel.findOne(
       {
@@ -58,8 +70,7 @@ router.post("/signup", async function (req, res) {
       },
       { password: 0 }
     );
-  }
-  else{
+  } else {
     newUser = new User(body);
     presentUser = false;
     // presentUser = await User.findOne(
@@ -69,7 +80,6 @@ router.post("/signup", async function (req, res) {
     //   { password: 0 }
     // );
   }
-
   try {
     if (!presentUser) {
       const data = await newUser.save();

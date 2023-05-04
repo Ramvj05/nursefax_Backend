@@ -7,6 +7,7 @@ const CourseModel = require("../../../model/course.model");
 const router = express.Router();
 
 router.post("/create", authorizer, async function (req, res) {
+  // console.log(req.headers.user,"kkkkkkkkkkkkkkkkkkkk")
   const { decodeToken, user } = req.headers.user;
   let body = new CourseClass(req.body).getModel();
   const uri = dbUri;

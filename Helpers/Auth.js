@@ -1,8 +1,9 @@
-require('dotenv').config();
+require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const mongooes = require("mongoose");
 const { dbUri } = require("../endpoints/endpoints");
 const CourseAdminModel = require("../model/courseAdmin.model");
+const EmployerModel = require("../model/TableCollections/TableEmployers");
 const User = require("../model/user.model");
 
 const authorizer = async (req, res, next) => {
@@ -11,12 +12,20 @@ const authorizer = async (req, res, next) => {
 
   const { authorization } = req.headers;
   if (authorization) {
-    console.log(authorization,"authorization")
-    const token = authorization.split(' ')[0] != "Bearer" ? authorization.split(' ')[0]:authorization.split(' ')[1]
-    const decodeToken = jwt.verify(token,process.env.KEY_FOR_AUTH);
+    // console.log(authorization,"authorization")
+    const token =
+      authorization.split(" ")[0] != "Bearer"
+        ? authorization.split(" ")[0]
+        : authorization.split(" ")[1];
+    const decodeToken = jwt.verify(token, process.env.KEY_FOR_AUTH);
     let data = null;
     if (decodeToken?.userType === 1) {
       data = await CourseAdminModel.findOne({
+        deleted: false,
+        _id: decodeToken?.id,
+      });
+    } else if (decodeToken?.userType === 4) {
+      data = await EmployerModel.findOne({
         deleted: false,
         _id: decodeToken?.id,
       });
@@ -31,13 +40,11 @@ const authorizer = async (req, res, next) => {
         }
       );
     }
-
     if (data) {
       req.headers.user = { decodeToken, authorization, user: data };
-      next();
-      return
+      return true;
     } else {
-      res
+      return res
         .header({
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
@@ -52,7 +59,6 @@ const authorizer = async (req, res, next) => {
           },
         });
     }
-    return
   } else {
     res
       .header({
@@ -68,61 +74,58 @@ const authorizer = async (req, res, next) => {
           message: "Token is required",
         },
       });
-      // return
+    return;
   }
 };
-const Login =async(req,res,next)=>{
-    try{
-        const{name,email,adminid}=req;
-        var userToken = jwt.sign({name:name,email:email,adminid:adminid},process.env.KEY_FOR_AUTH,{ expiresIn: '1d' })
-        return userToken;
+const Login = async (req, res, next) => {
+  try {
+    const { name, email, adminid } = req;
+    var userToken = jwt.sign(
+      { name: name, email: email, adminid: adminid },
+      process.env.KEY_FOR_AUTH,
+      { expiresIn: "1d" }
+    );
+    return userToken;
+  } catch (err) {
+    if (err) {
+      console.log(err);
+      return false;
     }
-    catch(err){
-        if(err){
-            console.log(err)
-            return false;
-        }
-    }
-}
+  }
+};
 //adminPanel
 //admin_panel | best
-//Admin 
+//Admin
 // ADMIN
-const Verify =(req,res,next)=>{
-    
-    var Bearer = req.headers.authorization;
-       if(typeof Bearer !== "undefined"){
-        var token = Bearer.split(" ")
-        var AuthToken = (typeof token[1] !== 'undefined') ? token[1] : token;
-        var DATA = false;
-            try{
-                jwt.verify(AuthToken,process.env.KEY_FOR_AUTH, function(errJwt, responseJwt){
-                    //redis 
-                 
-                    if(errJwt)
-                    {
-                        returndata=({"msg":"jwt token error","error":errJwt}); //Promise<JWt>
+const Verify = (req, res, next) => {
+  var Bearer = req.headers.authorization;
+  if (typeof Bearer !== "undefined") {
+    var token = Bearer.split(" ");
+    var AuthToken = typeof token[1] !== "undefined" ? token[1] : token;
+    var DATA = false;
+    try {
+      jwt.verify(
+        AuthToken,
+        process.env.KEY_FOR_AUTH,
+        function (errJwt, responseJwt) {
+          //redis
 
-                        
-                    }
-                    else{
-                        DATA = true
-                    }
-                });
-            }
-            catch(Err)
-            {
-                DATA = false;
-            }
-    
-    
-        
-            console.log(DATA,"JWT")
-        return DATA;
+          if (errJwt) {
+            returndata = { msg: "jwt token error", error: errJwt }; //Promise<JWt>
+          } else {
+            DATA = true;
+          }
+        }
+      );
+    } catch (Err) {
+      DATA = false;
     }
-    else{
-        return false;
-    }
-}
 
-module.exports={Login,Verify,authorizer}
+    console.log(DATA, "JWT");
+    return DATA;
+  } else {
+    return false;
+  }
+};
+
+module.exports = { Login, Verify, authorizer };

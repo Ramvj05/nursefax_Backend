@@ -4,13 +4,16 @@ const Schema = mongoose.Schema;
 
 const ApplyJobSchema = new Schema({
     job_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         // required: true,
     },
     createdBy: {
         type: String,
     },
-
+    expiredOn: {
+        type: Date,
+        // default: Date.now,
+    },
     active: {
         type: Boolean,
         default: true,
@@ -23,10 +26,7 @@ const ApplyJobSchema = new Schema({
         type: Date,
         // default: Date.now,
     },
-    expiredOn: {
-        type: Date,
-        // default: Date.now,
-    },
+
     modifyOn: {
         type: Date,
         // default: Date.now,

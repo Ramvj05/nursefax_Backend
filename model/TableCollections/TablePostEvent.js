@@ -2,62 +2,38 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const PostJobSchema = new Schema({
-  posttitle: {
+const PostEventSchema = new Schema({
+  name: {
     type: String,
     // required: true,
   },
-  postId: {
+  eventId: {
+    type: String,
+    // required: true,
+  },
+  heading: {
     type: String,
     // required: true,
   },
   description: {
     type: String,
   },
-  section: [
-    {
-      type: Object,
-    },
-  ],
-  minsalary: {
-    type: String,
-  },
-  maxsalary: {
-    type: String,
-  },
-  postlable: {
-    type: String,
-  },
-  employername: {
-    type: String,
-  },
-  employmenttype: {
-    type: String,
-  },
-  speciality: {
-    type: String,
-  },
-  keyword: {
-    type: Array,
-  },
-  country: {
-    type: String,
-  },
-  city: {
-    type: String,
-  },
-  state: {
-    type: String,
-  },
-  navlink: {
-    type: String,
-  },
-  enabled: {
-    type: Boolean,
-  },
   uploadfile: {
     type: String,
   },
+ 
+  eventlink: {
+    type: String,
+  },
+  seotitle: {
+    type: String,
+  },
+  seodescription: {
+    type: String,
+  },
+  seokeyword: {
+    type: Array,
+  }, 
   expiredOn: {
     type: Date,
   },
@@ -80,4 +56,4 @@ const PostJobSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("PostJob", PostJobSchema);
+module.exports = mongoose.model("PostEvent", PostEventSchema);

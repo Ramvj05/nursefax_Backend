@@ -16,21 +16,20 @@ async function getWishlistData(request) {
           {
             $match: {
               user_id,
-              is_delete: false
-            }
+              is_delete: false,
+            },
           },
           {
             $lookup: {
               from: "users",
               localField: "user_id",
               foreignField: "_id",
-              as: "userdetails"
-            }
+              as: "userdetails",
+            },
           },
-
         ]).then(
           (response) => {
-            console.log("response: " + response)
+            console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -46,26 +45,23 @@ async function getWishlistData(request) {
           }
         );
       } else {
-
         var data = await WishListModel.aggregate([
           {
             $match: {
-              is_delete: false
-            }
-
+              is_delete: false,
+            },
           },
           {
             $lookup: {
               from: "users",
               localField: "user_id",
               foreignField: "_id",
-              as: "userdetails"
-            }
+              as: "userdetails",
+            },
           },
-
         ]).then(
           (response) => {
-            console.log("response: " + response)
+            console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -84,7 +80,7 @@ async function getWishlistData(request) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error)
+      console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -101,12 +97,11 @@ async function getWishlistData(request) {
 }
 
 async function saveWishlist(request) {
-  const { user } = req.headers.user;
-  const data = request.body
+  const { user } = request.headers.user;
+  const data = request.body;
   const uri = dbUri;
   await mongoose.connect(uri);
   if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
-
     try {
       let ins = {};
       ins.user_id = data.user_id;
@@ -149,82 +144,49 @@ async function saveWishlist(request) {
 async function updateWishlist(req, res) {
   const { user } = req.headers.user;
   const { id } = req.params;
-  const data = req.body
+  const data = req.body;
   const uri = dbUri;
   await mongoose.connect(uri);
 
-  try {
-    console.log(id);
-    if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
+  if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
+    try {
       const updatedstatus = await WishListModel.findOneAndUpdate(
         {
           is_delete: false,
           _id: id,
         },
-        { $set: { Status: data.Status } },
-
+        { $set: { Status: data.Status } }
+      ).then(
+        (response) => {
+          resultSet = {
+            msg: "Wishlist Updated successfully",
+            statusCode: 200,
+          };
+        },
+        (err) => {
+          // console.log("err: ", err);
+          resultSet = {
+            msg: err.message,
+            statusCode: 500,
+          };
+        }
       );
 
-      console.log(updatedstatus);
-      if (updatedstatus) {
-        res
-          .header({
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          })
-          .status(200)
-          .send({
-            // data: updatedstatus,
-            message: "Wishlist Added Successfully",
-            statsCode: 200,
-            error: null,
-          });
-      } else {
-        res
-          .header({
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          })
-          .status(404)
-          .send({
-            data: null,
-            message: "No test Found",
-            statsCode: 404,
-            error: {
-              message: "No data present",
-            },
-          });
-      }
-    } else {
-      res
-        .header({
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        })
-        .status(401)
-        .send({
-          data: null,
-          message: "You do not have access to modify course",
-          statsCode: 401,
-          error: {
-            message: "Access denied",
-          },
-        });
+      return resultSet;
+    } catch (Error) {
+      console.log(Error, "ooooooooooooooo");
+      resultSet = {
+        msg: Error,
+        statusCode: 400,
+      };
+      return resultSet;
     }
-  } catch (err) {
-    console.log(err);
-    res
-      .header({
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      })
-      .status(500)
-      .send({
-        statsCode: 500,
-        data: null,
-        message: "Somthing went wrong",
-        error: err,
-      });
+  } else {
+    resultSet = {
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
+    return resultSet;
   }
 }
 async function deleteWishlist(req, res) {
@@ -233,81 +195,47 @@ async function deleteWishlist(req, res) {
   const uri = dbUri;
   await mongoose.connect(uri);
 
-  try {
-    if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
+  if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
+    try {
       const test = await WishListModel.findOneAndUpdate(
         {
           is_delete: false,
           _id: id,
         },
-        { is_delete: true },
-
+        { is_delete: true }
+      ).then(
+        (response) => {
+          resultSet = {
+            msg: "Wishlist Deleted successfully",
+            statusCode: 200,
+          };
+        },
+        (err) => {
+          // console.log("err: ", err);
+          resultSet = {
+            msg: err.message,
+            statusCode: 500,
+          };
+        }
       );
 
-      console.log(test);
-      if (test) {
-        res
-          .header({
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          })
-          .status(200)
-          .send({
-            data: test,
-            message: "course modified successfully",
-            statsCode: 200,
-            error: null,
-          });
-      } else {
-        res
-          .header({
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          })
-          .status(404)
-          .send({
-            data: null,
-            message: "course Not Found",
-            statsCode: 404,
-            error: {
-              message: "No data present",
-            },
-          });
-      }
-    } else {
-      res
-        .header({
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        })
-        .status(401)
-        .send({
-          data: null,
-          message: "You do not have access to modilfy course",
-          statsCode: 401,
-          error: {
-            message: "Access denied",
-          },
-        });
+      return resultSet;
+    } catch (Error) {
+      console.log(Error, "ooooooooooooooo");
+      resultSet = {
+        msg: Error,
+        statusCode: 400,
+      };
+      return resultSet;
     }
-  } catch (err) {
-    console.log(err);
-    res
-      .header({
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      })
-      .status(500)
-      .send({
-        statsCode: 500,
-        data: null,
-        message: "Somthing went wrong",
-        error: err,
-      });
+  } else {
+    resultSet = {
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
+    return resultSet;
   }
 }
-
-
 
 module.exports = {
   getWishlistData,

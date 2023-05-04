@@ -18,8 +18,8 @@ async function getEmployersData(request) {
           {
             $match: {
               _id,
-              is_delete: false
-            }
+              is_delete: false,
+            },
           },
           // {
           //   $lookup: {
@@ -37,26 +37,23 @@ async function getEmployersData(request) {
           //     as: "categordetails"
           //   }
           // },
-
         ]).then(
           (response) => {
-            console.log("response: ", response)
-            resultSet = { msg: "success", list: response, statusCode: 200, };
+            console.log("response: ", response);
+            resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
             console.log("err: ", err);
-            resultSet = { msg: err.message, statusCode: 500, };
+            resultSet = { msg: err.message, statusCode: 500 };
           }
         );
       } else {
-
         // var counts= await EmployersViewTable.find({blog_id:_id}).count()
         var data = await EmployersTable.aggregate([
           {
             $match: {
-              is_delete: false
-            }
-
+              is_delete: false,
+            },
           },
 
           //   {
@@ -88,10 +85,9 @@ async function getEmployersData(request) {
           // MetaKeyword:1,createDt:1,modifyDt:1,Status:1}},
           //   {$unwind:"$userdetails"},
           //   {$unwind:"$categordetails"}
-
         ]).then(
           (response) => {
-            console.log("response: " + response)
+            console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -110,7 +106,7 @@ async function getEmployersData(request) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error)
+      console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -134,11 +130,15 @@ async function saveEmployers(request) {
       const { decodeToken, user } = req.headers.user;
 
       // console.log(request.files, "request.files");
-      const data = request.body
+      const data = request.body;
       let ins = {};
       if (request.files) {
         uploadpath = __dirname + "/../../../uploads/Employers/";
-        ins.picture = await FileHandler.uploadAvatar(request, uploadpath, "picture");
+        ins.picture = await FileHandler.uploadAvatar(
+          request,
+          uploadpath,
+          "picture"
+        );
       }
       ins.fullName = data.fullName;
       ins.userName = data.userName;
@@ -194,18 +194,21 @@ async function saveEmployers(request) {
   }
 }
 
-async function updateEmployers(request) {
+async function updateEmployers(request, res) {
   if (request != "" && typeof request !== "undefined") {
     try {
-      const { decodeToken, user } = req.headers.user;
-
+      const { decodeToken, user } = request.headers.user;
       const uri = dbUri;
       await mongoose.connect(uri);
-      const data = request.body
+      const data = request.body;
       let upd = {};
       if (request.files) {
         uploadpath = __dirname + "/../../../uploads/Employers/";
-        ins.picture = await FileHandler.uploadAvatar(request, uploadpath, "picture");
+        ins.picture = await FileHandler.uploadAvatar(
+          request,
+          uploadpath,
+          "picture"
+        );
       }
       upd.fullName = data.fullName;
       upd.userName = data.userName;
@@ -235,12 +238,12 @@ async function updateEmployers(request) {
       ).then(
         (response) => {
           resultSet = {
-            msg: "Blog updated successfully",
+            msg: "Employer updated successfully",
             statusCode: 200,
           };
         },
         (err) => {
-          // console.log("err: ", err);
+          console.log("err: ", err);
           resultSet = {
             msg: err.message,
             statusCode: 500,
@@ -250,7 +253,7 @@ async function updateEmployers(request) {
 
       return resultSet;
     } catch (Error) {
-      // console.log(Error, "Error");
+      console.log(Error, "Error");
       resultSet = {
         msg: Error,
         statusCode: 400,
@@ -283,7 +286,7 @@ async function deleteEmployers(request) {
       ).then(
         (response) => {
           resultSet = {
-            msg: "Blog Deleted Successfully",
+            msg: "Employer Deleted Successfully",
             statusCode: 200,
           };
         },
@@ -434,85 +437,50 @@ async function deleteEmployersImg(request) {
 async function updateEmployerStatus(req, res) {
   const { user } = req.headers.user;
   const { id } = req.params;
-  const data = req.body
+  const data = req.body;
   const uri = dbUri;
   await mongoose.connect(uri);
-
-  try {
-    console.log(id);
-    if (user.roles.includes("ADMIN")) {
+  if (user.roles.includes("ADMIN")) {
+    try {
       const updatedstatus = await EmployersTable.findOneAndUpdate(
         {
           is_delete: false,
           _id: id,
         },
-        { $set: { active: data.Status } },
-
+        { $set: { active: data.Status } }
+      ).then(
+        (response) => {
+          resultSet = {
+            msg: "Employer Approved Updated successfully",
+            statusCode: 200,
+          };
+        },
+        (err) => {
+          // console.log("err: ", err);
+          resultSet = {
+            msg: err.message,
+            statusCode: 500,
+          };
+        }
       );
 
-      console.log(updatedstatus);
-      if (updatedstatus) {
-        res
-          .header({
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          })
-          .status(200)
-          .send({
-            // data: updatedstatus,
-            message: "Employer Approved Successfully",
-            statsCode: 200,
-            error: null,
-          });
-      } else {
-        res
-          .header({
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          })
-          .status(404)
-          .send({
-            data: null,
-            message: "No test Found",
-            statsCode: 404,
-            error: {
-              message: "No data present",
-            },
-          });
-      }
-    } else {
-      res
-        .header({
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        })
-        .status(401)
-        .send({
-          data: null,
-          message: "You do not have access to modify course",
-          statsCode: 401,
-          error: {
-            message: "Access denied",
-          },
-        });
+      return resultSet;
+    } catch (Error) {
+      console.log(Error, "ooooooooooooooo");
+      resultSet = {
+        msg: Error,
+        statusCode: 400,
+      };
+      return resultSet;
     }
-  } catch (err) {
-    console.log(err);
-    res
-      .header({
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      })
-      .status(500)
-      .send({
-        statsCode: 500,
-        data: null,
-        message: "Somthing went wrong",
-        error: err,
-      });
+  } else {
+    resultSet = {
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
+    return resultSet;
   }
 }
-
 
 module.exports = {
   getEmployersData,
@@ -520,7 +488,7 @@ module.exports = {
   updateEmployers,
   deleteEmployers,
   deleteEmployersImg,
-  updateEmployerStatus
+  updateEmployerStatus,
 };
 
 // module.exports = router;

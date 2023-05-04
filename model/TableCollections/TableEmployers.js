@@ -33,7 +33,7 @@ const employerSchema = new Schema({
   },
   companyemail: {
     type: String,
-    required: true,
+    // required: true,
     validate: {
       validator: function (v) {
         return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
@@ -43,7 +43,7 @@ const employerSchema = new Schema({
   },
   email: {
     type: String,
-    required: true,
+    // required: true,
     validate: {
       validator: function (v) {
         return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
@@ -79,12 +79,14 @@ const employerSchema = new Schema({
     type: Number,
     required: true,
     min: 0,
-    max: 3,
+    max: 4,
   },
-  roles: {
-    type: String,
-    required: true,
-  },
+  roles: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
   active: {
     type: Boolean,
     default: false,
