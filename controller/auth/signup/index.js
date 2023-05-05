@@ -64,7 +64,7 @@ router.post("/signup", async function (req, res) {
     );
   } else if (parseInt(body.userType) === 4) {
     newUser = new EmployerModel(body);
-    presentUser = false;
+    // presentUser = false;
 
     presentUser = await EmployerModel.findOne(
       {

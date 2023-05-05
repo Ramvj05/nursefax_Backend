@@ -8,6 +8,7 @@ const endpoints = require("../../../endpoints/endpoints");
 const { dbUri } = require("../../../endpoints/endpoints");
 const { default: mongoose } = require("mongoose");
 const userModel = require("../../../model/user.model");
+const employerModel = require("../../../model/TableCollections/TableEmployers");
 var defaultClient = ElasticEmail.ApiClient.instance;
 
 var apikey = defaultClient.authentications["apikey"];
@@ -18,7 +19,7 @@ apikey.apiKey =
 router.get("/send/:userId", async function (req, res) {
   try {
     const { userId } = req.params;
-
+    console.log(userId);
     let emailsApi = new ElasticEmail.EmailsApi();
 
     const uri = dbUri;
@@ -100,8 +101,14 @@ router.get("/send/:userId", async function (req, res) {
     const result = await userModel.findOne({
       _id: userId,
     });
+
     if (result) {
       sendOtpEmail(result);
+    } else {
+      var results = await employerModel.findOne({
+        _id: userId,
+      });
+      sendOtpEmail(results);
     }
   } catch (err) {
     console.log(err);

@@ -12,9 +12,8 @@ const router = express.Router();
 router.post("/pay", async function (req, res) {
   const orderId = uuidv4();
   let data = req.body;
-console.log(data,"iiiiiiiiiiiiiiiiiiiiiii")
   const paytmParams = {};
-
+  console.log(data, "ooooooooooooooooooooooooooooooooo");
   paytmParams.body = {
     requestType: "Payment",
     mid: PaytmConfig.PaytmConfig.mid,

@@ -15,7 +15,7 @@ router.post("/callback/:id", async function (req, res) {
   let courseId = paramId.slice(24, 48);
   let courseType = "nan";
   console.log(req.params);
-  console.log(data);
+  console.log(data, "mmmmmmmmmmmmmmmmmmmmmmmmm");
 
   data = JSON.parse(JSON.stringify(data));
 
