@@ -126,62 +126,70 @@ async function saveEmployers(request) {
   if (request != "" && typeof request !== "undefined") {
     const uri = dbUri;
     await mongoose.connect(uri);
-    try {
-      const { decodeToken, user } = req.headers.user;
+    if (user.roles.includes("ADMIN") || user.roles.includes("EMPLOYER")) {
+      try {
+        const { decodeToken, user } = req.headers.user;
 
-      // console.log(request.files, "request.files");
-      const data = request.body;
-      let ins = {};
-      if (request.files) {
-        uploadpath = __dirname + "/../../../uploads/Employers/";
-        ins.picture = await FileHandler.uploadAvatar(
-          request,
-          uploadpath,
-          "picture"
-        );
-      }
-      ins.fullName = data.fullName;
-      ins.userName = data.userName;
-      ins.mobile = data.mobile;
-      ins.hospitalname = data.hospitalname;
-      ins.bussinessname = data.bussinessname;
-      ins.companycantact = data.companycantact;
-      ins.website = data.website;
-      ins.gstregno = data.gstregno;
-      ins.about = data.about;
-      ins.companyemail = data.companyemail;
-      ins.email = data.email;
-      ins.password = data.password;
-      ins.country = data.country;
-      ins.Address = data.Address;
-      ins.userType = data.userType;
-      ins.createdBy = decodeToken.id;
-      ins.createdOn = new Date();
-      ins.modifyOn = new Date();
-
-      let insert = new EmployersTable(ins);
-      await insert.save().then(
-        (response) => {
-          resultSet = {
-            msg: "Employer Created successfully",
-            statusCode: 200,
-          };
-        },
-        (err) => {
-          // console.log("err: ", err);
-          resultSet = {
-            msg: err.message,
-            statusCode: 500,
-          };
+        // console.log(request.files, "request.files");
+        const data = request.body;
+        let ins = {};
+        if (request.files) {
+          uploadpath = __dirname + "/../../../uploads/Employers/";
+          ins.picture = await FileHandler.uploadAvatar(
+            request,
+            uploadpath,
+            "picture"
+          );
         }
-      );
+        ins.fullName = data.fullName;
+        ins.userName = data.userName;
+        ins.mobile = data.mobile;
+        ins.hospitalname = data.hospitalname;
+        ins.bussinessname = data.bussinessname;
+        ins.companycantact = data.companycantact;
+        ins.website = data.website;
+        ins.gstregno = data.gstregno;
+        ins.about = data.about;
+        ins.companyemail = data.companyemail;
+        ins.email = data.email;
+        ins.password = data.password;
+        ins.country = data.country;
+        ins.Address = data.Address;
+        ins.userType = data.userType;
+        ins.createdBy = decodeToken.id;
+        ins.createdOn = new Date();
+        ins.modifyOn = new Date();
 
-      return resultSet;
-    } catch (Error) {
-      console.log(Error, "ooooooooooooooo");
+        let insert = new EmployersTable(ins);
+        await insert.save().then(
+          (response) => {
+            resultSet = {
+              msg: "Employer Created successfully",
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            // console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
+
+        return resultSet;
+      } catch (Error) {
+        console.log(Error, "ooooooooooooooo");
+        resultSet = {
+          msg: Error,
+          statusCode: 400,
+        };
+        return resultSet;
+      }
+    } else {
       resultSet = {
-        msg: Error,
-        statusCode: 400,
+        msg: "You Don't have access to this",
+        statusCode: 500,
       };
       return resultSet;
     }
@@ -200,6 +208,9 @@ async function updateEmployers(request, res) {
       const { decodeToken, user } = request.headers.user;
       const uri = dbUri;
       await mongoose.connect(uri);
+      if (user.roles.includes("ADMIN") || user.roles.includes("EMPLOYER")) {
+      } else {
+      }
       const data = request.body;
       let upd = {};
       if (request.files) {

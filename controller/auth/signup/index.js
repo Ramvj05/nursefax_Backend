@@ -64,11 +64,13 @@ router.post("/signup", async function (req, res) {
     );
   } else if (parseInt(body.userType) === 4) {
     newUser = new EmployerModel(body);
+    presentUser = false;
+
     presentUser = await EmployerModel.findOne(
       {
-        mobile: newUser.mobile,
-      },
-      { password: 0 }
+        email: newUser.email,
+      }
+      // { password: 0 }
     );
   } else {
     newUser = new User(body);
