@@ -1,9 +1,11 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Controller = require("../../Controllers/BlogController");;
+const Controller = require("../../Controllers/BlogController");
 
+router.get("/userblog/", Controller.getUserBlogsData);
 router.get("/", Controller.getBlogsData);
-router.get("/userblog/:id", Controller.getUserBlogsData);
+router.get("/userblog/:user_id", Controller.getUserBlogsData);
+router.get("/userblog/blog/:id", Controller.getUserBlogsData);
 router.get("/:id", Controller.getBlogsData);
 router.post("/", Controller.saveBlogs);
 router.post("/view/", Controller.saveViewBlogs);

@@ -7,9 +7,10 @@ const getBlogsData = async (req, res, next) => {
   if (await Auth.authorizer(req, res, next)) {
     var data = await BlogsModel.getBlogsData(req, res);
     res.status(data.statusCode).send(data);
-  } else {
-    res.status(400).send({ msg: "invalid sessions" });
   }
+  // else {
+  //   res.status(400).send({ msg: "invalid sessions" });
+  // }
 };
 const getUserBlogsData = async (req, res, next) => {
   // if (Auth.Verify(req, res, next)) {

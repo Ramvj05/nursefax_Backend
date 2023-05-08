@@ -156,9 +156,9 @@ async function getUserBlogsData(request, res) {
       const uri = dbUri;
       await mongoose.connect(uri);
       const category = {};
-      if (typeof request.params.id !== "undefined") {
+      if (typeof request.params.user_id !== "undefined") {
         // Where = {};
-        const user_id = new mongoose.Types.ObjectId(request.params.id);
+        const user_id = new mongoose.Types.ObjectId(request.params.user_id);
 
         // var counts= await BlogsViewTable.find({blog_id:_id}).count()
         // console.log(counts,"oooooooooooooooo");
@@ -196,7 +196,44 @@ async function getUserBlogsData(request, res) {
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
-      } else {
+      } else if (typeof request.params.id !== "undefined") {
+        const _id = new mongoose.Types.ObjectId(request.params.id);
+        var data = await BlogsTable.aggregate([
+          {
+            $match: {
+              _id,
+              is_delete: false,
+            },
+          },
+          // { $addFields: { "custom_field":counts } },
+          // {
+          //   $lookup: {
+          //     from: "users",
+          //     localField: "user_id",
+          //     foreignField: "_id",
+          //     as: "userdetails"
+          //   }
+          // },
+          {
+            $lookup: {
+              from: "blogcategories",
+              localField: "PrimaryCategory",
+              foreignField: "_id",
+              as: "categordetails",
+            },
+          },
+        ]).then(
+          (response) => {
+            console.log("response: ", response);
+            resultSet = { msg: "success", list: response, statusCode: 200 };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = { msg: err.message, statusCode: 500 };
+          }
+        );
+      }
+      {
         // var counts= await BlogsViewTable.find({blog_id:_id}).count()
         var data = await BlogsTable.aggregate([
           {
