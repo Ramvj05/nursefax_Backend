@@ -36,7 +36,7 @@ router.post("/login", async function (req, res) {
       });
     } else if (userType === 4) {
       user = await EmployerModel.findOne({
-        deleted: false,
+        is_delete: false,
         $or: [
           {
             email: userName,
@@ -51,8 +51,7 @@ router.post("/login", async function (req, res) {
           },
         ],
       });
-    }else
-    {
+    } else {
       user = await User.findOne({
         deleted: false,
         $or: [
@@ -105,7 +104,6 @@ router.post("/login", async function (req, res) {
             message: "please check the username and password",
           });
       } else {
-
         const token = jwt.sign(
           {
             fullName: user?.fullName,

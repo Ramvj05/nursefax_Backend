@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const { dbUri } = require("../../endpoints/endpoints");
 const User = require("../../model/user.model");
 const CourseAdminModel = require("../../model/courseAdmin.model");
+const EmployersTable = require("../../model/TableCollections/TableEmployers");
 
 const router = express.Router();
 
@@ -30,6 +31,14 @@ router.post("/validate-username", async function (req, res) {
               userType,
             },
           ],
+        },
+        { password: 0 }
+      );
+    } else if (userType === 4) {
+      user = await EmployersTable.findOne(
+        {
+          is_delete: false,
+          email: userName,
         },
         { password: 0 }
       );
