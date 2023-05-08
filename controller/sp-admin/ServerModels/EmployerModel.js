@@ -102,6 +102,8 @@ async function saveEmployers(request) {
 
         // console.log(request.files, "request.files");
         const data = request.body;
+        let salt = generateSalt();
+        const hashPassword = generateHash(data.password, salt);
         let ins = {};
         if (request.files) {
           uploadpath = __dirname + "/../../../uploads/Employers/";
@@ -122,7 +124,7 @@ async function saveEmployers(request) {
         ins.about = data.about;
         ins.companyemail = data.companyemail;
         ins.email = data.email;
-        ins.password = data.password;
+        ins.password = hashPassword;
         ins.mcc = data.mcc;
         ins.active = data.active;
         ins.country = data.country;
@@ -184,6 +186,8 @@ async function updateEmployers(request, res) {
       } else {
       }
       const data = request.body;
+      let salt = generateSalt();
+      const hashPassword = generateHash(data.password, salt);
       let upd = {};
       if (request.files) {
         uploadpath = __dirname + "/../../../uploads/Employers/";
@@ -206,7 +210,7 @@ async function updateEmployers(request, res) {
       upd.companyemail = data.companyemail;
       upd.email = data.email;
       upd.mcc = data.mcc;
-      upd.password = data.password;
+      upd.password = hashPassword;
       upd.country = data.country;
       upd.Address = data.Address;
       upd.userType = data.userType;
@@ -472,13 +476,15 @@ async function updateEmployerProfile(request, res) {
       const uri = dbUri;
       await mongoose.connect(uri);
       const data = request.body;
+      let salt = generateSalt();
+      const hashPassword = generateHash(data.password, salt);
       let upd = {};
       upd.fullName = data.fullName;
       upd.userName = data.userName;
-      upd.password = data.password;
+      upd.password = hashPassword;
       upd.mobile = data.mobile;
       upd.email = data.email;
-      upd.emailVerified = data.emailVerifired;
+      upd.emailVerified = data.emailVerified;
       upd.active = data.active;
       upd.mobileVerified = data.mobileVerified;
       upd.mcc = data.mcc;
