@@ -160,7 +160,7 @@ async function getUserBlogsData(request) {
         // Where = {};
         const _id = new mongoose.Types.ObjectId(request.params.id);
 
-        // var counts= await BlogsViewTable.find({blog_id:_id}).count()
+        var counts = await BlogsViewTable.find({ blog_id: _id }).count();
         // console.log(counts,"oooooooooooooooo");
         var data = await BlogsTable.aggregate([
           {
@@ -169,15 +169,15 @@ async function getUserBlogsData(request) {
               is_delete: false,
             },
           },
-          // { $addFields: { "custom_field":counts } },
-          // {
-          //   $lookup: {
-          //     from: "users",
-          //     localField: "user_id",
-          //     foreignField: "_id",
-          //     as: "userdetails"
-          //   }
-          // },
+          { $addFields: { custom_field: counts } },
+          {
+            $lookup: {
+              from: "users",
+              localField: "user_id",
+              foreignField: "_id",
+              as: "userdetails",
+            },
+          },
           {
             $lookup: {
               from: "blogcategories",
