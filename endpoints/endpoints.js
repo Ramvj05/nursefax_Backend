@@ -1,23 +1,20 @@
-
 const express = require("express");
 const cors = require("cors");
 const app = express();
-require('dotenv').config();
-const mongoose = require('mongoose')
+require("dotenv").config();
+const mongoose = require("mongoose");
 // require('dotenv').config({ path: 'ENV_FILENAME' });
-// let host = "http://localhost:4000/api/";
-let host="http://3.111.169.246/:4000/api/"
+let host = "http://localhost:4000/api/";
+// let host="http://3.111.169.246/:4000/api/"
 // let host = "https://api.nursefax.com/api/";
-let userHost = "https://nursefax.com/";
-// let userHost = "http://localhost:3000/";
+// let userHost = "https://nursefax.com/";
+let userHost = "http://localhost:3000/";
 
 // let db = `mongodb+srv://nursefax_dedicated_user:jihOAAGj6aYtOynm@cluster0.mtfni.mongodb.net/nursefax?retryWrites=true&w=majority`;
 // let jobDb = `mongodb+srv://nursefax_dedicated_user:jihOAAGj6aYtOynm@cluster0.mtfni.mongodb.net`;
 // let db = `mongodb+srv://infostylusicon:infostylusicon@developmentinstance.apr6t.mongodb.net/nurseFax?retryWrites=true&w=majority`;
-let db= process.env.DATABASE
+let db = process.env.DATABASE;
 // let jobDb= process.env.DATABASE
-
-
 
 module.exports = {
   common: {
