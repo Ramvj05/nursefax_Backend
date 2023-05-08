@@ -131,7 +131,7 @@ async function getBlogCategoriesAllData(request, res) {
               as: "blogdetails",
             },
           },
-          { $unwind: "$blogdetails" },
+          // { $unwind: "$blogdetails" },
           {
             $lookup: {
               from: "users",
@@ -150,7 +150,7 @@ async function getBlogCategoriesAllData(request, res) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            console.log("ereeeer: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,

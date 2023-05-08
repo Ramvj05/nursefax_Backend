@@ -376,7 +376,6 @@ async function saveViewBlogs(request) {
         user_ip: ip,
         blog_id: request.body.blog_id,
       });
-      console.log(typeof existUsername, "existUsername");
       if (existUsername == null) {
         // const Country = location.country
         ins.blog_id = request.body.blog_id;
