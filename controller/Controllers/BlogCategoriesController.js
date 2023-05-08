@@ -5,7 +5,7 @@ const authorizer = require("../../middleware/authorizer");
 
 const getBlogCategoriesData = async (req, res, next) => {
   if (Auth.Verify(req, res, next)) {
-    var data = await BlogCategoriesModel.getBlogCategoriesData(req);
+    var data = await BlogCategoriesModel.getBlogCategoriesData(req, res);
     res.status(data.statusCode).send(data);
   } else {
     res.status(400).send({ msg: "invalid sessions" });
@@ -13,7 +13,7 @@ const getBlogCategoriesData = async (req, res, next) => {
 };
 const getBlogCategoriesAllData = async (req, res, next) => {
   // if ( Auth.Verify(req, res,next)) {
-  var data = await BlogCategoriesModel.getBlogCategoriesAllData(req);
+  var data = await BlogCategoriesModel.getBlogCategoriesAllData(req, res);
   res.status(data.statusCode).send(data);
   // }
   // else {
@@ -23,7 +23,7 @@ const getBlogCategoriesAllData = async (req, res, next) => {
 
 const saveBlogCategories = async (req, res, next) => {
   if (Auth.Verify(req, res, next)) {
-    var data = await BlogCategoriesModel.saveBlogCategories(req);
+    var data = await BlogCategoriesModel.saveBlogCategories(req, res);
     res.status(data.statusCode).send(data);
   }
   // else {
@@ -33,7 +33,7 @@ const saveBlogCategories = async (req, res, next) => {
 
 const updateBlogCategories = async (req, res, next) => {
   if (Auth.Verify(req, res)) {
-    var data = await BlogCategoriesModel.updateBlogCategories(req);
+    var data = await BlogCategoriesModel.updateBlogCategories(req, res);
     res.status(data.statusCode).send(data);
   }
   // else {
@@ -42,7 +42,7 @@ const updateBlogCategories = async (req, res, next) => {
 };
 const deleteBlogCategories = async (req, res, next) => {
   if (Auth.Verify(req, res)) {
-    var data = await BlogCategoriesModel.deleteBlogCategories(req);
+    var data = await BlogCategoriesModel.deleteBlogCategories(req, res);
     res.status(data.statusCode).send(data);
   }
   // else {
@@ -52,7 +52,7 @@ const deleteBlogCategories = async (req, res, next) => {
 
 const deleteBlogCategoriesImg = async (req, res, next) => {
   if (Auth.Verify(req, res, next)) {
-    var data = await BlogCategoriesModel.deleteBlogCategoriesImg(req);
+    var data = await BlogCategoriesModel.deleteBlogCategoriesImg(req, res);
     res.status(data.statusCode).send(data);
   }
   // else{

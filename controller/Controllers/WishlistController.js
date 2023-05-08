@@ -5,7 +5,7 @@ const Auth = require("../../Helpers/Auth");
 
 const getWishlistData = async (req, res, next) => {
   if (await Auth.authorizer(req, res, next)) {
-    var data = await WishlistModel.getWishlistData(req);
+    var data = await WishlistModel.getWishlistData(req, res);
     res.status(200).send(data);
   } else {
     res.status(400).send({ msg: "invalid sessions" });
@@ -14,7 +14,7 @@ const getWishlistData = async (req, res, next) => {
 
 const saveWishlist = async (req, res, next) => {
   if (await Auth.authorizer(req, res, next)) {
-    var data = await WishlistModel.saveWishlist(req);
+    var data = await WishlistModel.saveWishlist(req, res);
     res.status(data.statusCode).send(data);
   } else {
     res.status(400).send({ msg: "invalid sessions" });
@@ -23,7 +23,7 @@ const saveWishlist = async (req, res, next) => {
 
 const updateWishlist = async (req, res, next) => {
   if (await Auth.authorizer(req, res, next)) {
-    var data = await WishlistModel.updateWishlist(req, res);
+    var data = await WishlistModel.updateWishlist(req, res, res);
     console.log(data, "lllllllllllllll");
     res.status(data.statusCode).send(data);
   } else {

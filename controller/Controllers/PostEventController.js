@@ -5,7 +5,7 @@ const Auth = require("../../Helpers/Auth");
 
 const getPostEventData = async (req, res, next) => {
   if (await Auth.authorizer(req, res, next)) {
-    var data = await PostEventModel.getPostEventData(req);
+    var data = await PostEventModel.getPostEventData(req, res);
     // console.log(data)
     res.status(data.statusCode).send(data);
   } else {
@@ -14,7 +14,7 @@ const getPostEventData = async (req, res, next) => {
 };
 const getPostEventDateData = async (req, res, next) => {
   if (await Auth.authorizer(req, res, next)) {
-    var data = await PostEventModel.getPostEventDateData(req);
+    var data = await PostEventModel.getPostEventDateData(req, res);
     // console.log(data)
     res.status(data.statusCode).send(data);
   } else {
@@ -23,7 +23,7 @@ const getPostEventDateData = async (req, res, next) => {
 };
 const savePostEvent = async (req, res, next) => {
   if (await Auth.authorizer(req, res, next)) {
-    var data = await PostEventModel.savePostEvent(req);
+    var data = await PostEventModel.savePostEvent(req, res);
     res.status(data.statusCode).send(data);
   } else {
     res.status(400).send({ msg: "invalid sessions" });
@@ -32,7 +32,7 @@ const savePostEvent = async (req, res, next) => {
 
 const updatePostEvent = async (req, res, next) => {
   if (await Auth.authorizer(req, res)) {
-    var data = await PostEventModel.updatePostEvent(req);
+    var data = await PostEventModel.updatePostEvent(req, res);
     res.status(data.statusCode).send(data);
   } else {
     res.status(400).send({ msg: "invalid sessions" });
@@ -41,7 +41,7 @@ const updatePostEvent = async (req, res, next) => {
 
 const deletePostEvent = async (req, res, next) => {
   if (await Auth.authorizer(req, res)) {
-    var data = await PostEventModel.deletePostEvent(req);
+    var data = await PostEventModel.deletePostEvent(req, res);
     res.status(data.statusCode).send(data);
   } else {
     res.status(400).send({ msg: "invalid sessions" });
@@ -49,7 +49,7 @@ const deletePostEvent = async (req, res, next) => {
 };
 const deletePostEventDelete = async (req, res, next) => {
   if (await Auth.authorizer(req, res)) {
-    var data = await PostEventModel.deletePostEventDelete(req);
+    var data = await PostEventModel.deletePostEventDelete(req, res);
     res.status(data.statusCode).send(data);
   } else {
     res.status(400).send({ msg: "invalid sessions" });
@@ -57,7 +57,7 @@ const deletePostEventDelete = async (req, res, next) => {
 };
 const savePostEventdate = async (req, res, next) => {
   if (await Auth.authorizer(req, res, next)) {
-    var data = await PostEventModel.savePostEventdate(req);
+    var data = await PostEventModel.savePostEventdate(req, res);
     res.status(data.statusCode).send(data);
   } else {
     res.status(400).send({ msg: "invalid sessions" });

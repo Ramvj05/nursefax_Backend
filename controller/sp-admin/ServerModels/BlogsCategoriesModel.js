@@ -17,26 +17,26 @@ async function getBlogCategoriesData(request) {
       const category = {};
       if (typeof request.params.id !== "undefined") {
         // Where = {};
-        console.log(request.params.id,"request.params.id")
+        console.log(request.params.id, "request.params.id");
         const _id = new mongoose.Types.ObjectId(request.params.id);
         var data = await BlogsCategoriesTable.aggregate([
           {
             $match: {
               _id,
-              is_delete:false
-            }
+              is_delete: false,
+            },
           },
           {
             $lookup: {
               from: "blogs",
               localField: "_id",
               foreignField: "PrimaryCategory",
-              as: "blogdetails"
-            }
+              as: "blogdetails",
+            },
           },
-            ]).then(
+        ]).then(
           (response) => {
-            console.log("response: " , response)
+            console.log("response: ", response);
             resultSet = {
               msg: "success",
               list: response,
@@ -51,9 +51,7 @@ async function getBlogCategoriesData(request) {
             };
           }
         );
-      }
-      
-      else {
+      } else {
         var Resultsdata = [];
         const datastest = await BlogsCategoriesTable.find({ is_delete: false });
         if (datastest.length > 0) {
@@ -61,9 +59,9 @@ async function getBlogCategoriesData(request) {
             var countblogssss = await BlogsTable.find({ is_delete: false });
             var datasseeww = countblogssss.filter(
               (irere) =>
-                irere.PrimaryCategory.toString() == ObjectId(category._id).toString()
+                irere.PrimaryCategory.toString() ==
+                ObjectId(category._id).toString()
             );
-
 
             Resultsdata.push({
               _id: category._id,
@@ -115,38 +113,36 @@ async function getBlogCategoriesAllData(request) {
       const uri = dbUri;
       await mongoose.connect(uri);
       const category = {};
-      if(typeof request.params.id !== "undefined"){
-        console.log(request.params.id,"request.params.cate_id")
+      if (typeof request.params.id !== "undefined") {
+        console.log(request.params.id, "request.params.cate_id");
         const _id = new mongoose.Types.ObjectId(request.params.id);
         var data = await BlogsCategoriesTable.aggregate([
           {
             $match: {
               _id,
-              is_delete:false
-            }
+              is_delete: false,
+            },
           },
           {
             $lookup: {
               from: "blogs",
               localField: "_id",
               foreignField: "PrimaryCategory",
-              as: "blogdetails"
-            }
+              as: "blogdetails",
+            },
           },
-          {$unwind:"$blogdetails"},
+          { $unwind: "$blogdetails" },
           {
             $lookup: {
               from: "users",
               localField: "blogdetails.user_id",
               foreignField: "_id",
-              as: "userdetails"
-            }
+              as: "userdetails",
+            },
           },
-
-
         ]).then(
           (response) => {
-            console.log("response: " , response)
+            console.log("response: ", response);
             resultSet = {
               msg: "success",
               list: response,
@@ -161,9 +157,7 @@ async function getBlogCategoriesAllData(request) {
             };
           }
         );
-      }
-      
-      else {
+      } else {
         var Resultsdata = [];
         const datastest = await BlogsCategoriesTable.find({ is_delete: false });
         if (datastest.length > 0) {
@@ -171,9 +165,9 @@ async function getBlogCategoriesAllData(request) {
             var countblogssss = await BlogsTable.find({ is_delete: false });
             var datasseeww = countblogssss.filter(
               (irere) =>
-                irere.PrimaryCategory.toString() == ObjectId(category._id).toString()
+                irere.PrimaryCategory.toString() ==
+                ObjectId(category._id).toString()
             );
-
 
             Resultsdata.push({
               _id: category._id,
@@ -204,7 +198,7 @@ async function getBlogCategoriesAllData(request) {
       }
       return resultSet;
     } catch (Error) {
-      console.log(Error,"iiiiiiiiiiiiii")
+      console.log(Error, "iiiiiiiiiiiiii");
       resultSet = {
         msg: Error,
         statusCode: 500,
@@ -303,7 +297,8 @@ async function updateBlogCategories(request) {
       upd.modifyDt = new Date();
       await BlogsCategoriesTable.updateMany(
         {
-          _id: request.params.id, is_delete: false
+          _id: request.params.id,
+          is_delete: false,
         },
         {
           $set: upd,
@@ -564,7 +559,8 @@ module.exports = {
   saveBlogCategories,
   updateBlogCategories,
   deleteBlogCategories,
-  deleteBlogCategoriesImg,getBlogCategoriesAllData
+  deleteBlogCategoriesImg,
+  getBlogCategoriesAllData,
 };
 
 // module.exports = router;
