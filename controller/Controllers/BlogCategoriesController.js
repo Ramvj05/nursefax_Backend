@@ -25,39 +25,35 @@ const saveBlogCategories = async (req, res, next) => {
   if (Auth.Verify(req, res, next)) {
     var data = await BlogCategoriesModel.saveBlogCategories(req, res);
     res.status(data.statusCode).send(data);
+  } else {
+    res.status(400).send({ msg: "invalid sessions" });
   }
-  // else {
-  //     res.status(400).send({ msg: "invalid sessions" });
-  // }
 };
 
 const updateBlogCategories = async (req, res, next) => {
   if (Auth.Verify(req, res)) {
     var data = await BlogCategoriesModel.updateBlogCategories(req, res);
     res.status(data.statusCode).send(data);
+  } else {
+    res.status(400).send({ msg: "invalid sessions" });
   }
-  // else {
-  //     res.status(400).send({ msg: "invalid sessions" });
-  // }
 };
 const deleteBlogCategories = async (req, res, next) => {
   if (Auth.Verify(req, res)) {
     var data = await BlogCategoriesModel.deleteBlogCategories(req, res);
     res.status(data.statusCode).send(data);
+  } else {
+    res.status(400).send({ msg: "invalid sessions" });
   }
-  // else {
-  //     res.status(400).send({ msg: "invalid sessions" });
-  // }
 };
 
 const deleteBlogCategoriesImg = async (req, res, next) => {
   if (Auth.Verify(req, res, next)) {
     var data = await BlogCategoriesModel.deleteBlogCategoriesImg(req, res);
     res.status(data.statusCode).send(data);
+  } else {
+    res.status(400).send({ msg: "invalid sessions" });
   }
-  // else{
-  //     res.status(400).send( { msg: "invalid sessions" });
-  // }
 };
 
 module.exports = {
