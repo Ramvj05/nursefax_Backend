@@ -21,8 +21,8 @@ const PostEventSchema = new Schema({
   uploadfile: {
     type: String,
   },
- 
-  eventlink: {
+
+  navlink: {
     type: String,
   },
   seotitle: {
@@ -33,7 +33,7 @@ const PostEventSchema = new Schema({
   },
   seokeyword: {
     type: Array,
-  }, 
+  },
   expiredOn: {
     type: Date,
   },
