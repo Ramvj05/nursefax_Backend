@@ -37,6 +37,10 @@ const updateEmployerStatus = async (req, res, next) => {
     res.status(400).send({ msg: "invalid sessions" });
   }
 };
+const updateEmployerProfile = async (req, res, next) => {
+  var data = await EmployersModel.updateEmployerProfile(req, res);
+  res.status(data.statusCode).send(data);
+};
 const deleteEmployers = async (req, res, next) => {
   if (await Auth.authorizer(req, res)) {
     var data = await EmployersModel.deleteEmployers(req, res);
@@ -52,4 +56,5 @@ module.exports = {
   updateEmployers,
   deleteEmployers,
   updateEmployerStatus,
+  updateEmployerProfile,
 };

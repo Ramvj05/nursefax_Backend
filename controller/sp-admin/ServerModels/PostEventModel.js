@@ -261,7 +261,7 @@ async function deletePostEvent(request) {
       ).then(
         (response) => {
           resultSet = {
-            msg: "Blog Deleted Successfully",
+            msg: "Event Deleted Successfully",
             statusCode: 200,
           };
         },

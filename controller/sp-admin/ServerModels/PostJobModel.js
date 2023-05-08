@@ -91,36 +91,6 @@ async function getPostJobData(req, res) {
               is_delete: false,
             },
           },
-
-          //   {
-          //     $lookup: {
-          //       from: "users",
-          //       localField: "user_id",
-          //       foreignField: "_id",
-          //       as: "userdetails"
-          //     }
-          //   },
-          //   {
-          //     $lookup: {
-          //       from: "blogcategories",
-          //       localField: "PrimaryCategory",
-          //       foreignField: "_id",
-          //       as: "categordetails"
-          //     }
-          //   },
-          //   {
-          //     $lookup: {
-          //       from: "PostJobviews",
-          //       localField: "_id",
-          //       foreignField: "blog_id",
-          //       as: "views"
-          //     }
-          //   },
-          //   {$project: { count: { $size:"$views" },"categordetails":1,"userdetails":1,BlogTitle:1,_id:1,TopStories:1,HomePage:1
-          // ,BlogURL:1,OtherCategory:1,ShortDescription:1,BlogImage:1,Description:1,YouTubeURL:1,MetaTitle:1,MetaDescription:1,
-          // MetaKeyword:1,createDt:1,modifyDt:1,Status:1}},
-          //   {$unwind:"$userdetails"},
-          //   {$unwind:"$categordetails"}
         ]).then(
           (response) => {
             console.log("response: " + response);
@@ -342,7 +312,7 @@ async function deletePostJob(req, res) {
       ).then(
         (response) => {
           resultSet = {
-            msg: "Blog Deleted Successfully",
+            msg: "Job Deleted Successfully",
             statusCode: 200,
           };
         },

@@ -87,7 +87,14 @@ const employerSchema = new Schema({
       required: true,
     },
   ],
+  mcc: {
+    type: String,
+  },
   active: {
+    type: Boolean,
+    default: false,
+  },
+  status: {
     type: Boolean,
     default: false,
   },

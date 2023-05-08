@@ -55,36 +55,6 @@ async function getEmployersData(request) {
               is_delete: false,
             },
           },
-
-          //   {
-          //     $lookup: {
-          //       from: "users",
-          //       localField: "user_id",
-          //       foreignField: "_id",
-          //       as: "userdetails"
-          //     }
-          //   },
-          //   {
-          //     $lookup: {
-          //       from: "blogcategories",
-          //       localField: "PrimaryCategory",
-          //       foreignField: "_id",
-          //       as: "categordetails"
-          //     }
-          //   },
-          //   {
-          //     $lookup: {
-          //       from: "Employersviews",
-          //       localField: "_id",
-          //       foreignField: "blog_id",
-          //       as: "views"
-          //     }
-          //   },
-          //   {$project: { count: { $size:"$views" },"categordetails":1,"userdetails":1,BlogTitle:1,_id:1,TopStories:1,HomePage:1
-          // ,BlogURL:1,OtherCategory:1,ShortDescription:1,BlogImage:1,Description:1,YouTubeURL:1,MetaTitle:1,MetaDescription:1,
-          // MetaKeyword:1,createDt:1,modifyDt:1,Status:1}},
-          //   {$unwind:"$userdetails"},
-          //   {$unwind:"$categordetails"}
         ]).then(
           (response) => {
             console.log("response: " + response);
@@ -153,6 +123,8 @@ async function saveEmployers(request) {
         ins.companyemail = data.companyemail;
         ins.email = data.email;
         ins.password = data.password;
+        ins.mcc = data.mcc;
+        ins.active = data.active;
         ins.country = data.country;
         ins.Address = data.Address;
         ins.userType = data.userType;
@@ -230,8 +202,10 @@ async function updateEmployers(request, res) {
       upd.website = data.website;
       upd.gstregno = data.gstregno;
       upd.about = data.about;
+      upd.active = data.active;
       upd.companyemail = data.companyemail;
       upd.email = data.email;
+      upd.mcc = data.mcc;
       upd.password = data.password;
       upd.country = data.country;
       upd.Address = data.Address;
@@ -458,7 +432,7 @@ async function updateEmployerStatus(req, res) {
           is_delete: false,
           _id: id,
         },
-        { $set: { active: data.Status } }
+        { $set: { status: data.Status } }
       ).then(
         (response) => {
           resultSet = {
@@ -492,6 +466,65 @@ async function updateEmployerStatus(req, res) {
     return resultSet;
   }
 }
+async function updateEmployerProfile(request, res) {
+  if (request != "" && typeof request !== "undefined") {
+    try {
+      const uri = dbUri;
+      await mongoose.connect(uri);
+      const data = request.body;
+      let upd = {};
+      upd.fullName = data.fullName;
+      upd.userName = data.userName;
+      upd.password = data.password;
+      upd.mobile = data.mobile;
+      upd.email = data.email;
+      upd.emailVerified = data.emailVerifired;
+      upd.active = data.active;
+      upd.mobileVerified = data.mobileVerified;
+      upd.mcc = data.mcc;
+      upd.country = data.country;
+      upd.modifyOn = new Date();
+
+      await EmployersTable.updateMany(
+        {
+          _id: request.params.id,
+        },
+        {
+          $set: upd,
+        }
+      ).then(
+        (response) => {
+          resultSet = {
+            msg: "Employer Profile updated successfully",
+            statusCode: 200,
+          };
+        },
+        (err) => {
+          console.log("err: ", err);
+          resultSet = {
+            msg: err.message,
+            statusCode: 500,
+          };
+        }
+      );
+
+      return resultSet;
+    } catch (Error) {
+      console.log(Error, "Error");
+      resultSet = {
+        msg: Error,
+        statusCode: 400,
+      };
+      return resultSet;
+    }
+  } else {
+    resultSet = {
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
+    return resultSet;
+  }
+}
 
 module.exports = {
   getEmployersData,
@@ -500,6 +533,7 @@ module.exports = {
   deleteEmployers,
   deleteEmployersImg,
   updateEmployerStatus,
+  updateEmployerProfile,
 };
 
 // module.exports = router;
