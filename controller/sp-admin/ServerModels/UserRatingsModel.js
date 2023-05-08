@@ -5,9 +5,9 @@ const { dbUri } = require("../../../endpoints/endpoints");
 const authorizer = require("../../../middleware/authorizer");
 const UserRatingsTable = require("../../../model/TableCollections/TableUserRatings");
 const router = express.Router();
-const FileHandler = require('../../../Helpers/FileHandler');
+const FileHandler = require("../../../Helpers/FileHandler");
 
-async function getUserRatingsData(request) {
+async function getUserRatingsData(request, res) {
   //console.log("request",request);
   if (request != "" && typeof request !== "undefined") {
     try {
@@ -20,21 +20,20 @@ async function getUserRatingsData(request) {
           {
             $match: {
               blog_id,
-              is_delete:false
-            }
+              is_delete: false,
+            },
           },
           {
             $lookup: {
               from: "users",
               localField: "user_id",
               foreignField: "_id",
-              as: "userdetails"
-            }
+              as: "userdetails",
+            },
           },
-
         ]).then(
           (response) => {
-            console.log("response: " + response)
+            console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -50,26 +49,23 @@ async function getUserRatingsData(request) {
           }
         );
       } else {
-
         var data = await UserRatingsTable.aggregate([
           {
-              $match:{
-                is_delete:false
-              }
-              
+            $match: {
+              is_delete: false,
+            },
           },
           {
             $lookup: {
               from: "users",
               localField: "user_id",
               foreignField: "_id",
-              as: "userdetails"
-            }
+              as: "userdetails",
+            },
           },
-
         ]).then(
           (response) => {
-            console.log("response: " + response)
+            console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -88,7 +84,7 @@ async function getUserRatingsData(request) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error)
+      console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -104,7 +100,7 @@ async function getUserRatingsData(request) {
   }
 }
 
-async function saveUserRatings(request) {
+async function saveUserRatings(request, res) {
   // console.log(request.body);
 
   if (request != "" && typeof request !== "undefined") {
@@ -118,49 +114,47 @@ async function saveUserRatings(request) {
       //   ins.BlogImage = await FileHandler.uploadAvatar(request, uploadpath, "BlogImage")
       // }
 
-            ins.user_id = request.body.user_id;
-            ins.blog_id = request.body.blog_id;
-            ins.review_rating = request.body.review_rating;
-            ins.comments = request.body.comments;
-            ins.createDt = new Date(),
-            ins.modifyDt = new Date();
+      ins.user_id = request.body.user_id;
+      ins.blog_id = request.body.blog_id;
+      ins.review_rating = request.body.review_rating;
+      ins.comments = request.body.comments;
+      (ins.createDt = new Date()), (ins.modifyDt = new Date());
 
-      let insert = new UserRatingsTable(ins)
-      await insert.save().then(response => {
-        resultSet = {
-          "msg": "Rating Created successfully",
-          "statusCode": 200
+      let insert = new UserRatingsTable(ins);
+      await insert.save().then(
+        (response) => {
+          resultSet = {
+            msg: "Rating Created successfully",
+            statusCode: 200,
+          };
+        },
+        (err) => {
+          console.log("err: ", err);
+          resultSet = {
+            msg: err.message,
+            statusCode: 500,
+          };
         }
-
-      }, err => {
-        console.log('err: ', err);
-        resultSet = {
-          "msg": err.message,
-          "statusCode": 500
-        }
-      });
+      );
 
       return resultSet;
-
-
     } catch (Error) {
       resultSet = {
-        "msg": Error,
-        "statusCode": 400
-      }
+        msg: Error,
+        statusCode: 400,
+      };
       return resultSet;
     }
-
   } else {
     resultSet = {
-      "msg": "No direct Access Allowed",
-      "statusCode": 500
-    }
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
     return resultSet;
   }
 }
 
-async function updateUserRatings(request) {
+async function updateUserRatings(request, res) {
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
@@ -173,94 +167,94 @@ async function updateUserRatings(request) {
       // upd.createDt = new Date(),
       upd.modifyDt = new Date();
 
-      await UserRatingsTable.updateMany({
-        _id: request.params.id,is_delete:false
-      }, {
-        $set: upd
-      })
-        .then(response => {
+      await UserRatingsTable.updateMany(
+        {
+          _id: request.params.id,
+          is_delete: false,
+        },
+        {
+          $set: upd,
+        }
+      ).then(
+        (response) => {
           resultSet = {
-            "msg": "Rating updated successfully",
-            "statusCode": 200
-          }
-
-        }, err => {
-          console.log('err: ', err);
+            msg: "Rating updated successfully",
+            statusCode: 200,
+          };
+        },
+        (err) => {
+          console.log("err: ", err);
           resultSet = {
-            "msg": err.message,
-            "statusCode": 500
-          }
-        });
+            msg: err.message,
+            statusCode: 500,
+          };
+        }
+      );
 
       return resultSet;
-
-
     } catch (Error) {
       resultSet = {
-        "msg": Error,
-        "statusCode": 400
-      }
+        msg: Error,
+        statusCode: 400,
+      };
       return resultSet;
     }
-
   } else {
     resultSet = {
-      "msg": "No direct Access Allowed",
-      "statusCode": 500
-    }
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
     return resultSet;
   }
 }
 
-async function deleteUserRatings(request) {
+async function deleteUserRatings(request, res) {
   console.log(request.body);
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
-      await UserRatingsTable.updateMany({
-        _id: request.params.id
-      }, {
-        $set: {
-          is_delete: true
+      await UserRatingsTable.updateMany(
+        {
+          _id: request.params.id,
+        },
+        {
+          $set: {
+            is_delete: true,
+          },
         }
-      }).then(response => {
-        resultSet = {
-          "msg": "Rating Deleted Successfully",
-          "statusCode": 200
+      ).then(
+        (response) => {
+          resultSet = {
+            msg: "Rating Deleted Successfully",
+            statusCode: 200,
+          };
+        },
+        (err) => {
+          console.log("err: ", err);
+          resultSet = {
+            msg: err.message,
+            statusCode: 500,
+          };
         }
-
-      }, err => {
-        console.log('err: ', err);
-        resultSet = {
-          "msg": err.message,
-          "statusCode": 500
-        }
-      })
+      );
 
       return resultSet;
-
-
     } catch (Error) {
       resultSet = {
-        "msg": Error,
-        "statusCode": 400
-      }
+        msg: Error,
+        statusCode: 400,
+      };
       return resultSet;
     }
-
   } else {
     resultSet = {
-      "msg": "No direct Access Allowed",
-      "statusCode": 500
-    }
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
     return resultSet;
   }
 }
-
-
-
-
 
 module.exports = {
   getUserRatingsData,

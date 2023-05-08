@@ -9,7 +9,7 @@ const router = express.Router();
 const FileHandler = require("../../../Helpers/FileHandler");
 const { ObjectId } = require("mongodb");
 
-async function getBlogCategoriesData(request) {
+async function getBlogCategoriesData(request, res) {
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
@@ -106,7 +106,7 @@ async function getBlogCategoriesData(request) {
     return resultSet;
   }
 }
-async function getBlogCategoriesAllData(request) {
+async function getBlogCategoriesAllData(request, res) {
   // console.log(request,"request")
   if (request != "" && typeof request !== "undefined") {
     try {
@@ -213,7 +213,7 @@ async function getBlogCategoriesAllData(request) {
     return resultSet;
   }
 }
-async function saveBlogCategories(request) {
+async function saveBlogCategories(request, res) {
   if (request != "" && typeof request !== "undefined") {
     const uri = dbUri;
     await mongoose.connect(uri);
@@ -272,7 +272,7 @@ async function saveBlogCategories(request) {
   }
 }
 
-async function updateBlogCategories(request) {
+async function updateBlogCategories(request, res) {
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
@@ -334,7 +334,7 @@ async function updateBlogCategories(request) {
     return resultSet;
   }
 }
-async function deleteBlogCategories(request) {
+async function deleteBlogCategories(request, res) {
   if (request != "" && typeof request !== "undefined") {
     const uri = dbUri;
     await mongoose.connect(uri);
@@ -379,7 +379,7 @@ async function deleteBlogCategories(request) {
     return resultSet;
   }
 }
-async function deleteBlogCategoriesImg(request) {
+async function deleteBlogCategoriesImg(request, res) {
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;

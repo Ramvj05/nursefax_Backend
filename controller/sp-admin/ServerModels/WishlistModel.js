@@ -4,7 +4,7 @@ const { dbUri } = require("../../../endpoints/endpoints");
 const authorizer = require("../../../middleware/authorizer");
 const WishListModel = require("../../../model/TableCollections/TableWishlist");
 
-async function getWishlistData(request) {
+async function getWishlistData(request, res) {
   //console.log("request",request);
   if (request != "" && typeof request !== "undefined") {
     try {
@@ -96,7 +96,7 @@ async function getWishlistData(request) {
   }
 }
 
-async function saveWishlist(request) {
+async function saveWishlist(request, res) {
   const { user } = request.headers.user;
   const data = request.body;
   const uri = dbUri;

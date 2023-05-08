@@ -6,7 +6,7 @@ const PostEventTable = require("../../../model/TableCollections/TablePostEvent")
 const PostEventDateTable = require("../../../model/TableCollections/TableEventDate");
 const FileHandler = require("../../../Helpers/FileHandler");
 
-async function getPostEventData(request) {
+async function getPostEventData(request, res) {
   //console.log("request",request);
   if (request != "" && typeof request !== "undefined") {
     try {
@@ -92,7 +92,7 @@ async function getPostEventData(request) {
     return resultSet;
   }
 }
-async function savePostEvent(request) {
+async function savePostEvent(request, res) {
   if (request != "" && typeof request !== "undefined") {
     const uri = dbUri;
     const { decodeToken, user } = request.headers.user;
@@ -174,7 +174,7 @@ async function savePostEvent(request) {
     return resultSet;
   }
 }
-async function updatePostEvent(request) {
+async function updatePostEvent(request, res) {
   if (request != "" && typeof request !== "undefined") {
     try {
       const { decodeToken, user } = request.headers.user;
@@ -243,7 +243,7 @@ async function updatePostEvent(request) {
     return resultSet;
   }
 }
-async function deletePostEvent(request) {
+async function deletePostEvent(request, res) {
   // console.log(request.body);
   if (request != "" && typeof request !== "undefined") {
     try {
@@ -290,14 +290,14 @@ async function deletePostEvent(request) {
     return resultSet;
   }
 }
-async function getPostEventDateData(request) {
+async function getPostEventDateData(request, res) {
   //console.log("request",request);
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
       if (typeof request.params.id !== "undefined") {
-        const _id = new mongoose.Types.ObjectId(request.params.id);
+        const eventid = new mongoose.Types.ObjectId(request.params.id);
         var data = await PostEventDateTable.aggregate([
           {
             $match: {
@@ -376,7 +376,7 @@ async function getPostEventDateData(request) {
     return resultSet;
   }
 }
-async function savePostEventdate(request) {
+async function savePostEventdate(request, res) {
   if (request != "" && typeof request !== "undefined") {
     const uri = dbUri;
     const { decodeToken, user } = request.headers.user;
@@ -425,7 +425,7 @@ async function savePostEventdate(request) {
     return resultSet;
   }
 }
-async function deletePostEventDelete(request) {
+async function deletePostEventDelete(request, res) {
   // console.log(request.body);
   if (request != "" && typeof request !== "undefined") {
     try {
