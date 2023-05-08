@@ -5,6 +5,7 @@ const { dbUri } = require("../../../endpoints/endpoints");
 const authorizer = require("../../../middleware/authorizer");
 const EmployersTable = require("../../../model/TableCollections/TableEmployers");
 const FileHandler = require("../../../Helpers/FileHandler");
+const { generateHash, generateSalt } = require("../../../utils/encrypt");
 
 async function getEmployersData(request) {
   //console.log("request",request);
