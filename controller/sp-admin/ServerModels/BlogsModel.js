@@ -9,7 +9,7 @@ const router = express.Router();
 const FileHandler = require("../../../Helpers/FileHandler");
 var geoip = require("geoip-lite");
 
-async function getBlogsData(request, res) {
+async function getBlogsData(request) {
   //console.log("request",request);
   if (request != "" && typeof request !== "undefined") {
     try {
@@ -149,55 +149,19 @@ async function getBlogsData(request, res) {
     return resultSet;
   }
 }
-async function getUserBlogsData(request, res) {
+async function getUserBlogsData(request) {
   //console.log("request",request);
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
       const category = {};
-      if (typeof request.params.user_id !== "undefined") {
+      if (typeof request.params.id !== "undefined") {
         // Where = {};
-        const user_id = new mongoose.Types.ObjectId(request.params.user_id);
+        const _id = new mongoose.Types.ObjectId(request.params.id);
 
         // var counts= await BlogsViewTable.find({blog_id:_id}).count()
         // console.log(counts,"oooooooooooooooo");
-        var data = await BlogsTable.aggregate([
-          {
-            $match: {
-              user_id,
-              is_delete: false,
-            },
-          },
-          // { $addFields: { "custom_field":counts } },
-          // {
-          //   $lookup: {
-          //     from: "users",
-          //     localField: "user_id",
-          //     foreignField: "_id",
-          //     as: "userdetails"
-          //   }
-          // },
-          {
-            $lookup: {
-              from: "blogcategories",
-              localField: "PrimaryCategory",
-              foreignField: "_id",
-              as: "categordetails",
-            },
-          },
-        ]).then(
-          (response) => {
-            console.log("response: ", response);
-            resultSet = { msg: "success", list: response, statusCode: 200 };
-          },
-          (err) => {
-            console.log("err: ", err);
-            resultSet = { msg: err.message, statusCode: 500 };
-          }
-        );
-      } else if (typeof request.params.id !== "undefined") {
-        const _id = new mongoose.Types.ObjectId(request.params.id);
         var data = await BlogsTable.aggregate([
           {
             $match: {
@@ -232,8 +196,7 @@ async function getUserBlogsData(request, res) {
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
-      }
-      {
+      } else {
         // var counts= await BlogsViewTable.find({blog_id:_id}).count()
         var data = await BlogsTable.aggregate([
           {
@@ -328,7 +291,7 @@ async function getUserBlogsData(request, res) {
     return resultSet;
   }
 }
-async function saveBlogs(request, res) {
+async function saveBlogs(request) {
   if (request != "" && typeof request !== "undefined") {
     const uri = dbUri;
     await mongoose.connect(uri);
@@ -398,7 +361,7 @@ async function saveBlogs(request, res) {
     return resultSet;
   }
 }
-async function saveViewBlogs(request, res) {
+async function saveViewBlogs(request) {
   if (request != "" && typeof request !== "undefined") {
     const uri = dbUri;
     await mongoose.connect(uri);
@@ -465,7 +428,7 @@ async function saveViewBlogs(request, res) {
   }
 }
 
-async function updateBlogs(request, res) {
+async function updateBlogs(request) {
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
@@ -538,7 +501,7 @@ async function updateBlogs(request, res) {
     return resultSet;
   }
 }
-async function deleteBlogs(request, res) {
+async function deleteBlogs(request) {
   // console.log(request.body);
   if (request != "" && typeof request !== "undefined") {
     try {
@@ -585,7 +548,7 @@ async function deleteBlogs(request, res) {
     return resultSet;
   }
 }
-async function deleteBlogsImg(request, res) {
+async function deleteBlogsImg(request) {
   // console.log(request.body);
   if (request != "" && typeof request !== "undefined") {
     try {
