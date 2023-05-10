@@ -12,7 +12,6 @@ const authorizer = async (req, res, next) => {
 
   const { authorization } = req.headers;
   if (authorization) {
-    // console.log(authorization,"authorization")
     const token =
       authorization.split(" ")[0] != "Bearer"
         ? authorization.split(" ")[0]
@@ -26,7 +25,7 @@ const authorizer = async (req, res, next) => {
       });
     } else if (decodeToken?.userType === 4) {
       data = await EmployerModel.findOne({
-        deleted: false,
+        is_delete: false,
         _id: decodeToken?.id,
       });
     } else {
@@ -40,6 +39,7 @@ const authorizer = async (req, res, next) => {
         }
       );
     }
+
     if (data) {
       req.headers.user = { decodeToken, authorization, user: data };
       return true;
@@ -88,7 +88,6 @@ const Login = async (req, res, next) => {
     return userToken;
   } catch (err) {
     if (err) {
-      console.log(err);
       return false;
     }
   }

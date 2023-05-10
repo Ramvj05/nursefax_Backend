@@ -16,7 +16,7 @@ var apikey = defaultClient.authentications["apikey"];
 apikey.apiKey =
   "451919C3C5CC33D2F1A86F167943B84CA768437AA96B79D75A2034072640B8CE5A30CA5A4E17A64C0736FA02C8BC800E";
 
-router.get("/send/:userId", async function (req, res) {
+router.get("/send/verify/:userId", async function (req, res) {
   try {
     const { userId } = req.params;
     console.log(userId);
@@ -58,7 +58,7 @@ router.get("/send/:userId", async function (req, res) {
 									</div>
 									<p style="font-size:1.1em">Hi, ${result?.email}</p>
 									<p>Thank you for choosing Nursefax.<br/> Click the following link to verify your email.</p>
-									<a style="background: #00466a;margin: 0 auto;width: max-content;padding: 5px 10px;color: #fff;border-radius: 4px;" href="${endpoints.userHost}verify/${result?._id}">Activate Your Account</a>
+									<a style="background: #00466a;margin: 0 auto;width: max-content;padding: 5px 10px;color: #fff;border-radius: 4px;" href="${endpoints.EmployerHost}verify/${result?._id}">Activate Your Account</a>
 									<p style="font-size:0.9em;">Regards,<br />Nursefax.com</p>
 									<hr style="border:none;border-top:1px solid #eee" />
 									

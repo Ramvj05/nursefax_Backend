@@ -9,6 +9,7 @@ let host = "http://localhost:4000/api/";
 // let host = "https://api.nursefax.com/api/";
 // let userHost = "https://nursefax.com/";
 let userHost = "http://localhost:3000/";
+let EmployerHost = "http://localhost:5000/";
 
 // let db = `mongodb+srv://nursefax_dedicated_user:jihOAAGj6aYtOynm@cluster0.mtfni.mongodb.net/nursefax?retryWrites=true&w=majority`;
 // let jobDb = `mongodb+srv://nursefax_dedicated_user:jihOAAGj6aYtOynm@cluster0.mtfni.mongodb.net`;

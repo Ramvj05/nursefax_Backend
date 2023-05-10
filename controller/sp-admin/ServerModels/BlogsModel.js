@@ -205,7 +205,6 @@ async function getUserBlogsData(request) {
             },
           },
           //  { $addFields: { "custom_field":counts } },
-
           {
             $lookup: {
               from: "users",
