@@ -131,7 +131,7 @@ async function getBlogCategoriesAllData(request, res) {
               as: "blogdetails",
             },
           },
-          // { $unwind: "$blogdetails" },
+          { $unwind: "$blogdetails" },
           {
             $lookup: {
               from: "users",

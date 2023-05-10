@@ -28,6 +28,7 @@ const wishlist = require("./controller/common/Routers/wishlist");
 const employer = require("./controller/common/Routers/Employer");
 const postjob = require("./controller/common/Routers/PostJob");
 const postevent = require("./controller/common/Routers/PostEvent");
+const employertype = require("./controller/common/Routers/EmployerType");
 
 const bodyParser = require("body-parser");
 
@@ -49,6 +50,10 @@ app.use(
 app.use(
   "/api/EmpPost/",
   express.static(path.join(__dirname + `/uploads/Employers/`))
+);
+app.use(
+  "/api/EventPost/",
+  express.static(path.join(__dirname + `/uploads/Event/`))
 );
 
 app.use("/api", auth);
@@ -75,6 +80,7 @@ app.use("/api/wishlist", wishlist);
 app.use("/api/employer", employer);
 app.use("/api/postjob", postjob);
 app.use("/api/event", postevent);
+app.use("/api/employertype", employertype);
 
 var PORT = 4000 || process.env.PORT;
 app.listen(PORT, () => {

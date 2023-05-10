@@ -21,6 +21,9 @@ const PostEventSchema = new Schema({
   uploadfile: {
     type: String,
   },
+  assignto: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
 
   navlink: {
     type: String,
@@ -29,6 +32,15 @@ const PostEventSchema = new Schema({
     type: String,
   },
   seodescription: {
+    type: String,
+  },
+  building_no: {
+    type: String,
+  },
+  address1: {
+    type: String,
+  },
+  address2: {
     type: String,
   },
   seokeyword: {

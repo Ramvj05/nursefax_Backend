@@ -133,7 +133,11 @@ async function savePostEvent(request, res) {
       ins.seotitle = request.body.seotitle;
       ins.seodescription = request.body.seodescription;
       ins.seokeyword = request.body.seokeyword;
+      ins.assignto = request.body.assignto;
       ins.navlink = request.body.navlink;
+      ins.building_no = request.body.building_no;
+      ins.address1 = request.body.address1;
+      ins.address2 = request.body.address2;
       ins.expiredOn = request.body.expiredOn;
       ins.createdBy = decodeToken.id;
       ins.createdOn = new Date();
@@ -197,6 +201,10 @@ async function updatePostEvent(request, res) {
       upd.heading = request.body.heading;
       upd.seotitle = request.body.seotitle;
       upd.seodescription = request.body.seodescription;
+      upd.building_no = request.body.building_no;
+      upd.address1 = request.body.address1;
+      upd.address2 = request.body.address2;
+      upd.assignto = request.body.assignto;
       upd.seokeyword = request.body.seokeyword;
       upd.navlink = request.body.navlink;
       upd.expiredOn = request.body.expiredOn;
@@ -472,6 +480,80 @@ async function deletePostEventDelete(request, res) {
     return resultSet;
   }
 }
+async function getEmployeeEventData(request, res) {
+  //console.log("request",request);
+  if (request != "" && typeof request !== "undefined") {
+    try {
+      const uri = dbUri;
+      await mongoose.connect(uri);
+      if (typeof request.params.id !== "undefined") {
+        const createdBy = new mongoose.Types.ObjectId(request.params.id);
+        var data = await PostEventTable.find({
+          is_delete: false,
+          $or: [{ createdBy: createdBy }, { assignto: createdBy }],
+        }).then(
+          (response) => {
+            console.log("response: ", response);
+            resultSet = { msg: "success", list: response, statusCode: 200 };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = { msg: err.message, statusCode: 500 };
+          }
+        );
+      } else {
+        // var counts= await PostEventViewTable.find({blog_id:_id}).count()
+        var data = await PostEventTable.aggregate([
+          {
+            $match: {
+              is_delete: false,
+            },
+          },
+
+          //   {
+          //     $lookup: {
+          //       from: "users",
+          //       localField: "user_id",
+          //       foreignField: "_id",
+          //       as: "userdetails"
+          //     }
+          //   },
+        ]).then(
+          (response) => {
+            console.log("response: " + response);
+            resultSet = {
+              msg: "success",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
+      }
+
+      return resultSet;
+    } catch (Error) {
+      console.log("error: " + Error);
+      resultSet = {
+        msg: Error,
+        statusCode: 501,
+      };
+      return resultSet;
+    }
+  } else {
+    resultSet = {
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
+    return resultSet;
+  }
+}
 
 module.exports = {
   getPostEventData,
@@ -481,6 +563,7 @@ module.exports = {
   savePostEventdate,
   deletePostEventDelete,
   getPostEventDateData,
+  getEmployeeEventData,
 };
 
 // module.exports = router;
