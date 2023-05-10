@@ -61,6 +61,7 @@ module.exports = {
   utils: {},
   host: host,
   userHost: userHost,
+  EmployerHost: EmployerHost,
   dbUri: db,
   // jobDbUri: jobDb,
 };

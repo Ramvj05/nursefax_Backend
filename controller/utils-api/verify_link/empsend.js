@@ -58,7 +58,7 @@ router.get("/send/verify/:userId", async function (req, res) {
 									</div>
 									<p style="font-size:1.1em">Hi, ${result?.email}</p>
 									<p>Thank you for choosing Nursefax.<br/> Click the following link to verify your email.</p>
-									<a style="background: #00466a;margin: 0 auto;width: max-content;padding: 5px 10px;color: #fff;border-radius: 4px;" href="${endpoints.EmployerHost}verify/${result?._id}">Activate Your Account</a>
+									<a style="background: #00466a;margin: 0 auto;width: max-content;padding: 5px 10px;color: #fff;border-radius: 4px;" href="${endpoints.EmployerHost}auth/verify/${result?._id}">Activate Your Account</a>
 									<p style="font-size:0.9em;">Regards,<br />Nursefax.com</p>
 									<hr style="border:none;border-top:1px solid #eee" />
 									
