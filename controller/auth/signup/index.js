@@ -66,12 +66,12 @@ router.post("/signup", async function (req, res) {
     newUser = new EmployerModel(body);
     // presentUser = false;
 
-    presentUser = await EmployerModel.findOne(
-      {
-        email: newUser.email,
-      }
-      // { password: 0 }
-    );
+    // presentUser = await EmployerModel.findOne(
+    //   {
+    //     email: newUser.email,
+    //   }
+    // { password: 0 }
+    // );
   } else {
     newUser = new User(body);
     presentUser = false;
