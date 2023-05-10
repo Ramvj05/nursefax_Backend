@@ -197,7 +197,6 @@ async function updatePostEvent(request, res) {
         );
       }
       upd.name = request.body.name;
-      upd.eventId = eventId;
       upd.description = request.body.description;
       upd.heading = request.body.heading;
       upd.seotitle = request.body.seotitle;
