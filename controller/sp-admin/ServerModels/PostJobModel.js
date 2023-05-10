@@ -247,6 +247,7 @@ async function updatePostJob(req, res) {
       upd.country = req.body.country;
       upd.enabled = req.body.enabled;
       upd.keyword = req.body.keyword;
+      upd.active = req.body.active;
       upd.city = req.body.city;
       upd.navlink = req.body.navlink;
       upd.state = req.body.state;
