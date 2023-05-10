@@ -6,6 +6,7 @@ router.post("/", Controller.savePostJob);
 router.post("/applyjob/", Controller.saveApplyJob);
 router.get("/", Controller.getPostJobData);
 router.get("/employerjob/:id", Controller.getEmployerJobData);
+router.get("/employerjob/job/:job_id", Controller.getEmployerJobData);
 router.get("/:id", Controller.getPostJobData);
 router.get("/appliedjob/:user_id", Controller.getPostJobData);
 router.put("/:id", Controller.updatePostJob);

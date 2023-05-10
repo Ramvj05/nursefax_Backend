@@ -64,6 +64,14 @@ const deletePostEventDelete = async (req, res, next) => {
     res.status(400).send({ msg: "invalid sessions" });
   }
 };
+const savePostEventApplyEvent = async (req, res, next) => {
+  if (await Auth.authorizer(req, res)) {
+    var data = await PostEventModel.savePostEventApplyEvent(req, res);
+    res.status(data.statusCode).send(data);
+  } else {
+    res.status(400).send({ msg: "invalid sessions" });
+  }
+};
 const savePostEventdate = async (req, res, next) => {
   if (await Auth.authorizer(req, res, next)) {
     var data = await PostEventModel.savePostEventdate(req, res);
@@ -82,4 +90,5 @@ module.exports = {
   deletePostEventDelete,
   getPostEventDateData,
   getEmployeeEventData,
+  savePostEventApplyEvent,
 };

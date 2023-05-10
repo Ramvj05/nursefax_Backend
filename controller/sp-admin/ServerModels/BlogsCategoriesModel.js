@@ -131,7 +131,12 @@ async function getBlogCategoriesAllData(request, res) {
               as: "blogdetails",
             },
           },
-          { $unwind: "$blogdetails" },
+          {
+            $unwind: {
+              path: "$blogdetails",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
           {
             $lookup: {
               from: "users",

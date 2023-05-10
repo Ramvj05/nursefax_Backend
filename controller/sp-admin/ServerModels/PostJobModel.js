@@ -343,87 +343,6 @@ async function deletePostJob(req, res) {
     return resultSet;
   }
 }
-
-async function updateJobStatus(req, res) {
-  const { user } = req.headers.user;
-  const { id } = req.params;
-  const data = req.body;
-  const uri = dbUri;
-  await mongoose.connect(uri);
-
-  try {
-    console.log(id);
-    if (user.roles.includes("ADMIN")) {
-      const updatedstatus = await PostJobTable.findOneAndUpdate(
-        {
-          is_delete: false,
-          _id: id,
-        },
-        { $set: { active: data.Status } }
-      );
-
-      console.log(updatedstatus);
-      if (updatedstatus) {
-        res
-          .header({
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          })
-          .status(200)
-          .send({
-            // data: updatedstatus,
-            message: "Job Approved Successfully",
-            statsCode: 200,
-            error: null,
-          });
-      } else {
-        res
-          .header({
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          })
-          .status(404)
-          .send({
-            data: null,
-            message: "No test Found",
-            statsCode: 404,
-            error: {
-              message: "No data present",
-            },
-          });
-      }
-    } else {
-      res
-        .header({
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        })
-        .status(401)
-        .send({
-          data: null,
-          message: "You do not have access to modify course",
-          statsCode: 401,
-          error: {
-            message: "Access denied",
-          },
-        });
-    }
-  } catch (err) {
-    console.log(err);
-    res
-      .header({
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      })
-      .status(500)
-      .send({
-        statsCode: 500,
-        data: null,
-        message: "Somthing went wrong",
-        error: err,
-      });
-  }
-}
 async function saveApplyJob(req, res) {
   if (req != "" && typeof req !== "undefined") {
     const uri = dbUri;
@@ -431,6 +350,7 @@ async function saveApplyJob(req, res) {
 
     await mongoose.connect(uri);
     try {
+      ins = {};
       ins.job_id = req.body.job_id;
       ins.createdBy = decodeToken.id;
       ins.createdOn = new Date();
@@ -446,7 +366,7 @@ async function saveApplyJob(req, res) {
           };
         },
         (err) => {
-          // console.log("err: ", err);
+          console.log("err: ", err);
           resultSet = {
             msg: err.message,
             statusCode: 500,
@@ -469,6 +389,60 @@ async function saveApplyJob(req, res) {
       statusCode: 500,
     };
     return resultSet;
+  }
+}
+async function updateJobStatus(req, res) {
+  const { decodeToken, user } = req.headers.user;
+  const { id } = req.params;
+  const data = req.body;
+  const uri = dbUri;
+  await mongoose.connect(uri);
+
+  try {
+    console.log(id);
+    if (user.roles.includes("ADMIN") || user.roles.includes("EMPLOYER")) {
+      const updatedstatus = await ApplyJobTable.findOneAndUpdate(
+        {
+          is_delete: false,
+          _id: id,
+        },
+        { $set: { status: data.status, changedstatusBy: decodeToken.id } }
+      ).then(
+        (response) => {
+          resultSet = {
+            msg: "Job Status changed successfully",
+            statusCode: 200,
+          };
+        },
+        (err) => {
+          // console.log("err: ", err);
+          resultSet = {
+            msg: err.message,
+            statusCode: 500,
+          };
+        }
+      );
+    } else {
+      resultSet = {
+        msg: "You dont have permission to access this page",
+        statusCode: 401,
+      };
+    }
+    return resultSet;
+  } catch (err) {
+    console.log(err);
+    res
+      .header({
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      })
+      .status(500)
+      .send({
+        statsCode: 500,
+        data: null,
+        message: "Somthing went wrong",
+        error: err,
+      });
   }
 }
 async function getEmployerJobData(req, res) {
@@ -494,6 +468,47 @@ async function getEmployerJobData(req, res) {
           //     as: "userdetails"
           //   }
           // },
+          // {
+          //   $lookup: {
+          //     from: "blogcategories",
+          //     localField: "PrimaryCategory",
+          //     foreignField: "_id",
+          //     as: "categordetails"
+          //   }
+          // },
+        ]).then(
+          (response) => {
+            console.log("response: ", response);
+            resultSet = { msg: "success", list: response, statusCode: 200 };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = { msg: err.message, statusCode: 500 };
+          }
+        );
+      } else if (typeof req.params.job_id !== "undefined") {
+        const job_id = new mongoose.Types.ObjectId(req.params.job_id);
+        var data = await ApplyJobTable.aggregate([
+          {
+            $match: {
+              job_id,
+              is_delete: false,
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "userdetails",
+            },
+          },
+          {
+            $unwind: {
+              path: "$userdetails",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
           // {
           //   $lookup: {
           //     from: "blogcategories",
