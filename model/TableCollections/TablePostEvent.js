@@ -34,7 +34,13 @@ const PostEventSchema = new Schema({
   seodescription: {
     type: String,
   },
-  building_no: {
+  city: {
+    type: String,
+  },
+  state: {
+    type: String,
+  },
+  country: {
     type: String,
   },
   address1: {
