@@ -4,12 +4,12 @@ const authorizer = require("../../middleware/authorizer");
 const Auth = require("../../Helpers/Auth");
 
 const getPostJobData = async (req, res, next) => {
-  if (Auth.authorizer(req, res, next)) {
-    var data = await PostJobModel.getPostJobData(req, res);
-    res.status(data.statusCode).send(data);
-  } else {
-    res.status(400).send({ msg: "invalid sessions" });
-  }
+  // if (Auth.authorizer(req, res, next)) {
+  var data = await PostJobModel.getPostJobData(req, res);
+  res.status(data.statusCode).send(data);
+  // } else {
+  //   res.status(400).send({ msg: "invalid sessions" });
+  // }
 };
 const getEmployerJobData = async (req, res, next) => {
   if (Auth.authorizer(req, res, next)) {

@@ -136,6 +136,7 @@ async function savePostEvent(request, res) {
       ins.seokeyword = request.body.seokeyword;
       ins.assignto = request.body.assignto;
       ins.navlink = request.body.navlink;
+      ins.active = request.body.active;
       ins.building_no = request.body.building_no;
       ins.address1 = request.body.address1;
       ins.address2 = request.body.address2;
@@ -204,6 +205,7 @@ async function updatePostEvent(request, res) {
       upd.building_no = request.body.building_no;
       upd.address1 = request.body.address1;
       upd.address2 = request.body.address2;
+      upd.active = request.body.active;
       upd.assignto = request.body.assignto;
       upd.seokeyword = request.body.seokeyword;
       upd.navlink = request.body.navlink;
@@ -501,7 +503,7 @@ async function getEmployeeEventData(request, res) {
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
-      } else {
+      } else if (typeof request.params.event_id !== "undefined") {
         const event_id = new mongoose.Types.ObjectId(request.params.event_id);
         var data = await PostEventApply.find({
           is_delete: false,
@@ -514,6 +516,41 @@ async function getEmployeeEventData(request, res) {
           (err) => {
             console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
+          }
+        );
+      } else {
+        // var counts= await PostEventViewTable.find({blog_id:_id}).count()
+        var data = await PostEventTable.aggregate([
+          {
+            $match: {
+              active: false,
+              is_delete: false,
+            },
+          },
+
+          {
+            $lookup: {
+              from: "employers",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "employer_details",
+            },
+          },
+        ]).then(
+          (response) => {
+            console.log("response: " + response);
+            resultSet = {
+              msg: "success",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
           }
         );
       }

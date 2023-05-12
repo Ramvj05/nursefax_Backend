@@ -119,7 +119,7 @@ router.post("/login", async function (req, res) {
           {
             expiresIn:
               user.userType === 0
-                ? "30m"
+                ? "4h"
                 : user.userType === 1 || user.userType === 3
                 ? "3h"
                 : "24h",

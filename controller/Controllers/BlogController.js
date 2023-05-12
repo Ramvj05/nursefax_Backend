@@ -13,7 +13,7 @@ const getBlogsData = async (req, res, next) => {
   // }
 };
 const getUserBlogsData = async (req, res, next) => {
-  // if (Auth.Verify(req, res, next)) {
+  // if (Auth.authorizer(req, res, next)) {
   var data = await BlogsModel.getUserBlogsData(req, res);
   // console.log(data)
   res.status(data.statusCode).send(data);
@@ -21,7 +21,7 @@ const getUserBlogsData = async (req, res, next) => {
 };
 
 const saveBlogs = async (req, res, next) => {
-  if (Auth.Verify(req, res, next)) {
+  if (Auth.authorizer(req, res, next)) {
     var data = await BlogsModel.saveBlogs(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -29,7 +29,7 @@ const saveBlogs = async (req, res, next) => {
   }
 };
 const saveViewBlogs = async (req, res, next) => {
-  // if (Auth.Verify(req, res, next)) {
+  // if (Auth.authorizer(req, res, next)) {
   var data = await BlogsModel.saveViewBlogs(req, res);
   res.status(data.statusCode).send(data);
   // } else {
@@ -38,7 +38,7 @@ const saveViewBlogs = async (req, res, next) => {
 };
 
 const updateBlogs = async (req, res, next) => {
-  if (Auth.Verify(req, res)) {
+  if (Auth.authorizer(req, res)) {
     var data = await BlogsModel.updateBlogs(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -46,7 +46,7 @@ const updateBlogs = async (req, res, next) => {
   }
 };
 const deleteBlogs = async (req, res, next) => {
-  if (Auth.Verify(req, res)) {
+  if (Auth.authorizer(req, res)) {
     var data = await BlogsModel.deleteBlogs(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -55,7 +55,7 @@ const deleteBlogs = async (req, res, next) => {
 };
 
 const deleteBlogsImg = async (req, res, next) => {
-  if (Auth.Verify(req, res)) {
+  if (Auth.authorizer(req, res)) {
     var data = await BlogsModel.deleteBlogsImg(req, res);
     res.status(data.statusCode).send(data);
   } else {

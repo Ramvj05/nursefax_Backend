@@ -61,7 +61,7 @@ const PostEventSchema = new Schema({
     type: Date,
   },
   createdBy: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
   },
   modifyOn: {
     type: Date,

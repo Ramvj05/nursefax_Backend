@@ -4,6 +4,7 @@ const Controller = require("../../Controllers/PostEventController");
 
 router.get("/eventdate/:id", Controller.getPostEventDateData);
 router.get("/employerevent/:id", Controller.getEmployeeEventData);
+router.get("/employerevent/", Controller.getEmployeeEventData);
 router.get(
   "/employerevent/eventdata/:event_id",
   Controller.getEmployeeEventData

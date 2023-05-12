@@ -92,6 +92,14 @@ async function getPostJobData(req, res) {
               is_delete: false,
             },
           },
+          {
+            $lookup: {
+              from: "employers",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "employer_details",
+            },
+          },
         ]).then(
           (response) => {
             console.log("response: " + response);
