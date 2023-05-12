@@ -359,6 +359,15 @@ async function saveApplyJob(req, res) {
     await mongoose.connect(uri);
     try {
       ins = {};
+      if (req.files) {
+        uploadpath = __dirname + "/../../../uploads/";
+        // console.log(uploadpath, "uploadpath");
+        ins.uploadfile = await FileHandler.uploadAvatar(
+          req,
+          uploadpath,
+          "uploadfile"
+        );
+      }
       ins.job_id = req.body.job_id;
       ins.singlequestion = req.body.singlequestion;
       ins.createdBy = decodeToken.id;

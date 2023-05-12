@@ -111,7 +111,7 @@ const employerSchema = new Schema({
     // default: Date.now,
   },
   createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
   },
 });
 

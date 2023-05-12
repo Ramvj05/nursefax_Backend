@@ -129,20 +129,20 @@ async function savePostEvent(request, res) {
       }
       ins.name = request.body.name;
       ins.eventId = eventId;
-      ins.description = request.body.description;
-      ins.heading = request.body.heading;
-      ins.seotitle = request.body.seotitle;
-      ins.seodescription = request.body.seodescription;
-      ins.seokeyword = request.body.seokeyword;
-      ins.assignto = request.body.assignto;
-      ins.navlink = request.body.navlink;
-      ins.active = request.body.active;
-      ins.address1 = request.body.address1;
-      ins.address2 = request.body.address2;
-      ins.city = request.body.city;
-      ins.state = request.body.state;
-      ins.country = request.body.country;
-      ins.expiredOn = request.body.expiredOn;
+      // ins.description = request.body.description;
+      // ins.heading = request.body.heading;
+      // ins.seotitle = request.body.seotitle;
+      // ins.seodescription = request.body.seodescription;
+      // ins.seokeyword = request.body.seokeyword;
+      // ins.assignto = request.body.assignto;
+      // ins.navlink = request.body.navlink;
+      // ins.active = request.body.active;
+      // ins.address1 = request.body.address1;
+      // ins.address2 = request.body.address2;
+      // ins.city = request.body.city;
+      // ins.state = request.body.state;
+      // ins.country = request.body.country;
+      // ins.expiredOn = request.body.expiredOn;
       ins.createdBy = decodeToken.id;
       ins.createdOn = new Date();
       ins.modifyOn = new Date();
@@ -153,6 +153,7 @@ async function savePostEvent(request, res) {
         (response) => {
           resultSet = {
             msg: "Event Created successfully",
+            list: response,
             statusCode: 200,
           };
         },
@@ -509,10 +510,23 @@ async function getEmployeeEventData(request, res) {
         );
       } else if (typeof request.params.event_id !== "undefined") {
         const event_id = new mongoose.Types.ObjectId(request.params.event_id);
-        var data = await PostEventApply.find({
-          is_delete: false,
-          event_id,
-        }).then(
+        var data = await PostEventApply.aggregate([
+          {
+            $match: {
+              is_delete: false,
+              event_id,
+            },
+          },
+
+          {
+            $lookup: {
+              from: "users",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "user_details",
+            },
+          },
+        ]).then(
           (response) => {
             console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
