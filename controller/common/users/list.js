@@ -7,7 +7,7 @@ const pagination = require("../../../utils/pagination");
 
 const router = express.Router();
 
-router.get("/list", async function (req, res) {
+router.get("/list", authorizer, async function (req, res) {
   const { user } = req.headers.user;
 
   const uri = dbUri;
