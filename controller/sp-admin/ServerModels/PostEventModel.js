@@ -547,7 +547,7 @@ async function getEmployeeEventData(request, res) {
         var data = await PostEventTable.aggregate([
           {
             $match: {
-              active: false,
+              active: true,
               is_delete: false,
             },
           },

@@ -6,6 +6,7 @@ const ApplyJobTable = require("../../../model/TableCollections/TableApplyJob");
 
 router.post("/", Controller.savePostJob);
 router.post("/applyjob/", Controller.saveApplyJob);
+router.post("/applyjob/:id", Controller.saveApplyJob);
 router.get("/", Controller.getPostJobData);
 router.get("/employerjob/:id", Controller.getEmployerJobData);
 router.get("/employerjob/job/:job_id", Controller.getEmployerJobData);
