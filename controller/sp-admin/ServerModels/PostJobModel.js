@@ -541,6 +541,7 @@ async function getEmployerJobData(req, res) {
           }
         );
       } else if (typeof req.params.job_id !== "undefined") {
+        console.log(req.params.job_id, "req.params.job_id");
         const job_id = new mongoose.Types.ObjectId(req.params.job_id);
         var data = await ApplyJobTable.aggregate([
           {
