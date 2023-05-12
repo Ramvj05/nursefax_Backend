@@ -137,9 +137,11 @@ async function savePostEvent(request, res) {
       ins.assignto = request.body.assignto;
       ins.navlink = request.body.navlink;
       ins.active = request.body.active;
-      ins.building_no = request.body.building_no;
       ins.address1 = request.body.address1;
       ins.address2 = request.body.address2;
+      ins.city = request.body.city;
+      ins.state = request.body.state;
+      ins.country = request.body.country;
       ins.expiredOn = request.body.expiredOn;
       ins.createdBy = decodeToken.id;
       ins.createdOn = new Date();
@@ -202,9 +204,11 @@ async function updatePostEvent(request, res) {
       upd.heading = request.body.heading;
       upd.seotitle = request.body.seotitle;
       upd.seodescription = request.body.seodescription;
-      upd.building_no = request.body.building_no;
       upd.address1 = request.body.address1;
       upd.address2 = request.body.address2;
+      upd.city = request.body.city;
+      upd.state = request.body.state;
+      upd.country = request.body.country;
       upd.active = request.body.active;
       upd.assignto = request.body.assignto;
       upd.seokeyword = request.body.seokeyword;
@@ -536,6 +540,14 @@ async function getEmployeeEventData(request, res) {
               as: "employer_details",
             },
           },
+          // {
+          //   $lookup: {
+          //     from: "postevents",
+          //     localField: "createdBy",
+          //     foreignField: "_id",
+          //     as: "employer_details",
+          //   },
+          // },
         ]).then(
           (response) => {
             console.log("response: " + response);

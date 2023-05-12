@@ -49,11 +49,11 @@ async function getPostJobData(req, res) {
           }
         );
       } else if (typeof req.params.user_id !== "undefined") {
-        const _id = new mongoose.Types.ObjectId(req.params.user_id);
+        const createdBy = new mongoose.Types.ObjectId(req.params.user_id);
         var data = await ApplyJobTable.aggregate([
           {
             $match: {
-              user_id,
+              createdBy,
               is_delete: false,
             },
           },
@@ -360,6 +360,7 @@ async function saveApplyJob(req, res) {
     try {
       ins = {};
       ins.job_id = req.body.job_id;
+      ins.singlequestion = req.body.singlequestion;
       ins.createdBy = decodeToken.id;
       ins.createdOn = new Date();
       ins.modifyOn = new Date();

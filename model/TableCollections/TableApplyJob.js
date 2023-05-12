@@ -13,6 +13,11 @@ const ApplyJobSchema = new Schema({
   changedstatusBy: {
     type: mongoose.Schema.Types.ObjectId,
   },
+  singlequestion: [
+    {
+      type: Object,
+    },
+  ],
   expiredOn: {
     type: Date,
     // default: Date.now,
