@@ -358,40 +358,76 @@ async function saveApplyJob(req, res) {
 
     await mongoose.connect(uri);
     try {
-      ins = {};
-      if (req.files) {
-        uploadpath = __dirname + "/../../../uploads/";
-        // console.log(uploadpath, "uploadpath");
-        ins.uploadfile = await FileHandler.uploadAvatar(
-          req,
-          uploadpath,
-          "uploadfile"
+      if (typeof req.params.id !== "undefined") {
+        const _id = new mongoose.Types.ObjectId(req.params.id);
+        var data = await ApplyJobTable.aggregate([
+          {
+            $match: {
+              _id,
+              is_delete: false,
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "user_details",
+            },
+          },
+          {
+            $lookup: {
+              from: "postjobs",
+              localField: "job_id",
+              foreignField: "_id",
+              as: "job_details",
+            },
+          },
+        ]).then(
+          (response) => {
+            console.log("response: ", response);
+            resultSet = { msg: "success", list: response, statusCode: 200 };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = { msg: err.message, statusCode: 500 };
+          }
+        );
+      } else {
+        ins = {};
+        if (req.files) {
+          uploadpath = __dirname + "/../../../uploads/";
+          // console.log(uploadpath, "uploadpath");
+          ins.uploadfile = await FileHandler.uploadAvatar(
+            req,
+            uploadpath,
+            "uploadfile"
+          );
+        }
+        ins.job_id = req.body.job_id;
+        ins.singlequestion = req.body.singlequestion;
+        ins.createdBy = decodeToken.id;
+        ins.createdOn = new Date();
+        ins.modifyOn = new Date();
+        // console.log("ins", ins);
+
+        let insert = new ApplyJobTable(ins);
+        await insert.save().then(
+          (response) => {
+            resultSet = {
+              msg: "Job Applied successfully",
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
         );
       }
-      ins.job_id = req.body.job_id;
-      ins.singlequestion = req.body.singlequestion;
-      ins.createdBy = decodeToken.id;
-      ins.createdOn = new Date();
-      ins.modifyOn = new Date();
-      // console.log("ins", ins);
-
-      let insert = new ApplyJobTable(ins);
-      await insert.save().then(
-        (response) => {
-          resultSet = {
-            msg: "Job Applied successfully",
-            statusCode: 200,
-          };
-        },
-        (err) => {
-          console.log("err: ", err);
-          resultSet = {
-            msg: err.message,
-            statusCode: 500,
-          };
-        }
-      );
-
       return resultSet;
     } catch (Error) {
       console.log(Error, "ooooooooooooooo");
