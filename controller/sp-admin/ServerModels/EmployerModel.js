@@ -40,11 +40,11 @@ async function getEmployersData(request) {
           // },
         ]).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
@@ -58,7 +58,7 @@ async function getEmployersData(request) {
           },
         ]).then(
           (response) => {
-            console.log("response: " + response);
+            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -66,7 +66,7 @@ async function getEmployersData(request) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -77,7 +77,7 @@ async function getEmployersData(request) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error);
+      // console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -127,7 +127,8 @@ async function saveEmployers(request) {
           ins.about = data.about;
           ins.companyemail = data.companyemail;
           ins.email = data.email;
-          // ins.password = hashPassword;
+          ins.city = data.city;
+          ins.state = data.state;
           ins.mcc = data.mcc;
           ins.active = data.active;
           ins.country = data.country;
@@ -162,7 +163,7 @@ async function saveEmployers(request) {
 
         return resultSet;
       } catch (Error) {
-        console.log(Error, "ooooooooooooooo");
+        // console.log(Error, "ooooooooooooooo");
         resultSet = {
           msg: Error,
           statusCode: 400,
@@ -221,6 +222,8 @@ async function updateEmployers(request, res) {
       upd.mcc = data.mcc;
       upd.status = data.status;
       upd.country = data.country;
+      upd.city = data.city;
+      upd.state = data.state;
       upd.Address = data.Address;
       upd.userType = data.userType;
       upd.createdBy = decodeToken.id;
@@ -241,7 +244,7 @@ async function updateEmployers(request, res) {
           };
         },
         (err) => {
-          console.log("err: ", err);
+          // console.log("err: ", err);
           resultSet = {
             msg: err.message,
             statusCode: 500,
@@ -251,7 +254,7 @@ async function updateEmployers(request, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log(Error, "Error");
+      // console.log(Error, "Error");
       resultSet = {
         msg: Error,
         statusCode: 400,
@@ -464,7 +467,7 @@ async function updateEmployerStatus(req, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log(Error, "ooooooooooooooo");
+      // console.log(Error, "ooooooooooooooo");
       resultSet = {
         msg: Error,
         statusCode: 400,
@@ -515,7 +518,7 @@ async function updateEmployerProfile(request, res) {
           };
         },
         (err) => {
-          console.log("err: ", err);
+          // console.log("err: ", err);
           resultSet = {
             msg: err.message,
             statusCode: 500,
@@ -525,7 +528,7 @@ async function updateEmployerProfile(request, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log(Error, "Error");
+      // console.log(Error, "Error");
       resultSet = {
         msg: Error,
         statusCode: 400,

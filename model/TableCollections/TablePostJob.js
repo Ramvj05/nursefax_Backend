@@ -72,6 +72,9 @@ const PostJobSchema = new Schema({
   createdOn: {
     type: Date,
   },
+  assignto: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
   },

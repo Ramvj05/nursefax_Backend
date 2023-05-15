@@ -66,6 +66,12 @@ const employerSchema = new Schema({
   country: {
     type: String,
   },
+  city: {
+    type: String,
+  },
+  state: {
+    type: String,
+  },
   token: {
     type: String,
   },

@@ -29,7 +29,7 @@ async function getWishlistData(request, res) {
           },
         ]).then(
           (response) => {
-            console.log("response: " + response);
+            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -61,7 +61,7 @@ async function getWishlistData(request, res) {
           },
         ]).then(
           (response) => {
-            console.log("response: " + response);
+            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -69,7 +69,7 @@ async function getWishlistData(request, res) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -80,7 +80,7 @@ async function getWishlistData(request, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error);
+      // console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -125,7 +125,7 @@ async function saveWishlist(request, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log(Error, "ooooooooooooooo");
+      // console.log(Error, "ooooooooooooooo");
       resultSet = {
         msg: Error,
         statusCode: 400,
@@ -174,7 +174,7 @@ async function updateWishlist(req, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log(Error, "ooooooooooooooo");
+      // console.log(Error, "ooooooooooooooo");
       resultSet = {
         msg: Error,
         statusCode: 400,
@@ -221,7 +221,7 @@ async function deleteWishlist(req, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log(Error, "ooooooooooooooo");
+      // console.log(Error, "ooooooooooooooo");
       resultSet = {
         msg: Error,
         statusCode: 400,

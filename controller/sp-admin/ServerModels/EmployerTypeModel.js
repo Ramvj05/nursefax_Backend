@@ -22,11 +22,11 @@ async function getEmployerTypeData(request, res) {
           },
         ]).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
@@ -39,7 +39,7 @@ async function getEmployerTypeData(request, res) {
           },
         ]).then(
           (response) => {
-            console.log("response: " + response);
+            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -47,7 +47,7 @@ async function getEmployerTypeData(request, res) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -58,7 +58,7 @@ async function getEmployerTypeData(request, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error);
+      // console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -105,7 +105,7 @@ async function saveEmployerType(request, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log(Error, "ooooooooooooooo");
+      // console.log(Error, "ooooooooooooooo");
       resultSet = {
         msg: Error,
         statusCode: 400,

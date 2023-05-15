@@ -8,7 +8,7 @@ const ApplyJobTable = require("../../../model/TableCollections/TableApplyJob");
 const FileHandler = require("../../../Helpers/FileHandler");
 
 async function getPostJobData(req, res) {
-  //console.log("req",req);
+  // console.log("req",req);
   if (req != "" && typeof req !== "undefined") {
     try {
       const uri = dbUri;
@@ -40,11 +40,11 @@ async function getPostJobData(req, res) {
           // },
         ]).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
@@ -75,11 +75,11 @@ async function getPostJobData(req, res) {
           // },
         ]).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
@@ -90,6 +90,7 @@ async function getPostJobData(req, res) {
             $match: {
               active: true,
               is_delete: false,
+              expiredOn: { $gte: new Date() },
             },
           },
           {
@@ -102,7 +103,7 @@ async function getPostJobData(req, res) {
           },
         ]).then(
           (response) => {
-            console.log("response: " + response);
+            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -110,7 +111,7 @@ async function getPostJobData(req, res) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -121,7 +122,7 @@ async function getPostJobData(req, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error);
+      // console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -145,7 +146,7 @@ async function savePostJob(req, res) {
     try {
       // console.log(req.files, "req.files");
       const count = await PostJobTable.find({}).count();
-      console.log(count);
+      // console.log(count);
       let postId;
       if (count < 10) {
         postId = `JOBS-00000${count + 1}`;
@@ -182,6 +183,7 @@ async function savePostJob(req, res) {
       ins.speciality = req.body.speciality;
       ins.enabled = req.body.enabled;
       ins.country = req.body.country;
+      ins.assignto = req.body.assignto;
       ins.city = req.body.city;
       ins.state = req.body.state;
       ins.navlink = req.body.navlink;
@@ -211,7 +213,7 @@ async function savePostJob(req, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log(Error, "ooooooooooooooo");
+      // console.log(Error, "ooooooooooooooo");
       resultSet = {
         msg: Error,
         statusCode: 400,
@@ -256,6 +258,7 @@ async function updatePostJob(req, res) {
       upd.country = req.body.country;
       upd.enabled = req.body.enabled;
       upd.keyword = req.body.keyword;
+      upd.assignto = req.body.assignto;
       upd.active = req.body.active;
       upd.city = req.body.city;
       upd.navlink = req.body.navlink;
@@ -385,11 +388,11 @@ async function saveApplyJob(req, res) {
           },
         ]).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
@@ -420,7 +423,7 @@ async function saveApplyJob(req, res) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -430,7 +433,7 @@ async function saveApplyJob(req, res) {
       }
       return resultSet;
     } catch (Error) {
-      console.log(Error, "ooooooooooooooo");
+      // console.log(Error, "ooooooooooooooo");
       resultSet = {
         msg: Error,
         statusCode: 400,
@@ -453,7 +456,7 @@ async function updateJobStatus(req, res) {
   await mongoose.connect(uri);
 
   try {
-    console.log(id);
+    // console.log(id);
     if (user.roles.includes("ADMIN") || user.roles.includes("EMPLOYER")) {
       const updatedstatus = await ApplyJobTable.findOneAndUpdate(
         {
@@ -484,7 +487,7 @@ async function updateJobStatus(req, res) {
     }
     return resultSet;
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     res
       .header({
         "Content-Type": "application/json",
@@ -506,42 +509,22 @@ async function getEmployerJobData(req, res) {
       const uri = dbUri;
       await mongoose.connect(uri);
       if (typeof req.params.emp_id !== "undefined") {
-        const createdBy = new mongoose.Types.ObjectId(req.params.emp_id);
-        var data = await PostJobTable.aggregate([
-          {
-            $match: {
-              createdBy,
-              is_delete: false,
-            },
-          },
-          // {
-          //   $lookup: {
-          //     from: "users",
-          //     localField: "user_id",
-          //     foreignField: "_id",
-          //     as: "userdetails"
-          //   }
-          // },
-          // {
-          //   $lookup: {
-          //     from: "blogcategories",
-          //     localField: "PrimaryCategory",
-          //     foreignField: "_id",
-          //     as: "categordetails"
-          //   }
-          // },
-        ]).then(
+        const createdBy = req.params.emp_id;
+        var data = await PostJobTable.find({
+          is_delete: false,
+          $or: [{ createdBy: createdBy }, { assignto: createdBy }],
+        }).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
       } else if (typeof req.params.job_id !== "undefined") {
-        console.log(req.params.job_id, "req.params.job_id");
+        // console.log(req.params.job_id, "req.params.job_id");
         const job_id = new mongoose.Types.ObjectId(req.params.job_id);
         var data = await ApplyJobTable.aggregate([
           {
@@ -574,11 +557,11 @@ async function getEmployerJobData(req, res) {
           // },
         ]).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
@@ -593,7 +576,7 @@ async function getEmployerJobData(req, res) {
           },
         ]).then(
           (response) => {
-            console.log("response: " + response);
+            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -601,7 +584,7 @@ async function getEmployerJobData(req, res) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -612,7 +595,7 @@ async function getEmployerJobData(req, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error);
+      // console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -628,17 +611,17 @@ async function getEmployerJobData(req, res) {
   }
 }
 async function getDownloaded(req, res) {
-  //console.log("req",req);
+  // console.log("req",req);
   if (req != "" && typeof req !== "undefined") {
     // console.log(req);
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
       if (typeof req.params.id !== "undefined") {
-        console.log(req.params.id);
+        // console.log(req.params.id);
         var down = await ApplyJobTable.find({ _id: req.params.id })
           .then((data) => {
-            console.log(data[0].uploadfile);
+            // console.log(data[0].uploadfile);
             var path = `/NurseFax Back/uploads/Resume/` + data[0].uploadfile;
             res.download(path); //content-disposition: attachment; filename="NurseFax"
             resultSet = {
@@ -672,7 +655,7 @@ async function getDownloaded(req, res) {
           },
         ]).then(
           (response) => {
-            console.log("response: " + response);
+            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -680,7 +663,7 @@ async function getDownloaded(req, res) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -691,7 +674,7 @@ async function getDownloaded(req, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error);
+      // console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,

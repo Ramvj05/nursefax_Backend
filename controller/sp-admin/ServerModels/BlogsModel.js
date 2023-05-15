@@ -47,11 +47,11 @@ async function getBlogsData(request) {
           },
         ]).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
@@ -115,7 +115,7 @@ async function getBlogsData(request) {
           { $unwind: "$categordetails" },
         ]).then(
           (response) => {
-            console.log("response: " + response);
+            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -123,7 +123,7 @@ async function getBlogsData(request) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -134,7 +134,7 @@ async function getBlogsData(request) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error);
+      // console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -188,11 +188,11 @@ async function getUserBlogsData(request) {
           },
         ]).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
@@ -256,7 +256,7 @@ async function getUserBlogsData(request) {
           { $unwind: "$categordetails" },
         ]).then(
           (response) => {
-            console.log("response: " + response);
+            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -264,7 +264,7 @@ async function getUserBlogsData(request) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -275,7 +275,7 @@ async function getUserBlogsData(request) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error);
+      // console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -345,7 +345,7 @@ async function saveBlogs(request) {
 
       return resultSet;
     } catch (Error) {
-      console.log(Error, "ooooooooooooooo");
+      // console.log(Error, "ooooooooooooooo");
       resultSet = {
         msg: Error,
         statusCode: 400,
@@ -370,7 +370,7 @@ async function saveViewBlogs(request) {
         request.headers["x-forwarded-for"]?.split(",").shift() ||
         request.socket?.remoteAddress;
       const location = geoip.lookup(ip);
-      console.log("location", location);
+      // console.log("location", location);
       const existUsername = await BlogsViewTable.findOne({
         user_ip: ip,
         blog_id: request.body.blog_id,
@@ -410,7 +410,7 @@ async function saveViewBlogs(request) {
         return resultSet;
       }
     } catch (Error) {
-      console.log(Error, "ooooooooooooooo");
+      // console.log(Error, "ooooooooooooooo");
       resultSet = {
         msg: Error,
         statusCode: 400,

@@ -17,7 +17,7 @@ async function getBlogCategoriesData(request, res) {
       const category = {};
       if (typeof request.params.id !== "undefined") {
         // Where = {};
-        console.log(request.params.id, "request.params.id");
+        // console.log(request.params.id, "request.params.id");
         const _id = new mongoose.Types.ObjectId(request.params.id);
         var data = await BlogsCategoriesTable.aggregate([
           {
@@ -36,7 +36,7 @@ async function getBlogCategoriesData(request, res) {
           },
         ]).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = {
               msg: "success",
               list: response,
@@ -44,7 +44,7 @@ async function getBlogCategoriesData(request, res) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -114,7 +114,7 @@ async function getBlogCategoriesAllData(request, res) {
       await mongoose.connect(uri);
       const category = {};
       if (typeof request.params.id !== "undefined") {
-        console.log(request.params.id, "request.params.cate_id");
+        // console.log(request.params.id, "request.params.cate_id");
         const _id = new mongoose.Types.ObjectId(request.params.id);
         var data = await BlogsCategoriesTable.aggregate([
           {
@@ -147,7 +147,7 @@ async function getBlogCategoriesAllData(request, res) {
           },
         ]).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = {
               msg: "success",
               list: response,
@@ -155,7 +155,7 @@ async function getBlogCategoriesAllData(request, res) {
             };
           },
           (err) => {
-            console.log("ereeeer: ", err);
+            // console.log("ereeeer: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -203,7 +203,7 @@ async function getBlogCategoriesAllData(request, res) {
       }
       return resultSet;
     } catch (Error) {
-      console.log(Error, "iiiiiiiiiiiiii");
+      // console.log(Error, "iiiiiiiiiiiiii");
       resultSet = {
         msg: Error,
         statusCode: 500,

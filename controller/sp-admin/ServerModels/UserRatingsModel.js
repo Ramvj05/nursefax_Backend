@@ -8,7 +8,7 @@ const router = express.Router();
 const FileHandler = require("../../../Helpers/FileHandler");
 
 async function getUserRatingsData(request, res) {
-  //console.log("request",request);
+  // console.log("request",request);
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
@@ -33,7 +33,7 @@ async function getUserRatingsData(request, res) {
           },
         ]).then(
           (response) => {
-            console.log("response: " + response);
+            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -41,7 +41,7 @@ async function getUserRatingsData(request, res) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -65,7 +65,7 @@ async function getUserRatingsData(request, res) {
           },
         ]).then(
           (response) => {
-            console.log("response: " + response);
+            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -73,7 +73,7 @@ async function getUserRatingsData(request, res) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -84,7 +84,7 @@ async function getUserRatingsData(request, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error);
+      // console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -129,7 +129,7 @@ async function saveUserRatings(request, res) {
           };
         },
         (err) => {
-          console.log("err: ", err);
+          // console.log("err: ", err);
           resultSet = {
             msg: err.message,
             statusCode: 500,
@@ -183,7 +183,7 @@ async function updateUserRatings(request, res) {
           };
         },
         (err) => {
-          console.log("err: ", err);
+          // console.log("err: ", err);
           resultSet = {
             msg: err.message,
             statusCode: 500,
@@ -209,7 +209,7 @@ async function updateUserRatings(request, res) {
 }
 
 async function deleteUserRatings(request, res) {
-  console.log(request.body);
+  // console.log(request.body);
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
@@ -231,7 +231,7 @@ async function deleteUserRatings(request, res) {
           };
         },
         (err) => {
-          console.log("err: ", err);
+          // console.log("err: ", err);
           resultSet = {
             msg: err.message,
             statusCode: 500,

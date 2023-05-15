@@ -8,7 +8,7 @@ const PostEventApply = require("../../../model/TableCollections/TableApplyEvent"
 const FileHandler = require("../../../Helpers/FileHandler");
 
 async function getPostEventData(request, res) {
-  //console.log("request",request);
+  // console.log("request",request);
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
@@ -32,11 +32,11 @@ async function getPostEventData(request, res) {
           // },
         ]).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
@@ -59,7 +59,7 @@ async function getPostEventData(request, res) {
           //   },
         ]).then(
           (response) => {
-            console.log("response: " + response);
+            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -67,7 +67,7 @@ async function getPostEventData(request, res) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -78,7 +78,7 @@ async function getPostEventData(request, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error);
+      // console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -102,7 +102,7 @@ async function savePostEvent(request, res) {
     try {
       // console.log(request.files, "request.files");
       const count = await PostEventTable.find({}).count();
-      console.log(count);
+      // console.log(count);
       let eventId;
       if (count < 10) {
         eventId = `EVENT-00000${count + 1}`;
@@ -134,7 +134,7 @@ async function savePostEvent(request, res) {
       // ins.seotitle = request.body.seotitle;
       // ins.seodescription = request.body.seodescription;
       // ins.seokeyword = request.body.seokeyword;
-      // ins.assignto = request.body.assignto;
+      ins.assignto = request.body.assignto;
       // ins.navlink = request.body.navlink;
       // ins.active = request.body.active;
       // ins.address1 = request.body.address1;
@@ -168,7 +168,7 @@ async function savePostEvent(request, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log(Error, "ooooooooooooooo");
+      // console.log(Error, "ooooooooooooooo");
       resultSet = {
         msg: Error,
         statusCode: 400,
@@ -306,14 +306,14 @@ async function deletePostEvent(request, res) {
   }
 }
 async function getPostEventDateData(request, res) {
-  console.log("request", request.params.id);
+  // console.log("request", request.params.id);
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
       if (typeof request.params.id !== "undefined") {
         const eventid = request.params.id;
-        console.log(eventid);
+        // console.log(eventid);
         var data = await PostEventDateTable.find({
           eventid: eventid,
           is_delete: false,
@@ -327,11 +327,11 @@ async function getPostEventDateData(request, res) {
           // },
         }).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
@@ -354,7 +354,7 @@ async function getPostEventDateData(request, res) {
           //   },
         ]).then(
           (response) => {
-            console.log("response: " + response);
+            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -362,7 +362,7 @@ async function getPostEventDateData(request, res) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -373,7 +373,7 @@ async function getPostEventDateData(request, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error);
+      // console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -422,7 +422,7 @@ async function savePostEventdate(request, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log(Error, "ooooooooooooooo");
+      // console.log(Error, "ooooooooooooooo");
       resultSet = {
         msg: Error,
         statusCode: 400,
@@ -490,18 +490,18 @@ async function getEmployeeEventData(request, res) {
       const uri = dbUri;
       await mongoose.connect(uri);
       if (typeof request.params.id !== "undefined") {
-        console.log("request", typeof request.params.id !== "undefined");
-        const createdBy = new mongoose.Types.ObjectId(request.params.id);
+        // console.log("request", typeof request.params.id !== "undefined");
+        const createdBy = request.params.id;
         var data = await PostEventTable.find({
           is_delete: false,
           $or: [{ createdBy: createdBy }, { assignto: createdBy }],
         }).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
@@ -545,16 +545,16 @@ async function getEmployeeEventData(request, res) {
           },
         ]).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
       } else {
-        console.log("ooooooooooooo");
+        // console.log("ooooooooooooo");
         // var counts= await PostEventViewTable.find({blog_id:_id}).count()
         var data = await PostEventTable.aggregate([
           {
@@ -582,7 +582,7 @@ async function getEmployeeEventData(request, res) {
           // },
         ]).then(
           (response) => {
-            console.log("response: " + response);
+            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -590,7 +590,7 @@ async function getEmployeeEventData(request, res) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -601,7 +601,7 @@ async function getEmployeeEventData(request, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error);
+      // console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -649,7 +649,7 @@ async function savePostEventApplyEvent(request, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log(Error, "ooooooooooooooo");
+      // console.log(Error, "ooooooooooooooo");
       resultSet = {
         msg: Error,
         statusCode: 400,
@@ -670,22 +670,23 @@ async function getUserEventData(request, res) {
       const uri = dbUri;
       await mongoose.connect(uri);
       if (typeof request.params.id !== "undefined") {
-        console.log("request", typeof request.params.id !== "undefined");
-        const createdBy = new mongoose.Types.ObjectId(request.params.id);
+        // console.log("request", typeof request.params.id !== "undefined");
+        const createdBy = request.params.id;
         var data = await PostEventTable.find({
           is_delete: false,
           $or: [{ createdBy: createdBy }, { assignto: createdBy }],
         }).then(
           (response) => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
       } else {
+        // console.log(new Date().toDateString());
         var data = await PostEventTable.aggregate([
           {
             $match: {
@@ -718,7 +719,7 @@ async function getUserEventData(request, res) {
           // },
         ]).then(
           (response) => {
-            console.log("response: " + response);
+            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -726,7 +727,7 @@ async function getUserEventData(request, res) {
             };
           },
           (err) => {
-            console.log("err: ", err);
+            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -737,7 +738,7 @@ async function getUserEventData(request, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error);
+      // console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
