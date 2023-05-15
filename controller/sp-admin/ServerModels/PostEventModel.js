@@ -537,6 +537,12 @@ async function getEmployeeEventData(request, res) {
               as: "event_details",
             },
           },
+          {
+            $unwind: {
+              path: "$event_details",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
         ]).then(
           (response) => {
             console.log("response: ", response);
