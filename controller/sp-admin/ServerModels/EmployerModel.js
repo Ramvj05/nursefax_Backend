@@ -219,7 +219,7 @@ async function updateEmployers(request, res) {
       upd.companyemail = data.companyemail;
       upd.email = data.email;
       upd.mcc = data.mcc;
-      // upd.password = hashPassword;
+      upd.status = data.status;
       upd.country = data.country;
       upd.Address = data.Address;
       upd.userType = data.userType;
