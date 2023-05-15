@@ -639,7 +639,6 @@ async function getDownloaded(req, res) {
         var down = await ApplyJobTable.find({ _id: req.params.id })
           .then((data) => {
             console.log(data[0].uploadfile);
-
             var path = `/NurseFax Back/uploads/Resume/` + data[0].uploadfile;
             res.download(path); //content-disposition: attachment; filename="NurseFax"
             resultSet = {

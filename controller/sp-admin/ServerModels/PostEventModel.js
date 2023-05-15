@@ -529,6 +529,14 @@ async function getEmployeeEventData(request, res) {
               preserveNullAndEmptyArrays: true,
             },
           },
+          {
+            $lookup: {
+              from: "postevents",
+              localField: "event_id",
+              foreignField: "_id",
+              as: "event_details",
+            },
+          },
         ]).then(
           (response) => {
             console.log("response: ", response);
@@ -677,10 +685,9 @@ async function getUserEventData(request, res) {
             $match: {
               active: true,
               is_delete: false,
-              expiredOn: { $lt: new Date() },
+              expiredOn: { $gte: new Date() },
             },
           },
-
           {
             $lookup: {
               from: "employers",
