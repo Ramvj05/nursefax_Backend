@@ -26,6 +26,9 @@ const ApplyJobSchema = new Schema({
     type: Boolean,
     default: true,
   },
+  uploadfile: {
+    type: String,
+  },
   status: {
     type: String,
     default: "Applied",
