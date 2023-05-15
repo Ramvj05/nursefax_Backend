@@ -21,6 +21,15 @@ const getEmployeeEventData = async (req, res, next) => {
   //   res.status(400).send({ msg: "invalid sessions" });
   // }
 };
+const getUserEventData = async (req, res, next) => {
+  // if (await Auth.authorizer(req, res, next)) {
+  var data = await PostEventModel.getUserEventData(req, res);
+  // console.log(data)
+  res.status(data.statusCode).send(data);
+  // } else {
+  //   res.status(400).send({ msg: "invalid sessions" });
+  // }
+};
 const getPostEventDateData = async (req, res, next) => {
   // if (await Auth.authorizer(req, res, next)) {
   var data = await PostEventModel.getPostEventDateData(req, res);
@@ -91,4 +100,5 @@ module.exports = {
   getPostEventDateData,
   getEmployeeEventData,
   savePostEventApplyEvent,
+  getUserEventData,
 };

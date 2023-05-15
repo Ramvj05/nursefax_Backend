@@ -485,12 +485,12 @@ async function deletePostEventDelete(request, res) {
   }
 }
 async function getEmployeeEventData(request, res) {
-  //console.log("request",request);
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
       if (typeof request.params.id !== "undefined") {
+        console.log("request", typeof request.params.id !== "undefined");
         const createdBy = new mongoose.Types.ObjectId(request.params.id);
         var data = await PostEventTable.find({
           is_delete: false,
@@ -540,6 +540,7 @@ async function getEmployeeEventData(request, res) {
           }
         );
       } else {
+        console.log("ooooooooooooo");
         // var counts= await PostEventViewTable.find({blog_id:_id}).count()
         var data = await PostEventTable.aggregate([
           {
@@ -649,6 +650,94 @@ async function savePostEventApplyEvent(request, res) {
     return resultSet;
   }
 }
+async function getUserEventData(request, res) {
+  if (request != "" && typeof request !== "undefined") {
+    try {
+      const uri = dbUri;
+      await mongoose.connect(uri);
+      if (typeof request.params.id !== "undefined") {
+        console.log("request", typeof request.params.id !== "undefined");
+        const createdBy = new mongoose.Types.ObjectId(request.params.id);
+        var data = await PostEventTable.find({
+          is_delete: false,
+          $or: [{ createdBy: createdBy }, { assignto: createdBy }],
+        }).then(
+          (response) => {
+            console.log("response: ", response);
+            resultSet = { msg: "success", list: response, statusCode: 200 };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = { msg: err.message, statusCode: 500 };
+          }
+        );
+      } else {
+        var data = await PostEventTable.aggregate([
+          {
+            $match: {
+              active: true,
+              is_delete: false,
+            },
+          },
+
+          {
+            $lookup: {
+              from: "employers",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "employer_details",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employer_details",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          // {
+          //   $lookup: {
+          //     from: "postevents",
+          //     localField: "createdBy",
+          //     foreignField: "_id",
+          //     as: "employer_details",
+          //   },
+          // },
+        ]).then(
+          (response) => {
+            console.log("response: " + response);
+            resultSet = {
+              msg: "success",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
+      }
+
+      return resultSet;
+    } catch (Error) {
+      console.log("error: " + Error);
+      resultSet = {
+        msg: Error,
+        statusCode: 501,
+      };
+      return resultSet;
+    }
+  } else {
+    resultSet = {
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
+    return resultSet;
+  }
+}
 
 module.exports = {
   getPostEventData,
@@ -659,6 +748,7 @@ module.exports = {
   deletePostEventDelete,
   getPostEventDateData,
   getEmployeeEventData,
+  getUserEventData,
   savePostEventApplyEvent,
 };
 

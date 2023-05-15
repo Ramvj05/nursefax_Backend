@@ -635,24 +635,19 @@ async function getDownloaded(req, res) {
       const uri = dbUri;
       await mongoose.connect(uri);
       if (typeof req.params.id !== "undefined") {
-        console.log(req.params.id);
-        var down = await ApplyJobTable.find({ _id: req.params.id })
-          .then((data) => {
-            var path = "../../../uploads/Resume/" + data[0].uploadfile;
-            console.log(path);
-            res.download(path);
-            resultSet = {
-              msg: "success",
-              list: "File successfully downloaded",
-              statusCode: 200,
-            };
-          })
-          .catch((error) => {
-            resultSet = {
-              msg: error.message,
-              statusCode: 500,
-            };
-          });
+        var down = await ApplyJobTable.find(
+          { _id: req.params.id },
+          (err, data) => {
+            console.log(data);
+            console.log(err, "err");
+            if (err) {
+              console.log(err, "ooooooooooo");
+            } else {
+              var path = "../../../uploads/Resume/" + data[0].uploadfile;
+              res.download(path);
+            }
+          }
+        );
       } else {
         // var counts= await PostJobViewTable.find({blog_id:_id}).count()
         var data = await PostJobTable.aggregate([
