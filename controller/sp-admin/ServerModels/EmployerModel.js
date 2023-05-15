@@ -97,7 +97,7 @@ async function saveEmployers(request) {
   if (request != "" && typeof request !== "undefined") {
     const uri = dbUri;
     await mongoose.connect(uri);
-    const { decodeToken, user } = req.headers.user;
+    const { decodeToken, user } = request.headers.user;
     if (user.roles.includes("ADMIN") || user.roles.includes("EMPLOYER")) {
       try {
         const data = request.body;
@@ -200,7 +200,7 @@ async function updateEmployers(request, res) {
       let upd = {};
       if (request.files) {
         uploadpath = __dirname + "/../../../uploads/Employers/";
-        ins.picture = await FileHandler.uploadAvatar(
+        upd.picture = await FileHandler.uploadAvatar(
           request,
           uploadpath,
           "picture"
