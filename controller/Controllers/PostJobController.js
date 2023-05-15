@@ -53,6 +53,14 @@ const updateJobStatus = async (req, res, next) => {
     res.status(400).send({ msg: "invalid sessions" });
   }
 };
+const getDownloaded = async (req, res, next) => {
+  // if (await Auth.authorizer(req, res)) {
+  var data = await PostJobModel.getDownloaded(req, res);
+  res.status(data.statusCode).send(data);
+  // } else {
+  //   res.status(400).send({ msg: "invalid sessions" });
+  // }
+};
 const deletePostJob = async (req, res, next) => {
   if (await Auth.authorizer(req, res)) {
     var data = await PostJobModel.deletePostJob(req, res);
@@ -70,4 +78,5 @@ module.exports = {
   updateJobStatus,
   saveApplyJob,
   getEmployerJobData,
+  getDownloaded,
 };

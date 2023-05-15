@@ -627,7 +627,85 @@ async function getEmployerJobData(req, res) {
     return resultSet;
   }
 }
+async function getDownloaded(req, res) {
+  //console.log("req",req);
+  if (req != "" && typeof req !== "undefined") {
+    // console.log(req);
+    try {
+      const uri = dbUri;
+      await mongoose.connect(uri);
+      if (typeof req.params.id !== "undefined") {
+        console.log(req.params.id);
+        var down = await ApplyJobTable.find({ _id: req.params.id })
+          .then((data) => {
+            var path = "../../../uploads/Resume/" + data[0].uploadfile;
+            console.log(path);
+            res.download(path);
+            resultSet = {
+              msg: "success",
+              list: "File successfully downloaded",
+              statusCode: 200,
+            };
+          })
+          .catch((error) => {
+            resultSet = {
+              msg: error.message,
+              statusCode: 500,
+            };
+          });
+      } else {
+        // var counts= await PostJobViewTable.find({blog_id:_id}).count()
+        var data = await PostJobTable.aggregate([
+          {
+            $match: {
+              active: true,
+              is_delete: false,
+            },
+          },
+          {
+            $lookup: {
+              from: "employers",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "employer_details",
+            },
+          },
+        ]).then(
+          (response) => {
+            console.log("response: " + response);
+            resultSet = {
+              msg: "success",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
+      }
 
+      return resultSet;
+    } catch (Error) {
+      console.log("error: " + Error);
+      resultSet = {
+        msg: Error,
+        statusCode: 501,
+      };
+      return resultSet;
+    }
+  } else {
+    resultSet = {
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
+    return resultSet;
+  }
+}
 module.exports = {
   getPostJobData,
   savePostJob,
@@ -636,6 +714,7 @@ module.exports = {
   updateJobStatus,
   saveApplyJob,
   getEmployerJobData,
+  getDownloaded,
 };
 
 // module.exports = router;
