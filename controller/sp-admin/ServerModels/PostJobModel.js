@@ -505,8 +505,8 @@ async function getEmployerJobData(req, res) {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
-      if (typeof req.params.id !== "undefined") {
-        const createdBy = new mongoose.Types.ObjectId(req.params.id);
+      if (typeof req.params.emp_id !== "undefined") {
+        const createdBy = new mongoose.Types.ObjectId(req.params.emp_id);
         var data = await PostJobTable.aggregate([
           {
             $match: {

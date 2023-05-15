@@ -193,7 +193,7 @@ async function updatePostEvent(request, res) {
       let upd = {};
       if (request.files) {
         // console.log("coming 1");
-        uploadpath = __dirname + "/../../../uploads/Employers/";
+        uploadpath = __dirname + "/../../../uploads/Event/";
         upd.uploadfile = await FileHandler.uploadAvatar(
           request,
           uploadpath,
@@ -306,20 +306,17 @@ async function deletePostEvent(request, res) {
   }
 }
 async function getPostEventDateData(request, res) {
-  //console.log("request",request);
+  console.log("request", request.params.id);
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
       if (typeof request.params.id !== "undefined") {
-        const eventid = new mongoose.Types.ObjectId(request.params.id);
-        var data = await PostEventDateTable.aggregate([
-          {
-            $match: {
-              eventid,
-              is_delete: false,
-            },
-          },
+        const eventid = request.params.id;
+        console.log(eventid);
+        var data = await PostEventDateTable.find({
+          eventid: eventid,
+          is_delete: false,
           // {
           //   $lookup: {
           //     from: "users",
@@ -328,7 +325,7 @@ async function getPostEventDateData(request, res) {
           //     as: "userdetails"
           //   }
           // },
-        ]).then(
+        }).then(
           (response) => {
             console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
