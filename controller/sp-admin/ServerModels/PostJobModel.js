@@ -396,7 +396,7 @@ async function saveApplyJob(req, res) {
       } else {
         ins = {};
         if (req.files) {
-          uploadpath = __dirname + "/../../../uploads/";
+          uploadpath = __dirname + "/../../../uploads/Resume/";
           // console.log(uploadpath, "uploadpath");
           ins.uploadfile = await FileHandler.uploadAvatar(
             req,

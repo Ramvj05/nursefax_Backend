@@ -100,56 +100,65 @@ async function saveEmployers(request) {
     const { decodeToken, user } = req.headers.user;
     if (user.roles.includes("ADMIN") || user.roles.includes("EMPLOYER")) {
       try {
-        // console.log(request.files, "request.files");
         const data = request.body;
         // let salt = generateSalt();
         // const hashPassword = generateHash(data.password, salt);
-        let ins = {};
-        if (request.files) {
-          uploadpath = __dirname + "/../../../uploads/Employers/";
-          ins.picture = await FileHandler.uploadAvatar(
-            request,
-            uploadpath,
-            "picture"
-          );
-        }
-        ins.fullName = data.fullName;
-        ins.userName = data.userName;
-        ins.mobile = data.mobile;
-        ins.hospitalname = data.hospitalname;
-        ins.bussinessname = data.bussinessname;
-        ins.companycantact = data.companycantact;
-        ins.website = data.website;
-        ins.gstregno = data.gstregno;
-        ins.about = data.about;
-        ins.companyemail = data.companyemail;
-        ins.email = data.email;
-        // ins.password = hashPassword;
-        ins.mcc = data.mcc;
-        ins.active = data.active;
-        ins.country = data.country;
-        ins.Address = data.Address;
-        ins.userType = data.userType;
-        ins.createdBy = decodeToken.id;
-        ins.createdOn = new Date();
-        ins.modifyOn = new Date();
-
-        let insert = new EmployersTable(ins);
-        await insert.save().then(
-          (response) => {
-            resultSet = {
-              msg: "Employer Created successfully",
-              statusCode: 200,
-            };
-          },
-          (err) => {
-            // console.log("err: ", err);
-            resultSet = {
-              msg: err.message,
-              statusCode: 500,
-            };
+        const ExistingUser = await EmployersTable.findOne({
+          email: data.email,
+        });
+        if (!ExistingUser) {
+          let ins = {};
+          if (request.files) {
+            uploadpath = __dirname + "/../../../uploads/Employers/";
+            ins.picture = await FileHandler.uploadAvatar(
+              request,
+              uploadpath,
+              "picture"
+            );
           }
-        );
+          ins.fullName = data.fullName;
+          ins.userName = data.userName;
+          ins.mobile = data.mobile;
+          ins.hospitalname = data.hospitalname;
+          ins.bussinessname = data.bussinessname;
+          ins.companycantact = data.companycantact;
+          ins.website = data.website;
+          ins.gstregno = data.gstregno;
+          ins.about = data.about;
+          ins.companyemail = data.companyemail;
+          ins.email = data.email;
+          // ins.password = hashPassword;
+          ins.mcc = data.mcc;
+          ins.active = data.active;
+          ins.country = data.country;
+          ins.Address = data.Address;
+          ins.userType = data.userType;
+          ins.createdBy = decodeToken.id;
+          ins.createdOn = new Date();
+          ins.modifyOn = new Date();
+
+          let insert = new EmployersTable(ins);
+          await insert.save().then(
+            (response) => {
+              resultSet = {
+                msg: "Employer Created successfully",
+                statusCode: 200,
+              };
+            },
+            (err) => {
+              // console.log("err: ", err);
+              resultSet = {
+                msg: err.message,
+                statusCode: 500,
+              };
+            }
+          );
+        } else {
+          resultSet = {
+            msg: "User Already Registered",
+            statusCode: 501,
+          };
+        }
 
         return resultSet;
       } catch (Error) {
