@@ -677,6 +677,7 @@ async function getUserEventData(request, res) {
             $match: {
               active: true,
               is_delete: false,
+              expiredOn: { $lt: new Date() },
             },
           },
 
