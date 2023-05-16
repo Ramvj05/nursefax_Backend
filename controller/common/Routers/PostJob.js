@@ -4,6 +4,7 @@ const Controller = require("../../Controllers/PostJobController");
 const app = express();
 const ApplyJobTable = require("../../../model/TableCollections/TableApplyJob");
 
+router.get("/employerjob/", Controller.getEmployerJobData);
 router.get("/", Controller.getPostJobData);
 router.get("/:id", Controller.getPostJobData);
 router.post("/", Controller.savePostJob);

@@ -96,7 +96,7 @@ async function getPostJobData(req, res) {
             $match: {
               active: true,
               is_delete: false,
-              expiredOn: { $gte: new Date() },
+              // expiredOn: { $gte: new Date() },
             },
           },
           {
@@ -579,7 +579,6 @@ async function getEmployerJobData(req, res) {
         var data = await PostJobTable.aggregate([
           {
             $match: {
-              active: true,
               is_delete: false,
             },
           },
