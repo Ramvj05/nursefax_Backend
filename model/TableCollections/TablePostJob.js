@@ -19,12 +19,7 @@ const PostJobSchema = new Schema({
       type: Object,
     },
   ],
-  singlequestion: [
-    {
-      type: Object,
-    },
-  ],
-  multiplequestion: [
+  questions: [
     {
       type: Object,
     },

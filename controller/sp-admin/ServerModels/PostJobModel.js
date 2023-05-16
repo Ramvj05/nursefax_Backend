@@ -187,8 +187,7 @@ async function savePostJob(req, res) {
       ins.employmenttype = req.body.employmenttype;
       ins.speciality = req.body.speciality;
       ins.enabled = req.body.enabled;
-      ins.singlequestion = req.body.singlequestion;
-      ins.multiplequestion = req.body.multiplequestion;
+      ins.questions = req.body.questions;
       ins.country = req.body.country;
       ins.assignto = req.body.assignto;
       ins.city = req.body.city;
@@ -263,8 +262,7 @@ async function updatePostJob(req, res) {
       upd.speciality = req.body.speciality;
       upd.country = req.body.country;
       upd.enabled = req.body.enabled;
-      upd.singlequestion = req.body.singlequestion;
-      upd.multiplequestion = req.body.multiplequestion;
+      upd.questions = req.body.questions;
       upd.keyword = req.body.keyword;
       upd.assignto = req.body.assignto;
       upd.active = req.body.active;
