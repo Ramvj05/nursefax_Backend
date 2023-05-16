@@ -187,7 +187,7 @@ async function savePostJob(req, res) {
       ins.employmenttype = req.body.employmenttype;
       ins.speciality = req.body.speciality;
       ins.enabled = req.body.enabled;
-      ins.questions = req.body.questions;
+      ins.questions = JSON.parse(req.body.questions);
       ins.country = req.body.country;
       ins.assignto = req.body.assignto;
       ins.city = req.body.city;
