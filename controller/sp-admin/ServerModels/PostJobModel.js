@@ -59,10 +59,16 @@ async function getPostJobData(req, res) {
           },
           {
             $lookup: {
-              from: "PostJob",
+              from: "postjobs",
               localField: "job_id",
               foreignField: "_id",
               as: "jobdetails",
+            },
+          },
+          {
+            $unwind: {
+              path: "$jobdetails",
+              preserveNullAndEmptyArrays: true,
             },
           },
           // {

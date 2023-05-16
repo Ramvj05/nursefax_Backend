@@ -6,6 +6,7 @@ const PostEventTable = require("../../../model/TableCollections/TablePostEvent")
 const PostEventDateTable = require("../../../model/TableCollections/TableEventDate");
 const PostEventApply = require("../../../model/TableCollections/TableApplyEvent");
 const FileHandler = require("../../../Helpers/FileHandler");
+const { ObjectId } = require("mongodb");
 
 async function getPostEventData(request, res) {
   // console.log("request",request);
@@ -36,49 +37,65 @@ async function getPostEventData(request, res) {
             resultSet = { msg: "success", list: response, statusCode: 200 };
           },
           (err) => {
-            // console.log("err: ", err);
+            console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
       } else {
         // var counts= await PostEventViewTable.find({blog_id:_id}).count()
-        var data = await PostEventTable.aggregate([
-          {
-            $match: {
-              is_delete: false,
-            },
-          },
 
-          //   {
-          //     $lookup: {
-          //       from: "users",
-          //       localField: "user_id",
-          //       foreignField: "_id",
-          //       as: "userdetails"
-          //     }
-          //   },
-        ]).then(
-          (response) => {
-            // console.log("response: " + response);
-            resultSet = {
-              msg: "success",
-              list: response,
-              statusCode: 200,
-            };
-          },
-          (err) => {
-            // console.log("err: ", err);
-            resultSet = {
-              msg: err.message,
-              statusCode: 500,
-            };
+        var Resultsdata = [];
+        var data = await PostEventTable.find({ is_delete: false });
+        if (data.length > 0) {
+          for (let events of data) {
+            var countBooking = await PostEventApply.find({ is_delete: false });
+            var FilterData = countBooking.filter(
+              (data) =>
+                data.event_id.toString() == ObjectId(events._id).toString()
+            );
+            Resultsdata.push({
+              _id: events._id,
+              name: events.name,
+              eventId: events.eventId,
+              heading: events.heading,
+              description: events.description,
+              uploadfile: events.uploadfile,
+              assignto: events.assignto,
+              navlink: events.navlink,
+              seotitle: events.seotitle,
+              seodescription: events.seodescription,
+              eventlink: events.eventlink,
+              eventplace: events.eventplace,
+              seokeyword: events.seokeyword,
+              is_delete: events.is_delete,
+              createdOn: events.createdOn,
+              modifyOn: events.modifyOn,
+              createdBy: events.createdBy,
+              active: events.active,
+              count: FilterData.length,
+            });
           }
-        );
+        }
+        // console.log("response: " + response);
+        const Resultdata = Resultsdata.sort((a, b) => b.count - a.count);
+        resultSet = {
+          msg: "success",
+          list: Resultdata,
+          statusCode: 200,
+        };
+
+        (err) => {
+          console.log("err: ", err);
+          resultSet = {
+            msg: err.message,
+            statusCode: 500,
+          };
+        };
       }
 
       return resultSet;
     } catch (Error) {
-      // console.log("error: " + Error);
+      console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -490,23 +507,52 @@ async function getEmployeeEventData(request, res) {
       const uri = dbUri;
       await mongoose.connect(uri);
       if (typeof request.params.id !== "undefined") {
-        // console.log("request", typeof request.params.id !== "undefined");
         const createdBy = request.params.id;
+        var Resultsdata = [];
         var data = await PostEventTable.find({
           is_delete: false,
           $or: [{ createdBy: createdBy }, { assignto: createdBy }],
-        }).then(
-          (response) => {
-            // console.log("response: ", response);
-            resultSet = { msg: "success", list: response, statusCode: 200 };
-          },
-          (err) => {
-            // console.log("err: ", err);
-            resultSet = { msg: err.message, statusCode: 500 };
+        });
+        if (data.length > 0) {
+          for (let events of data) {
+            var countBooking = await PostEventApply.find({ is_delete: false });
+            var FilterData = countBooking.filter(
+              (data) =>
+                data.event_id.toString() == ObjectId(events._id).toString()
+            );
+            Resultsdata.push({
+              _id: events._id,
+              name: events.name,
+              eventId: events.eventId,
+              heading: events.heading,
+              description: events.description,
+              uploadfile: events.uploadfile,
+              assignto: events.assignto,
+              navlink: events.navlink,
+              seotitle: events.seotitle,
+              seodescription: events.seodescription,
+              eventlink: events.eventlink,
+              eventplace: events.eventplace,
+              seokeyword: events.seokeyword,
+              is_delete: events.is_delete,
+              createdOn: events.createdOn,
+              modifyOn: events.modifyOn,
+              createdBy: events.createdBy,
+              active: events.active,
+              count: FilterData.length,
+            });
           }
-        );
+        }
+        // console.log("response: ", response);
+        resultSet = { msg: "success", list: Resultsdata, statusCode: 200 };
+
+        (err) => {
+          console.log("err: ", err);
+          resultSet = { msg: err.message, statusCode: 500 };
+        };
       } else if (typeof request.params.event_id !== "undefined") {
         const event_id = new mongoose.Types.ObjectId(request.params.event_id);
+        console.log("request", request.params.event_id);
         var data = await PostEventApply.aggregate([
           {
             $match: {
@@ -601,7 +647,7 @@ async function getEmployeeEventData(request, res) {
 
       return resultSet;
     } catch (Error) {
-      // console.log("error: " + Error);
+      console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -692,7 +738,7 @@ async function getUserEventData(request, res) {
             $match: {
               active: true,
               is_delete: false,
-              expiredOn: { $gte: new Date() },
+              // expiredOn: { $gte: new Date() },
             },
           },
           {
