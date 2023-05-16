@@ -755,6 +755,14 @@ async function getUserEventData(request, res) {
               preserveNullAndEmptyArrays: true,
             },
           },
+          {
+            $lookup: {
+              from: "posteventdates",
+              localField: "_id",
+              foreignField: "eventid",
+              as: "eventdate_details",
+            },
+          },
           // {
           //   $lookup: {
           //     from: "postevents",

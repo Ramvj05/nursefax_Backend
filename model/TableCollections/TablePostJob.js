@@ -19,6 +19,16 @@ const PostJobSchema = new Schema({
       type: Object,
     },
   ],
+  singlequestion: [
+    {
+      type: Object,
+    },
+  ],
+  multiplequestion: [
+    {
+      type: Object,
+    },
+  ],
   minsalary: {
     type: String,
   },

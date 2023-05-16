@@ -143,7 +143,6 @@ async function getPostJobData(req, res) {
     return resultSet;
   }
 }
-
 async function savePostJob(req, res) {
   if (req != "" && typeof req !== "undefined") {
     const uri = dbUri;
@@ -188,6 +187,8 @@ async function savePostJob(req, res) {
       ins.employmenttype = req.body.employmenttype;
       ins.speciality = req.body.speciality;
       ins.enabled = req.body.enabled;
+      ins.singlequestion = req.body.singlequestion;
+      ins.multiplequestion = req.body.multiplequestion;
       ins.country = req.body.country;
       ins.assignto = req.body.assignto;
       ins.city = req.body.city;
@@ -234,7 +235,6 @@ async function savePostJob(req, res) {
     return resultSet;
   }
 }
-
 async function updatePostJob(req, res) {
   if (req != "" && typeof req !== "undefined") {
     try {
@@ -263,6 +263,8 @@ async function updatePostJob(req, res) {
       upd.speciality = req.body.speciality;
       upd.country = req.body.country;
       upd.enabled = req.body.enabled;
+      upd.singlequestion = req.body.singlequestion;
+      upd.multiplequestion = req.body.multiplequestion;
       upd.keyword = req.body.keyword;
       upd.assignto = req.body.assignto;
       upd.active = req.body.active;
@@ -415,6 +417,7 @@ async function saveApplyJob(req, res) {
         }
         ins.job_id = req.body.job_id;
         ins.singlequestion = req.body.singlequestion;
+        ins.multiplequestion = req.body.multiplequestion;
         ins.createdBy = decodeToken.id;
         ins.createdOn = new Date();
         ins.modifyOn = new Date();

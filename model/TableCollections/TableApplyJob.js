@@ -18,10 +18,11 @@ const ApplyJobSchema = new Schema({
       type: Object,
     },
   ],
-  expiredOn: {
-    type: Date,
-    // default: Date.now,
-  },
+  multiplequestion: [
+    {
+      type: Object,
+    },
+  ],
   active: {
     type: Boolean,
     default: true,
