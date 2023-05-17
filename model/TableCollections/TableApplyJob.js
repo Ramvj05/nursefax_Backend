@@ -13,16 +13,9 @@ const ApplyJobSchema = new Schema({
   changedstatusBy: {
     type: mongoose.Schema.Types.ObjectId,
   },
-  singlequestion: [
-    {
-      type: Object,
-    },
-  ],
-  multiplequestion: [
-    {
-      type: Object,
-    },
-  ],
+  questions: {
+    type: Array,
+  },
   active: {
     type: Boolean,
     default: true,

@@ -414,8 +414,7 @@ async function saveApplyJob(req, res) {
           );
         }
         ins.job_id = req.body.job_id;
-        ins.singlequestion = req.body.singlequestion;
-        ins.multiplequestion = req.body.multiplequestion;
+        ins.questions = JSON.parse(req.body.questions);
         ins.createdBy = decodeToken.id;
         ins.createdOn = new Date();
         ins.modifyOn = new Date();
