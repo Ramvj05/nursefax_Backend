@@ -53,7 +53,7 @@ const employerSchema = new Schema({
   },
   password: {
     type: String,
-    required: true,
+    // required: true,
   },
   emailVerified: {
     type: Boolean,
