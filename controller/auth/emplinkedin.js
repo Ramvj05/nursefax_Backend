@@ -1,38 +1,39 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const { dbUri } = require("../../endpoints/endpoints");
+const { dbUri, EmployerHost } = require("../../endpoints/endpoints");
 const User = require("../../model/user.model");
+const Employer = require("../../model/TableCollections/TableEmployers");
 const { generateSalt, generateHash } = require("../../utils/encrypt");
 const { default: axios } = require("axios");
-const hosturi = "http://localhost:3000/";
+// const EmployerHost = "http://localhost:5000/";
 const router = express.Router();
 var geoip = require("geoip-lite");
 
-router.post("/linkedin", async function (req, res) {
+router.post("/employer/linkedin", async function (req, res) {
   try {
     const uri = dbUri;
     await mongoose.connect(uri);
 
     const code = req.body.code;
-    console.log("kkkkkkkkkkkkkkkkkkk");
+    console.log("iiiiiiiiiiiiiiiiiiiiii");
 
     // console.log("payload--------", {
     //   grant_type: "authorization_code",
     //   code: code,
     //   client_id: "78gzbb0gcof1iu",
     //   client_secret: "HfP6BHV5z4IMIohL",
-    //   redirect_uri: `${hosturi}auth/linkedin`,
+    //   redirect_uri: `${EmployerHost}auth/linkedin`,
     // });
 
     const linkedinResult = await axios.post(
-      `https://www.linkedin.com/oauth/v2/accessToken?code=${code}&grant_type=authorization_code&client_id=78gzbb0gcof1iu&client_secret=HfP6BHV5z4IMIohL&redirect_uri=${hosturi}auth/linkedin&scope=r_liteprofile%20r_emailaddress`,
+      `https://www.linkedin.com/oauth/v2/accessToken?code=${code}&grant_type=authorization_code&client_id=78gzbb0gcof1iu&client_secret=HfP6BHV5z4IMIohL&redirect_uri=${EmployerHost}auth/linkedin&scope=r_liteprofile%20r_emailaddress`,
       {
         grant_type: "authorization_code",
         code: code,
         client_id: "78gzbb0gcof1iu",
         client_secret: "HfP6BHV5z4IMIohL",
-        redirect_uri: `${hosturi}auth/linkedin`,
+        redirect_uri: `${EmployerHost}auth/linkedin`,
       }
     );
     // console.log("linkedinResult", linkedinResult?.data?.access_token);
@@ -68,7 +69,7 @@ router.post("/linkedin", async function (req, res) {
             ],
             $and: [
               {
-                deleted: false,
+                is_delete: false,
               },
             ],
           },
@@ -83,15 +84,14 @@ router.post("/linkedin", async function (req, res) {
               // UserCountry:user.UserCountry,
               id: user._id.toString(),
               userType: user.userType,
-              avatarUrl: user?.picture || user?.profileUri || "",
+              avatarUrl: user?.user || user?.profileUri || "",
             },
             "nursefax.com",
             { expiresIn: "6h" }
           );
         };
 
-        // console.log(norUser,"oooooooooooooooooooooooooooo");
-        if (norUser && norUser.userType === 2) {
+        if (norUser && norUser.userType === 4) {
           res
             .header({
               "Content-Type": "application/json",
@@ -105,7 +105,7 @@ router.post("/linkedin", async function (req, res) {
               message: "User logged in successfully",
             });
         } else {
-          const newUser = new User({
+          const newUser = new Employer({
             // userName: userName,
             email: r.data.elements[0]["handle~"]["emailAddress"],
             // firstName: given_name,
@@ -113,8 +113,8 @@ router.post("/linkedin", async function (req, res) {
             password: hash,
             // UserCountry:Country,
             // picture,
-            userType: 2,
-            roles: ["STUDENT"],
+            userType: 4,
+            roles: ["EMPLOYER"],
             emailVerified: true,
           });
           const userData = await newUser.save();

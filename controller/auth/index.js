@@ -6,6 +6,7 @@ const signup = require("./signup");
 const forgotPassword = require("./forgot-password");
 const bypass = require("./bypass");
 const linkedin = require("./linkedin");
+const emplinkedin = require("./emplinkedin");
 const otp = require("./otp");
 const validateUsername = require("./validateUsername");
 const validateUserId = require("./validateUserId");
@@ -16,6 +17,7 @@ router.use("/auth", signup);
 router.use("/auth", forgotPassword);
 router.use("/auth", bypass);
 router.use("/auth", linkedin);
+router.use("/auth", emplinkedin);
 router.use("/auth", validateUsername);
 router.use("/auth", validateUserId);
 
