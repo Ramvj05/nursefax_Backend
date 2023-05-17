@@ -4,13 +4,12 @@ const authorizer = require("../../middleware/authorizer");
 const Auth = require("../../Helpers/Auth");
 
 const getBlogsData = async (req, res, next) => {
-  if (await Auth.authorizer(req, res, next)) {
+  if (Auth.authorizer(req, res, next) === true) {
     var data = await BlogsModel.getBlogsData(req, res);
     res.status(data.statusCode).send(data);
+  } else {
+    res.status(400).send({ msg: "invalid sessions" });
   }
-  // else {
-  //   res.status(400).send({ msg: "invalid sessions" });
-  // }
 };
 const getUserBlogsData = async (req, res, next) => {
   // if (Auth.authorizer(req, res, next)) {
@@ -21,7 +20,7 @@ const getUserBlogsData = async (req, res, next) => {
 };
 
 const saveBlogs = async (req, res, next) => {
-  if (Auth.authorizer(req, res, next)) {
+  if (Auth.authorizer(req, res, next) === true) {
     var data = await BlogsModel.saveBlogs(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -38,7 +37,7 @@ const saveViewBlogs = async (req, res, next) => {
 };
 
 const updateBlogs = async (req, res, next) => {
-  if (Auth.authorizer(req, res)) {
+  if (Auth.authorizer(req, res, next) === true) {
     var data = await BlogsModel.updateBlogs(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -46,7 +45,7 @@ const updateBlogs = async (req, res, next) => {
   }
 };
 const deleteBlogs = async (req, res, next) => {
-  if (Auth.authorizer(req, res)) {
+  if (Auth.authorizer(req, res, next) === true) {
     var data = await BlogsModel.deleteBlogs(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -55,7 +54,7 @@ const deleteBlogs = async (req, res, next) => {
 };
 
 const deleteBlogsImg = async (req, res, next) => {
-  if (Auth.authorizer(req, res)) {
+  if (Auth.authorizer(req, res, next) === true) {
     var data = await BlogsModel.deleteBlogsImg(req, res);
     res.status(data.statusCode).send(data);
   } else {

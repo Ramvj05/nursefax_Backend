@@ -4,7 +4,7 @@ const authorizer = require("../../middleware/authorizer");
 const Auth = require("../../Helpers/Auth");
 
 const getEmployerTypeData = async (req, res, next) => {
-  if (await Auth.authorizer(req, res, next)) {
+  if (Auth.authorizer(req, res, next) === true) {
     var data = await PostEventModel.getEmployerTypeData(req, res);
     // console.log(data)
     res.status(data.statusCode).send(data);
@@ -14,7 +14,7 @@ const getEmployerTypeData = async (req, res, next) => {
 };
 
 const saveEmployerType = async (req, res, next) => {
-  if (await Auth.authorizer(req, res, next)) {
+  if (Auth.authorizer(req, res, next) === true) {
     var data = await PostEventModel.saveEmployerType(req, res);
     res.status(data.statusCode).send(data);
   } else {

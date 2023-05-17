@@ -54,9 +54,12 @@ const userSchema = new Schema({
     type: String,
   },
   UserCountry: {
-    type: String
+    type: String,
   },
   picture: {
+    type: String,
+  },
+  uploadfile: {
     type: String,
   },
   billingAddress: {

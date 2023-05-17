@@ -36,7 +36,7 @@ router.post("/employer/linkedin", async function (req, res) {
         redirect_uri: `${EmployerHost}auth/linkedin`,
       }
     );
-    // console.log("linkedinResult", linkedinResult?.data?.access_token);
+    console.log("linkedinResult", linkedinResult);
     // console.log("bharath",
     // linkedinResult?.data?.access_token)
     axios
@@ -54,13 +54,13 @@ router.post("/employer/linkedin", async function (req, res) {
           req.headers["x-forwarded-for"]?.split(",").shift() ||
           req.socket?.remoteAddress;
         const location = geoip.lookup(ip);
-        console.log("location", location);
+        // console.log("location", location);
         // const Country = location.country
 
         const salt = generateSalt();
         const hash = generateHash(salt);
 
-        let norUser = await User.findOne(
+        let norUser = await Employer.findOne(
           {
             $or: [
               {
@@ -134,7 +134,7 @@ router.post("/employer/linkedin", async function (req, res) {
         }
       })
       .catch((err) => {
-        console.log("err", err);
+        console.log("fffffffffffffffffffffffffff", err);
       });
 
     if (linkedinResult?.data?.access_token) {
@@ -145,7 +145,7 @@ router.post("/employer/linkedin", async function (req, res) {
       }
     }
   } catch (err) {
-    // console.log(err);
+    console.log(err, "llllllllllllllllllllllll");
     res
       .header({
         "Content-Type": "application/json",

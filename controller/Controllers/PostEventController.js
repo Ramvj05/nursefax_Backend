@@ -4,7 +4,7 @@ const authorizer = require("../../middleware/authorizer");
 const Auth = require("../../Helpers/Auth");
 
 const getPostEventData = async (req, res, next) => {
-  // if (await Auth.authorizer(req, res, next)) {
+  // if (Auth.authorizer(req, res, next) === true) {
   var data = await PostEventModel.getPostEventData(req, res);
   // console.log(data)
   res.status(data.statusCode).send(data);
@@ -13,7 +13,7 @@ const getPostEventData = async (req, res, next) => {
   // }
 };
 const getEmployeeEventData = async (req, res, next) => {
-  // if (await Auth.authorizer(req, res, next)) {
+  // if (Auth.authorizer(req, res, next) === true) {
   var data = await PostEventModel.getEmployeeEventData(req, res);
   // console.log(data)
   res.status(data.statusCode).send(data);
@@ -22,7 +22,7 @@ const getEmployeeEventData = async (req, res, next) => {
   // }
 };
 const getUserEventData = async (req, res, next) => {
-  // if (await Auth.authorizer(req, res, next)) {
+  // if (Auth.authorizer(req, res, next) === true) {
   var data = await PostEventModel.getUserEventData(req, res);
   // console.log(data)
   res.status(data.statusCode).send(data);
@@ -31,7 +31,7 @@ const getUserEventData = async (req, res, next) => {
   // }
 };
 const getPostEventDateData = async (req, res, next) => {
-  // if (await Auth.authorizer(req, res, next)) {
+  // if (Auth.authorizer(req, res, next) === true) {
   var data = await PostEventModel.getPostEventDateData(req, res);
   // console.log(data)
   res.status(data.statusCode).send(data);
@@ -40,7 +40,7 @@ const getPostEventDateData = async (req, res, next) => {
   // }
 };
 const savePostEvent = async (req, res, next) => {
-  if (await Auth.authorizer(req, res, next)) {
+  if (Auth.authorizer(req, res, next) === true) {
     var data = await PostEventModel.savePostEvent(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -49,7 +49,7 @@ const savePostEvent = async (req, res, next) => {
 };
 
 const updatePostEvent = async (req, res, next) => {
-  if (await Auth.authorizer(req, res)) {
+  if (Auth.authorizer(req, res, next) === true) {
     var data = await PostEventModel.updatePostEvent(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -58,7 +58,7 @@ const updatePostEvent = async (req, res, next) => {
 };
 
 const deletePostEvent = async (req, res, next) => {
-  if (await Auth.authorizer(req, res)) {
+  if (Auth.authorizer(req, res, next) === true) {
     var data = await PostEventModel.deletePostEvent(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -66,7 +66,7 @@ const deletePostEvent = async (req, res, next) => {
   }
 };
 const deletePostEventDelete = async (req, res, next) => {
-  if (await Auth.authorizer(req, res)) {
+  if (Auth.authorizer(req, res, next) === true) {
     var data = await PostEventModel.deletePostEventDelete(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -74,7 +74,7 @@ const deletePostEventDelete = async (req, res, next) => {
   }
 };
 const savePostEventApplyEvent = async (req, res, next) => {
-  if (await Auth.authorizer(req, res)) {
+  if (Auth.authorizer(req, res, next) === true) {
     var data = await PostEventModel.savePostEventApplyEvent(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -82,7 +82,7 @@ const savePostEventApplyEvent = async (req, res, next) => {
   }
 };
 const savePostEventdate = async (req, res, next) => {
-  if (await Auth.authorizer(req, res, next)) {
+  if (Auth.authorizer(req, res, next) === true) {
     var data = await PostEventModel.savePostEventdate(req, res);
     res.status(data.statusCode).send(data);
   } else {

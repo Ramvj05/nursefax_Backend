@@ -509,7 +509,7 @@ async function updateJobStatus(req, res) {
       });
   }
 }
-async function getEmployerJobData(req, res) {
+async function getEmployerJobData(req) {
   //console.log("req",req);
   if (req != "" && typeof req !== "undefined") {
     try {
