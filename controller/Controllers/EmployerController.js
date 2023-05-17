@@ -13,7 +13,7 @@ const getEmployersData = async (req, res, next) => {
 };
 
 const saveEmployers = async (req, res, next) => {
-  if (Auth.authorizer(req, res, next) === true) {
+  if (await Auth.authorizer(req, res, next)) {
     var data = await EmployersModel.saveEmployers(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -22,7 +22,7 @@ const saveEmployers = async (req, res, next) => {
 };
 
 const updateEmployers = async (req, res, next) => {
-  if (Auth.authorizer(req, res, next) === true) {
+  if (await Auth.authorizer(req, res)) {
     var data = await EmployersModel.updateEmployers(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -30,7 +30,7 @@ const updateEmployers = async (req, res, next) => {
   }
 };
 const updateEmployerStatus = async (req, res, next) => {
-  if (Auth.authorizer(req, res, next) === true) {
+  if (await Auth.authorizer(req, res)) {
     var data = await EmployersModel.updateEmployerStatus(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -42,7 +42,7 @@ const updateEmployerProfile = async (req, res, next) => {
   res.status(data.statusCode).send(data);
 };
 const deleteEmployers = async (req, res, next) => {
-  if (Auth.authorizer(req, res, next) === true) {
+  if (await Auth.authorizer(req, res)) {
     var data = await EmployersModel.deleteEmployers(req, res);
     res.status(data.statusCode).send(data);
   } else {

@@ -4,7 +4,7 @@ const authorizer = require("../../middleware/authorizer");
 const Auth = require("../../Helpers/Auth");
 
 const getUserRatingsData = async (req, res, next) => {
-  // if (Auth.authorizer(req, res, next) === true) {
+  // if (Auth.authorizer(req, res, next)) {
   var data = await UserRatingsModel.getUserRatingsData(req, res);
   // console.log(data)
   res.status(data.statusCode).send(data);
@@ -12,7 +12,7 @@ const getUserRatingsData = async (req, res, next) => {
 };
 
 const saveUserRatings = async (req, res, next) => {
-  if (Auth.authorizer(req, res, next) === true) {
+  if (Auth.authorizer(req, res, next)) {
     var data = await UserRatingsModel.saveUserRatings(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -21,7 +21,7 @@ const saveUserRatings = async (req, res, next) => {
 };
 
 const updateUserRatings = async (req, res, next) => {
-  if (Auth.authorizer(req, res, next) === true) {
+  if (Auth.authorizer(req, res)) {
     var data = await UserRatingsModel.updateUserRatings(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -29,7 +29,7 @@ const updateUserRatings = async (req, res, next) => {
   }
 };
 const deleteUserRatings = async (req, res, next) => {
-  if (Auth.authorizer(req, res, next) === true) {
+  if (Auth.authorizer(req, res)) {
     var data = await UserRatingsModel.deleteUserRatings(req, res);
     res.status(data.statusCode).send(data);
   } else {
@@ -38,7 +38,7 @@ const deleteUserRatings = async (req, res, next) => {
 };
 
 const deleteUserRatingsImg = async (req, res, next) => {
-  if (Auth.authorizer(req, res, next) === true) {
+  if (Auth.authorizer(req, res)) {
     var data = await UserRatingsModel.deleteUserRatingsImg(req, res);
     res.status(data.statusCode).send(data);
   } else {
