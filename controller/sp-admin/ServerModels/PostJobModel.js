@@ -403,41 +403,42 @@ async function saveApplyJob(req, res) {
           }
         );
       } else {
-        ins = {};
-        // if (req.files) {
-        //   uploadpath = __dirname + "/../../../uploads/Resume/";
-        //   // console.log(uploadpath, "uploadpath");
-        //   ins.uploadfile = await FileHandler.uploadAvatar(
-        //     req,
-        //     uploadpath,
-        //     "uploadfile"
-        //   );
-        // }
-        console.log(req.body, "req.body");
-        ins.job_id = req.body.job_id;
-        ins.questions = JSON.parse(req.body.questions);
-        ins.createdBy = decodeToken.id;
-        ins.uploadfile = req.body.uploadfile;
-        ins.createdOn = new Date();
-        ins.modifyOn = new Date();
-        // console.log("ins", ins);
+        var data = await ApplyJobTable.find({
+          job_id: req.body.job_id,
+          createdBy: decodeToken.id,
+        });
+        if (!data.length) {
+          ins = {};
+          ins.job_id = req.body.job_id;
+          ins.questions = JSON.parse(req.body.questions);
+          ins.createdBy = decodeToken.id;
+          ins.uploadfile = req.body.uploadfile;
+          ins.createdOn = new Date();
+          ins.modifyOn = new Date();
+          // console.log("ins", ins);
 
-        let insert = new ApplyJobTable(ins);
-        await insert.save().then(
-          (response) => {
-            resultSet = {
-              msg: "Job Applied successfully",
-              statusCode: 200,
-            };
-          },
-          (err) => {
-            console.log("err: ", err);
-            resultSet = {
-              msg: err.message,
-              statusCode: 500,
-            };
-          }
-        );
+          let insert = new ApplyJobTable(ins);
+          await insert.save().then(
+            (response) => {
+              resultSet = {
+                msg: "Job Applied successfully",
+                statusCode: 200,
+              };
+            },
+            (err) => {
+              console.log("err: ", err);
+              resultSet = {
+                msg: err.message,
+                statusCode: 500,
+              };
+            }
+          );
+        } else {
+          resultSet = {
+            msg: "You Already Applied This Job",
+            statusCode: 500,
+          };
+        }
       }
       return resultSet;
     } catch (Error) {
