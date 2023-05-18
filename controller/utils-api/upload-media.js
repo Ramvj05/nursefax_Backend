@@ -5,8 +5,6 @@ const router = express.Router();
 
 router.post("/media", authorizer, async (req, res) => {
   try {
-    console.log(ffffffffffffffff, "nnnnnnnnnnnnnnnn");
-
     const { base64, ext, mimeType, fileName, path } = req.body;
     var s3 = new AWS.S3({
       region: "ap-southeast-1",

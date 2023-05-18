@@ -12,10 +12,13 @@ const getPostJobData = async (req, res, next) => {
   // }
 };
 const getEmployerJobData = async (req, res, next) => {
-  if (Auth.authorizer(req, res, next)) {
+  if (await Auth.authorizer(req, res, next)) {
+    // true/false / Promse<> if({},true,1,Promise)
     var data = await PostJobModel.getEmployerJobData(req, res);
     res.status(data.statusCode).send(data);
   }
+  // new Prmise().then() //5 seconds
+  //console.log('ddd')
   // else {
   //   res.status(400).send({ msg: "invalid sessions" });
   // }

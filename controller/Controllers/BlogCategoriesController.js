@@ -4,11 +4,9 @@ const Auth = require("../../Helpers/Auth");
 const authorizer = require("../../middleware/authorizer");
 
 const getBlogCategoriesData = async (req, res, next) => {
-  if (Auth.authorizer(req, res, next)) {
+  if (await Auth.authorizer(req, res, next)) {
     var data = await BlogCategoriesModel.getBlogCategoriesData(req, res);
     res.status(data.statusCode).send(data);
-  } else {
-    res.status(400).send({ msg: "invalid sessions" });
   }
 };
 const getBlogCategoriesAllData = async (req, res, next) => {
