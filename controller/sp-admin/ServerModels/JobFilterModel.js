@@ -116,8 +116,7 @@ async function getDashboardCount(req, res) {
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
-      }
-      if (typeof req.params.emp_id !== "undefined") {
+      } else if (typeof req.params.emp_id !== "undefined") {
         const createdBy = req.params.emp_id;
         var data = await PostEventTable.find({
           is_delete: false,
