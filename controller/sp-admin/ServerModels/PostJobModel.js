@@ -262,7 +262,7 @@ async function updatePostJob(req, res) {
       upd.speciality = req.body.speciality;
       upd.country = req.body.country;
       upd.enabled = req.body.enabled;
-      upd.questions = req.body.questions;
+      upd.questions = JSON.parse(req.body.questions);
       upd.keyword = req.body.keyword;
       upd.assignto = req.body.assignto;
       upd.active = req.body.active;
@@ -404,18 +404,20 @@ async function saveApplyJob(req, res) {
         );
       } else {
         ins = {};
-        if (req.files) {
-          uploadpath = __dirname + "/../../../uploads/Resume/";
-          // console.log(uploadpath, "uploadpath");
-          ins.uploadfile = await FileHandler.uploadAvatar(
-            req,
-            uploadpath,
-            "uploadfile"
-          );
-        }
+        // if (req.files) {
+        //   uploadpath = __dirname + "/../../../uploads/Resume/";
+        //   // console.log(uploadpath, "uploadpath");
+        //   ins.uploadfile = await FileHandler.uploadAvatar(
+        //     req,
+        //     uploadpath,
+        //     "uploadfile"
+        //   );
+        // }
+        console.log(req.body, "req.body");
         ins.job_id = req.body.job_id;
         ins.questions = JSON.parse(req.body.questions);
         ins.createdBy = decodeToken.id;
+        ins.uploadfile = req.body.uploadfile;
         ins.createdOn = new Date();
         ins.modifyOn = new Date();
         // console.log("ins", ins);
@@ -429,7 +431,7 @@ async function saveApplyJob(req, res) {
             };
           },
           (err) => {
-            // console.log("err: ", err);
+            console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -439,7 +441,7 @@ async function saveApplyJob(req, res) {
       }
       return resultSet;
     } catch (Error) {
-      console.log(Error, "ooooooooooooooo");
+      console.log(Error, "mmmmmmmmmm");
       resultSet = {
         msg: Error,
         statusCode: 400,
