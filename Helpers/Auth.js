@@ -10,73 +10,80 @@ const authorizer = async (req, res, next) => {
   // await mongooes.disconnect(dbUri, { dbName: "jobs" });
   await mongooes.connect(dbUri);
 
-  const { authorization } = req.headers;
-  if (authorization) {
-    const token =
-      authorization.split(" ")[0] != "Bearer"
-        ? authorization.split(" ")[0]
-        : authorization.split(" ")[1];
-    const decodeToken = jwt.verify(token, process.env.KEY_FOR_AUTH);
-    let data = null;
-    if (decodeToken?.userType === 1) {
-      data = await CourseAdminModel.findOne({
-        deleted: false,
-        _id: decodeToken?.id,
-      });
-    } else if (decodeToken?.userType === 4) {
-      data = await EmployerModel.findOne({
-        is_delete: false,
-        _id: decodeToken?.id,
-      });
-    } else {
-      data = await User.findOne(
-        {
+  try {
+    const { authorization } = req.headers;
+    if (authorization) {
+      // console.log(authorization);
+      const token =
+        authorization.split(" ")[0] != "Bearer"
+          ? authorization.split(" ")[0]
+          : authorization.split(" ")[1];
+      const decodeToken = jwt.verify(token, process.env.KEY_FOR_AUTH);
+      let data = null;
+      if (decodeToken?.userType === 1) {
+        data = await CourseAdminModel.findOne({
           deleted: false,
           _id: decodeToken?.id,
-        },
-        {
-          password: 0,
-        }
-      );
-    }
+        });
+      } else if (decodeToken?.userType === 4) {
+        data = await EmployerModel.findOne({
+          is_delete: false,
+          _id: decodeToken?.id,
+        });
+      } else {
+        data = await User.findOne(
+          {
+            deleted: false,
+            _id: decodeToken?.id,
+          },
+          {
+            password: 0,
+          }
+        );
+      }
 
-    if (data) {
-      req.headers.user = { decodeToken, authorization, user: data };
-      return true;
+      if (data) {
+        req.headers.user = { decodeToken, authorization, user: data };
+        // console.log(req.headers);
+        return true;
+      } else {
+        return res
+          .header({
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          })
+          .status(404)
+          .send({
+            statusCode: 404,
+            data: null,
+            message: "User not found",
+            err: {
+              message: "User not found",
+            },
+          });
+      }
     } else {
-      return res
+      res
         .header({
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         })
-        .status(404)
+        .status(401)
         .send({
-          statusCode: 404,
+          statusCode: 401,
           data: null,
-          message: "User not found",
+          message: "Token is in-valid",
           err: {
-            message: "User not found",
+            message: "Token is required",
           },
         });
+      return;
     }
-  } else {
-    res
-      .header({
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      })
-      .status(401)
-      .send({
-        statusCode: 401,
-        data: null,
-        message: "Token is in-valid",
-        err: {
-          message: "Token is required",
-        },
-      });
-    return;
+  } catch (error) {
+    return false;
   }
 };
+
 const Login = async (req, res, next) => {
   try {
     const { name, email, adminid } = req;

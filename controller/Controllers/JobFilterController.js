@@ -12,8 +12,17 @@ const postJobfilterData = async (req, res, next) => {
   var data = await PostEventModel.postJobfilterData(req, res);
   res.status(data.statusCode).send(data);
 };
+const getDashboardCount = async (req, res, next) => {
+  if (await Auth.authorizer(req, res)) {
+    var data = await PostEventModel.getDashboardCount(req, res);
+    res.status(data.statusCode).send(data);
+  } else {
+    res.status(400).send({ msg: "invalid sessions" });
+  }
+};
 
 module.exports = {
   getJobFilterData,
   postJobfilterData,
+  getDashboardCount,
 };

@@ -439,7 +439,7 @@ async function saveApplyJob(req, res) {
       }
       return resultSet;
     } catch (Error) {
-      // console.log(Error, "ooooooooooooooo");
+      console.log(Error, "ooooooooooooooo");
       resultSet = {
         msg: Error,
         statusCode: 400,
@@ -508,7 +508,7 @@ async function updateJobStatus(req, res) {
       });
   }
 }
-async function getEmployerJobData(req) {
+async function getEmployerJobData(req, res) {
   //console.log("req",req);
   if (req != "" && typeof req !== "undefined") {
     try {
