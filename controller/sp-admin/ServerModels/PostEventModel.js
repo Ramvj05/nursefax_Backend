@@ -506,8 +506,8 @@ async function getEmployeeEventData(request, res) {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
-      if (typeof request.params.id !== "undefined") {
-        const createdBy = request.params.id;
+      if (typeof request.params.emp_id !== "undefined") {
+        const createdBy = request.params.emp_id;
         var Resultsdata = [];
         var data = await PostEventTable.find({
           is_delete: false,
@@ -715,12 +715,13 @@ async function getUserEventData(request, res) {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
-      if (typeof request.params.id !== "undefined") {
-        // console.log("request", typeof request.params.id !== "undefined");
-        const createdBy = request.params.id;
-        var data = await PostEventTable.find({
+      if (typeof request.params.user_id !== "undefined") {
+        // console.log("request", typeof request.params.user_id !== "undefined");
+        const createdBy = request.params.user_id;
+        var data = await PostEventApply.find({
           is_delete: false,
-          $or: [{ createdBy: createdBy }, { assignto: createdBy }],
+          createdBy: createdBy,
+          // $or: [{ createdBy: createdBy }, { assignto: createdBy }],
         }).then(
           (response) => {
             // console.log("response: ", response);
