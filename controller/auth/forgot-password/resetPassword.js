@@ -19,9 +19,9 @@ router.post("/reset-password", async function (req, res) {
 
     let User;
     if (body.userType === "1") {
-      User = UserModel;
-    } else {
       User = courseAdminModel;
+    } else {
+      User = UserModel;
     }
 
     let transactionId = body.transactionID;
