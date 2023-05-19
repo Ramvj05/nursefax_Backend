@@ -17,11 +17,16 @@ async function getJobFilterData(req, res) {
       //   console.log(data, "datadata");
       var Datas = await PostJobTable.find({
         is_delete: false,
-        $and: [
-          { posttitle: { $regex: data.posttitle } },
-          { employername: { $regex: data.employername } },
-          { city: { $regex: data.city } },
+        $or: [
+          { posttitle: new RegExp(".*" + data.posttitle + ".*", "i") },
+          { employername: new RegExp(".*" + data.employername + ".*", "i") },
+          { city: new RegExp(".*" + data.city + ".*", "i") },
         ],
+        // $and: [
+        //   { posttitle: { $regex: data.posttitle } },
+        //   { employername: { $regex: data.employername } },
+        //   { city: { $regex: data.city } },
+        // ],
       }).then(
         (response) => {
           // console.log("response: ", response);
@@ -59,10 +64,14 @@ async function postJobfilterData(req, res) {
 
       var Datas = await PostJobTable.find({
         is_delete: false,
-        $and: [
-          { employmenttype: { $regex: data.employmenttype } },
-          //   { employername: { $regex: data.employername } },
+        $or: [
+          {
+            employmenttype: new RegExp(".*" + data.employmenttype + ".*", "i"),
+          },
         ],
+        // $and: [
+        //   { employmenttype: { $regex: data.employmenttype } },
+        // ],
       }).then(
         (response) => {
           // console.log("response: ", response);
