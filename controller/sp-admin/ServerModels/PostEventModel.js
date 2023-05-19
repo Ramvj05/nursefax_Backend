@@ -781,14 +781,34 @@ async function getUserEventData(request, res) {
               as: "eventdate_details",
             },
           },
-          // {
-          //   $lookup: {
-          //     from: "postevents",
-          //     localField: "createdBy",
-          //     foreignField: "_id",
-          //     as: "employer_details",
-          //   },
-          // },
+          {
+            $lookup: {
+              from: "applyevents",
+              localField: "_id",
+              foreignField: "event_id",
+              as: "applied_eventsdata",
+            },
+          },
+          {
+            $unwind: {
+              path: "$applied_eventsdata",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "applied_eventsdata.createdBy",
+              foreignField: "_id",
+              as: "userdetails",
+            },
+          },
+          {
+            $unwind: {
+              path: "$userdetails",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
         ]).then(
           (response) => {
             // console.log("response: " + response);
