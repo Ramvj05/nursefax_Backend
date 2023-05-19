@@ -717,12 +717,29 @@ async function getUserEventData(request, res) {
       await mongoose.connect(uri);
       if (typeof request.params.user_id !== "undefined") {
         // console.log("request", typeof request.params.user_id !== "undefined");
-        const createdBy = request.params.user_id;
-        var data = await PostEventApply.find({
-          is_delete: false,
-          createdBy: createdBy,
-          // $or: [{ createdBy: createdBy }, { assignto: createdBy }],
-        }).then(
+        const createdBy = new mongoose.Types.ObjectId(request.params.user_id);
+        var data = await PostEventApply.aggregate([
+          {
+            $match: {
+              is_delete: false,
+              createdBy: createdBy,
+            },
+          },
+          {
+            $lookup: {
+              from: "postevents",
+              localField: "event_id",
+              foreignField: "_id",
+              as: "event_details",
+            },
+          },
+          {
+            $unwind: {
+              path: "$event_details",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+        ]).then(
           (response) => {
             // console.log("response: ", response);
             resultSet = { msg: "success", list: response, statusCode: 200 };
