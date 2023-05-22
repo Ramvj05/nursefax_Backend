@@ -725,14 +725,7 @@ async function getUserEventData(request, res) {
               createdBy: createdBy,
             },
           },
-          {
-            $lookup: {
-              from: "posteventdates",
-              localField: "_id",
-              foreignField: "eventid",
-              as: "eventdate_details",
-            },
-          },
+
           {
             $lookup: {
               from: "postevents",
@@ -745,6 +738,14 @@ async function getUserEventData(request, res) {
             $unwind: {
               path: "$event_details",
               preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "posteventdates",
+              localField: "event_details._id",
+              foreignField: "eventid",
+              as: "eventdate_details",
             },
           },
         ]).then(
