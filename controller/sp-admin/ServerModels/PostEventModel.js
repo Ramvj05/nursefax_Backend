@@ -668,30 +668,40 @@ async function savePostEventApplyEvent(request, res) {
     const { decodeToken, user } = request.headers.user;
     await mongoose.connect(uri);
     try {
-      let ins = {};
+      var data = await ApplyJobTable.find({
+        job_id: req.body.job_id,
+        createdBy: decodeToken.id,
+      });
+      if (!data.length) {
+        let ins = {};
+        ins.event_id = request.body.event_id;
+        ins.createdBy = decodeToken.id;
+        ins.createdOn = new Date();
+        ins.modifyOn = new Date();
+        // console.log("ins", ins);
 
-      ins.event_id = request.body.event_id;
-      ins.createdBy = decodeToken.id;
-      ins.createdOn = new Date();
-      ins.modifyOn = new Date();
-      // console.log("ins", ins);
-
-      let insert = new PostEventApply(ins);
-      await insert.save().then(
-        (response) => {
-          resultSet = {
-            msg: "Event Applied successfully",
-            statusCode: 200,
-          };
-        },
-        (err) => {
-          // console.log("err: ", err);
-          resultSet = {
-            msg: err.message,
-            statusCode: 500,
-          };
-        }
-      );
+        let insert = new PostEventApply(ins);
+        await insert.save().then(
+          (response) => {
+            resultSet = {
+              msg: "Event Applied successfully",
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            // console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
+      } else {
+        resultSet = {
+          msg: "You Already Applied This Event",
+          statusCode: 500,
+        };
+      }
 
       return resultSet;
     } catch (Error) {
