@@ -812,12 +812,6 @@ async function getUserEventData(request, res) {
               as: "userdetails",
             },
           },
-          {
-            $unwind: {
-              path: "$userdetails",
-              preserveNullAndEmptyArrays: true,
-            },
-          },
         ]).then(
           (response) => {
             // console.log("response: " + response);
