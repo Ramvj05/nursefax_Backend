@@ -17,7 +17,7 @@ async function getJobFilterData(req, res) {
       //   console.log(data, "datadata");
       var Datas = await PostJobTable.find({
         is_delete: false,
-        $or: [
+        $and: [
           { posttitle: new RegExp(".*" + data.posttitle + ".*", "i") },
           { employername: new RegExp(".*" + data.employername + ".*", "i") },
           { city: new RegExp(".*" + data.city + ".*", "i") },
@@ -64,7 +64,7 @@ async function postJobfilterData(req, res) {
 
       var Datas = await PostJobTable.find({
         is_delete: false,
-        $or: [
+        $and: [
           {
             employmenttype: new RegExp(".*" + data.employmenttype + ".*", "i"),
           },

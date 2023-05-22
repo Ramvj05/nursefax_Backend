@@ -71,14 +71,34 @@ async function getPostJobData(req, res) {
               preserveNullAndEmptyArrays: true,
             },
           },
-          // {
-          //   $lookup: {
-          //     from: "blogcategories",
-          //     localField: "PrimaryCategory",
-          //     foreignField: "_id",
-          //     as: "categordetails"
-          //   }
-          // },
+          {
+            $lookup: {
+              from: "employers",
+              localField: "jobdetails.createdBy",
+              foreignField: "_id",
+              as: "employer_details",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employer_details",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "employers",
+              localField: "jobdetails.assignto",
+              foreignField: "_id",
+              as: "employer_details1",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employer_details1",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
         ]).then(
           (response) => {
             // console.log("response: ", response);
@@ -105,6 +125,26 @@ async function getPostJobData(req, res) {
               localField: "createdBy",
               foreignField: "_id",
               as: "employer_details",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employer_details",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "employers",
+              localField: "assignto",
+              foreignField: "_id",
+              as: "employer_details1",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employer_details1",
+              preserveNullAndEmptyArrays: true,
             },
           },
         ]).then(
