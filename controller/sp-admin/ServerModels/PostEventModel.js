@@ -727,6 +727,14 @@ async function getUserEventData(request, res) {
           },
           {
             $lookup: {
+              from: "posteventdates",
+              localField: "_id",
+              foreignField: "eventid",
+              as: "eventdate_details",
+            },
+          },
+          {
+            $lookup: {
               from: "postevents",
               localField: "event_id",
               foreignField: "_id",
