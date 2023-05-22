@@ -100,7 +100,7 @@ async function getPostJobData(req, res) {
           {
             $lookup: {
               from: "postemployertypes",
-              localField: "jobdetails.employmenttype.",
+              localField: "jobdetails.employmenttype",
               foreignField: "_id",
               as: "employment_details",
             },
@@ -503,7 +503,7 @@ async function saveApplyJob(req, res) {
           {
             $lookup: {
               from: "employers",
-              localField: "createdBy",
+              localField: "job_details.createdBy",
               foreignField: "_id",
               as: "employer_details",
             },
@@ -517,7 +517,7 @@ async function saveApplyJob(req, res) {
           {
             $lookup: {
               from: "employers",
-              localField: "assignto",
+              localField: "job_details.assignto",
               foreignField: "_id",
               as: "employer_details1",
             },
