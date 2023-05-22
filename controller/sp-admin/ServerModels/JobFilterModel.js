@@ -6,6 +6,7 @@ const authorizer = require("../../../middleware/authorizer");
 const PostJobTable = require("../../../model/TableCollections/TablePostJob");
 const PostEventTable = require("../../../model/TableCollections/TablePostEvent");
 const FileHandler = require("../../../Helpers/FileHandler");
+const CronJob = require("cron").CronJob;
 
 async function getJobFilterData(req, res) {
   //console.log("req",req);
@@ -290,6 +291,55 @@ async function getCandidatelist(req, res) {
     return resultSet;
   }
 }
+
+const checkBookingStatus = new CronJob({
+  cronTime: "*/2 * * * * *", // every 24 hours
+  onTick: async function () {
+    console.log(`
+         Runing a job at 01:00 at America/Sao_Paulo timezone
+    `);
+    const uri = dbUri;
+    await mongoose.connect(uri);
+    const updatedstatus = await PostJobTable.updateMany(
+      {
+        is_delete: false,
+        active: true,
+        expiredOn: {
+          $lt: new Date(),
+          $gte: new Date(new Date().setDate(new Date().getDate() - 1)),
+        },
+      },
+      { $set: { active: false } }
+    ).then(
+      (response) => {
+        console.log(new Date(), "oooooooooooo");
+        resultSet = {
+          msg: "Job Status changed successfully",
+          statusCode: 200,
+        };
+      },
+      (err) => {
+        console.log("err: ", err);
+        resultSet = {
+          msg: err.message,
+          statusCode: 500,
+        };
+      }
+    );
+    // PostJobTable.updateMany(
+    //   {
+    //     active: false,
+    //     expiredOn: {
+    //       $gte: new Date(),
+    //       // $gte: new Date(new Date().setDate(new Date().getDate() - 1)),
+    //     },
+    //   },
+    //   { active: true }
+    // );
+  },
+  start: true,
+  timezone: "Asia/kolkata",
+});
 
 module.exports = {
   getJobFilterData,
