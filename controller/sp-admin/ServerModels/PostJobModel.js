@@ -717,6 +717,34 @@ async function getEmployerJobData(req, res) {
               is_delete: false,
             },
           },
+          {
+            $lookup: {
+              from: "employers",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "employer_details",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employer_details",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "employers",
+              localField: "assignto",
+              foreignField: "_id",
+              as: "employer_details1",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employer_details1",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
         ]).then(
           (response) => {
             // console.log("response: " + response);
