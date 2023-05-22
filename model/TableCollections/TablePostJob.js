@@ -35,7 +35,7 @@ const PostJobSchema = new Schema({
     type: String,
   },
   employmenttype: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
   },
   speciality: {
     type: String,

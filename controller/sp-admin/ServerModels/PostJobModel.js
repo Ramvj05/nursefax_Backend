@@ -22,22 +22,20 @@ async function getPostJobData(req, res) {
               is_delete: false,
             },
           },
-          // {
-          //   $lookup: {
-          //     from: "users",
-          //     localField: "user_id",
-          //     foreignField: "_id",
-          //     as: "userdetails"
-          //   }
-          // },
-          // {
-          //   $lookup: {
-          //     from: "blogcategories",
-          //     localField: "PrimaryCategory",
-          //     foreignField: "_id",
-          //     as: "categordetails"
-          //   }
-          // },
+          {
+            $lookup: {
+              from: "postemployertypes",
+              localField: "employmenttype",
+              foreignField: "_id",
+              as: "employment_type",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employment_type",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
         ]).then(
           (response) => {
             // console.log("response: ", response);
@@ -110,7 +108,6 @@ async function getPostJobData(req, res) {
           }
         );
       } else {
-        // var counts= await PostJobViewTable.find({blog_id:_id}).count()
         var data = await PostJobTable.aggregate([
           {
             $match: {
@@ -133,6 +130,7 @@ async function getPostJobData(req, res) {
               preserveNullAndEmptyArrays: true,
             },
           },
+
           {
             $lookup: {
               from: "employers",
@@ -144,6 +142,20 @@ async function getPostJobData(req, res) {
           {
             $unwind: {
               path: "$employer_details1",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "postemployertypes",
+              localField: "employmenttype",
+              foreignField: "_id",
+              as: "employment_type",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employment_type",
               preserveNullAndEmptyArrays: true,
             },
           },
@@ -615,7 +627,6 @@ async function getEmployerJobData(req, res) {
           }
         );
       } else {
-        // var counts= await PostJobViewTable.find({blog_id:_id}).count()
         var data = await PostJobTable.aggregate([
           {
             $match: {
@@ -685,7 +696,6 @@ async function getDownloaded(req, res) {
             };
           });
       } else {
-        // var counts= await PostJobViewTable.find({blog_id:_id}).count()
         var data = await PostJobTable.aggregate([
           {
             $match: {
