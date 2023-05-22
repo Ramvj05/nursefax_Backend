@@ -293,10 +293,10 @@ async function getCandidatelist(req, res) {
 }
 
 const checkBookingStatus = new CronJob({
-  cronTime: "*/2 * * * * *", // every 24 hours
+  cronTime: "0 0 * * *", // every 24 hours
   onTick: async function () {
     console.log(`
-         Runing a job at 01:00 at America/Sao_Paulo timezone
+         Running check
     `);
     const uri = dbUri;
     await mongoose.connect(uri);
@@ -305,14 +305,13 @@ const checkBookingStatus = new CronJob({
         is_delete: false,
         active: true,
         expiredOn: {
-          $lt: new Date(),
-          $gte: new Date(new Date().setDate(new Date().getDate() - 1)),
+          $lt: new Date().toDateString(),
+          // $gte: new Date(new Date().setDate(new Date().getDate() - 1)),
         },
       },
       { $set: { active: false } }
     ).then(
       (response) => {
-        console.log(new Date(), "oooooooooooo");
         resultSet = {
           msg: "Job Status changed successfully",
           statusCode: 200,
