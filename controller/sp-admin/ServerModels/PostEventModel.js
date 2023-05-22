@@ -668,8 +668,8 @@ async function savePostEventApplyEvent(request, res) {
     const { decodeToken, user } = request.headers.user;
     await mongoose.connect(uri);
     try {
-      var data = await ApplyJobTable.find({
-        job_id: req.body.job_id,
+      var data = await PostEventApply.find({
+        event_id: req.body.event_id,
         createdBy: decodeToken.id,
       });
       if (!data.length) {
