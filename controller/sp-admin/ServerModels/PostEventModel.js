@@ -669,7 +669,7 @@ async function savePostEventApplyEvent(request, res) {
     await mongoose.connect(uri);
     try {
       var data = await PostEventApply.find({
-        event_id: req.body.event_id,
+        event_id: request.body.event_id,
         createdBy: decodeToken.id,
       });
       if (!data.length) {

@@ -99,6 +99,20 @@ async function getPostJobData(req, res) {
           },
           {
             $lookup: {
+              from: "postemployertypes",
+              localField: "jobdetails.employmenttype.",
+              foreignField: "_id",
+              as: "employment_details",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employment_details",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
               from: "employers",
               localField: "jobdetails.createdBy",
               foreignField: "_id",
@@ -470,6 +484,48 @@ async function saveApplyJob(req, res) {
               localField: "job_id",
               foreignField: "_id",
               as: "job_details",
+            },
+          },
+          {
+            $lookup: {
+              from: "postemployertypes",
+              localField: "job_details.employmenttype",
+              foreignField: "_id",
+              as: "employment_type",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employment_type",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "employers",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "employer_details",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employer_details",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "employers",
+              localField: "assignto",
+              foreignField: "_id",
+              as: "employer_details1",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employer_details1",
+              preserveNullAndEmptyArrays: true,
             },
           },
         ]).then(
