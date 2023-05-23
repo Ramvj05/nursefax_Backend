@@ -657,27 +657,42 @@ async function updateJobStatusChange(req, res) {
   try {
     // console.log(id);
     if (user.roles.includes("ADMIN") || user.roles.includes("EMPLOYER")) {
-      const updatedstatus = await PostJobTable.findOneAndUpdate(
-        {
-          is_delete: false,
-          _id: job_id,
+      var datas = await PostJobTable.find({
+        is_delete: false,
+        _id: job_id,
+        expiredOn: {
+          $lt: new Date(),
+          // $gte: new Date(new Date().setDate(new Date().getDate() - 1)),
         },
-        { $set: { active: data.status, changedstatusBy: decodeToken.id } }
-      ).then(
-        (response) => {
-          resultSet = {
-            msg: "Job Status updated successfully",
-            statusCode: 200,
-          };
-        },
-        (err) => {
-          // console.log("err: ", err);
-          resultSet = {
-            msg: err.message,
-            statusCode: 500,
-          };
-        }
-      );
+      });
+      if (datas.length <= 0) {
+        const updatedstatus = await PostJobTable.findOneAndUpdate(
+          {
+            is_delete: false,
+            _id: job_id,
+          },
+          { $set: { active: data.status, changedstatusBy: decodeToken.id } }
+        ).then(
+          (response) => {
+            resultSet = {
+              msg: "Job Status updated successfully",
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            // console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
+      } else {
+        resultSet = {
+          msg: "Job has been expired!",
+          statusCode: 400,
+        };
+      }
     } else {
       resultSet = {
         msg: "You dont have permission to access this page",
