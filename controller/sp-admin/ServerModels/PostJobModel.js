@@ -719,6 +719,17 @@ async function getEmployerJobData(req, res) {
           },
           {
             $lookup: {
+              from: "applyjobs",
+              localField: "_id",
+              foreignField: "job_id",
+              as: "appliedjob",
+            },
+          },
+          {
+            $addFields: { applied_job_count: { $size: "$appliedjob" } },
+          },
+          {
+            $lookup: {
               from: "employers",
               localField: "createdBy",
               foreignField: "_id",
@@ -743,6 +754,11 @@ async function getEmployerJobData(req, res) {
             $unwind: {
               path: "$employer_details1",
               preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $project: {
+              appliedjob: 0,
             },
           },
         ]).then(

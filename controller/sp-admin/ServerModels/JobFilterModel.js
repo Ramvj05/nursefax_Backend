@@ -9,38 +9,92 @@ const FileHandler = require("../../../Helpers/FileHandler");
 const CronJob = require("cron").CronJob;
 
 async function getJobFilterData(req, res) {
-  //console.log("req",req);
   if (req != "" && typeof req !== "undefined") {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
       const data = req.body;
-      //   console.log(data, "datadata");
-      var Datas = await PostJobTable.find({
-        is_delete: false,
-        $and: [
-          { posttitle: new RegExp(".*" + data.posttitle + ".*", "i") },
-          { employername: new RegExp(".*" + data.employername + ".*", "i") },
-          { city: new RegExp(".*" + data.city + ".*", "i") },
-        ],
-        // $and: [
-        //   { posttitle: { $regex: data.posttitle } },
-        //   { employername: { $regex: data.employername } },
-        //   { city: { $regex: data.city } },
-        // ],
-      }).then(
+      var escape;
+      var city;
+      var employername;
+      const rr = [];
+      if (data.posttitle && data.posttitle != "") {
+        escape = data.posttitle.replace(
+          /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,
+          "\\$&"
+        );
+        rr.push({ posttitle: new RegExp(".*" + escape + ".*", "si") });
+      }
+      if (data.city && data.city != "") {
+        city = data.city.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        rr.push({ city: new RegExp(".*" + city + ".*", "si") });
+      }
+      if (data.employername && data.employername != "") {
+        employername = data.employername.replace(
+          /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,
+          "\\$&"
+        );
+        rr.push({ employername: new RegExp(".*" + employername + ".*", "si") });
+      }
+      await PostJobTable.aggregate([
+        {
+          $match: {
+            is_delete: false,
+            $or: rr,
+          },
+        },
+        {
+          $lookup: {
+            from: "postemployertypes",
+            localField: "employmenttype",
+            foreignField: "_id",
+            as: "employment_type",
+          },
+        },
+        {
+          $unwind: {
+            path: "$employment_type",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "employers",
+            localField: "createdBy",
+            foreignField: "_id",
+            as: "employer_details",
+          },
+        },
+        {
+          $unwind: {
+            path: "$employer_details",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "employers",
+            localField: "assignto",
+            foreignField: "_id",
+            as: "employer_details1",
+          },
+        },
+        {
+          $unwind: {
+            path: "$employer_details1",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+      ]).then(
         (response) => {
-          // console.log("response: ", response);
           resultSet = { msg: "success", list: response, statusCode: 200 };
         },
         (err) => {
-          // console.log("err: ", err);
           resultSet = { msg: err.message, statusCode: 500 };
         }
       );
       return resultSet;
     } catch (Error) {
-      // console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
@@ -56,24 +110,75 @@ async function getJobFilterData(req, res) {
   }
 }
 async function postJobfilterData(req, res) {
-  //console.log("req",req);
   if (req != "" && typeof req !== "undefined") {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
       const data = req.body;
 
-      var Datas = await PostJobTable.find({
-        is_delete: false,
-        $and: [
-          {
-            employmenttype: new RegExp(".*" + data.employmenttype + ".*", "i"),
+      var Datas = await PostJobTable.aggregate([
+        {
+          $match: {
+            is_delete: false,
+            $and: [
+              {
+                employmenttype: new RegExp(
+                  ".*" + data.employmenttype + ".*",
+                  "i"
+                ),
+              },
+            ],
           },
-        ],
+        },
+        {
+          $lookup: {
+            from: "employers",
+            localField: "createdBy",
+            foreignField: "_id",
+            as: "employer_details",
+          },
+        },
+        {
+          $unwind: {
+            path: "$employer_details",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "employers",
+            localField: "assignto",
+            foreignField: "_id",
+            as: "employer_details1",
+          },
+        },
+        {
+          $unwind: {
+            path: "$employer_details1",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "postemployertypes",
+            localField: "employmenttype",
+            foreignField: "_id",
+            as: "employment_type",
+          },
+        },
+        {
+          $unwind: {
+            path: "$employment_type",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+
         // $and: [
-        //   { employmenttype: { $regex: data.employmenttype } },
+        //   { posttitle: { $regex: data.posttitle } },
+        //   { employername: { $regex: data.employername } },
+        //   { city: { $regex: data.city } },
         // ],
-      }).then(
+      ]).then(
         (response) => {
           // console.log("response: ", response);
           resultSet = { msg: "success", list: response, statusCode: 200 };
@@ -114,7 +219,6 @@ async function getDashboardCount(req, res) {
         }).then(
           (response) => {
             var count = response.length;
-            console.log("response: ", count);
             resultSet = {
               msg: "success",
               list: count,
@@ -122,7 +226,6 @@ async function getDashboardCount(req, res) {
             };
           },
           (err) => {
-            // console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
@@ -192,7 +295,6 @@ async function getDashboardCount(req, res) {
   }
 }
 async function getCandidatelist(req, res) {
-  console.log("req", req.params.empl_id);
   if (req != "" && typeof req !== "undefined") {
     try {
       const uri = dbUri;
@@ -243,7 +345,6 @@ async function getCandidatelist(req, res) {
             };
           },
           (err) => {
-            console.log("err: ", err);
             resultSet = { msg: err.message, statusCode: 500 };
           }
         );
@@ -257,7 +358,6 @@ async function getCandidatelist(req, res) {
           },
         ]).then(
           (response) => {
-            // console.log("response: " + response);
             resultSet = {
               msg: "success",
               list: response,
@@ -265,7 +365,6 @@ async function getCandidatelist(req, res) {
             };
           },
           (err) => {
-            // console.log("err: ", err);
             resultSet = {
               msg: err.message,
               statusCode: 500,
@@ -276,7 +375,6 @@ async function getCandidatelist(req, res) {
 
       return resultSet;
     } catch (Error) {
-      console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
