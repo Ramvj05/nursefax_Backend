@@ -81,6 +81,9 @@ const PostJobSchema = new Schema({
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
   },
+  changedstatusBy: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
   modifyOn: {
     type: Date,
   },

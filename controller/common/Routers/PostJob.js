@@ -17,6 +17,7 @@ router.get("/employerjob/:emp_id", Controller.getEmployerJobData);
 router.get("/employerjob/job/:job_id", Controller.getEmployerJobData);
 router.get("/appliedjob/:user_id", Controller.getPostJobData);
 router.put("/active/:id", Controller.updateJobStatus);
+router.put("/jobstatus/:job_id", Controller.updateJobStatusChange);
 router.get("/download/:id", Controller.getDownloaded);
 
 module.exports = router;

@@ -647,6 +647,60 @@ async function updateJobStatus(req, res) {
       });
   }
 }
+async function updateJobStatusChange(req, res) {
+  const { decodeToken, user } = req.headers.user;
+  const { job_id } = req.params;
+  const data = req.body;
+  const uri = dbUri;
+  await mongoose.connect(uri);
+
+  try {
+    // console.log(id);
+    if (user.roles.includes("ADMIN") || user.roles.includes("EMPLOYER")) {
+      const updatedstatus = await PostJobTable.findOneAndUpdate(
+        {
+          is_delete: false,
+          _id: job_id,
+        },
+        { $set: { active: data.status, changedstatusBy: decodeToken.id } }
+      ).then(
+        (response) => {
+          resultSet = {
+            msg: "Job Status updated successfully",
+            statusCode: 200,
+          };
+        },
+        (err) => {
+          // console.log("err: ", err);
+          resultSet = {
+            msg: err.message,
+            statusCode: 500,
+          };
+        }
+      );
+    } else {
+      resultSet = {
+        msg: "You dont have permission to access this page",
+        statusCode: 401,
+      };
+    }
+    return resultSet;
+  } catch (err) {
+    // console.log(err);
+    res
+      .header({
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      })
+      .status(500)
+      .send({
+        statsCode: 500,
+        data: null,
+        message: "Somthing went wrong",
+        error: err,
+      });
+  }
+}
 async function getEmployerJobData(req, res) {
   //console.log("req",req);
   if (req != "" && typeof req !== "undefined") {
@@ -884,6 +938,7 @@ module.exports = {
   saveApplyJob,
   getEmployerJobData,
   getDownloaded,
+  updateJobStatusChange,
 };
 
 // module.exports = router;
