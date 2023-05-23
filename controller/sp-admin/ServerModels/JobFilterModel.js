@@ -167,12 +167,6 @@ async function postJobfilterData(req, res) {
             preserveNullAndEmptyArrays: true,
           },
         },
-
-        // $and: [
-        //   { posttitle: { $regex: data.posttitle } },
-        //   { employername: { $regex: data.employername } },
-        //   { city: { $regex: data.city } },
-        // ],
       ]).then(
         (response) => {
           // console.log("response: ", response);
