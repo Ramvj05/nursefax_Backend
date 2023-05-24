@@ -3,6 +3,7 @@ class Theory {
     theoryId,
     typeOfDoc,
     content,
+    courseId,
     thumbnail,
     description: mainDesc,
     title,
@@ -11,6 +12,7 @@ class Theory {
     this.theoryId = theoryId;
     this.typeOfDoc = typeOfDoc;
     this.content = content;
+    this.courseId = courseId;
     this.thumbnail = thumbnail;
     this.description = mainDesc;
     this.title = title;

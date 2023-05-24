@@ -115,14 +115,14 @@ async function postJobfilterData(req, res) {
       const uri = dbUri;
       await mongoose.connect(uri);
       const data = req.body;
-      const employmenttype = data.employmenttype.map(
+      const employmenttype = JSON.parse(data.employmenttype).map(
         (e) => new mongoose.Types.ObjectId(e)
       );
       var Datas = await PostJobTable.aggregate([
         {
           $match: {
             is_delete: false,
-            employmenttype: { $in: employmenttype },
+            $or: [{ employmenttype: { $in: employmenttype } }],
           },
         },
         {
@@ -179,7 +179,7 @@ async function postJobfilterData(req, res) {
       );
       return resultSet;
     } catch (Error) {
-      // console.log("error: " + Error);
+      console.log("error: " + Error);
       resultSet = {
         msg: Error,
         statusCode: 501,

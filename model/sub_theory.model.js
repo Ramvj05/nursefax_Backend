@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const theorySchema = new Schema({
   subTheoryId: { type: String },
   theoryId: [{ type: String }],
+  courseId: [{ type: String }],
   typeOfDoc: { type: String },
   content: {
     url: { type: String },

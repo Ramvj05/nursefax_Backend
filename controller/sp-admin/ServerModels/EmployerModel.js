@@ -131,6 +131,7 @@ async function saveEmployers(request) {
           ins.state = data.state;
           ins.mcc = data.mcc;
           ins.active = data.active;
+          ins.status = data.status;
           ins.country = data.country;
           ins.Address = data.Address;
           ins.userType = data.userType;

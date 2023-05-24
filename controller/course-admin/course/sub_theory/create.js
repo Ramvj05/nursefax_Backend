@@ -11,7 +11,7 @@ router.post("/create", authorizer, async (req, res) => {
     const { decodeToken } = req.headers.user;
     let body = new SubTheoryClass(req.body).getModel();
     // let body = req.body;
-    console.log("bodyyyyyyy--------", body);
+    // console.log("bodyyyyyyy--------", body);
 
     await mongoose.connect(dbUri);
 

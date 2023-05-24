@@ -36,6 +36,8 @@ router.post("/list", authorizer, async (req, res) => {
       pageSize
     );
 
+    console.log(data, "ppppppppppppppp");
+
     let newData = [];
 
     if (data && Array.isArray(data) && data.length > 0) {
