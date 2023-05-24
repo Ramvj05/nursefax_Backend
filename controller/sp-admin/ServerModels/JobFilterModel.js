@@ -120,10 +120,13 @@ async function postJobfilterData(req, res) {
         if (req.params.job_date == "last_three") {
           var d = new Date();
           d.setDate(new Date().getDate() - 3);
-        } else {
+        } else if (req.params.last24) {
           var d = new Date();
+          d.setDate(new Date().getDate() - 1);
+        } else {
           d.setDate(new Date().getDate() - 7);
         }
+
         console.log(d);
         var Datas = await PostJobTable.aggregate([
           {
