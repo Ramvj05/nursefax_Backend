@@ -114,69 +114,157 @@ async function postJobfilterData(req, res) {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
-      const data = req.body;
-      const employmenttype = JSON.parse(data.employmenttype).map(
-        (e) => new mongoose.Types.ObjectId(e)
-      );
-      var Datas = await PostJobTable.aggregate([
-        {
-          $match: {
-            is_delete: false,
-            $or: [{ employmenttype: { $in: employmenttype } }],
-          },
-        },
-        {
-          $lookup: {
-            from: "employers",
-            localField: "createdBy",
-            foreignField: "_id",
-            as: "employer_details",
-          },
-        },
-        {
-          $unwind: {
-            path: "$employer_details",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $lookup: {
-            from: "employers",
-            localField: "assignto",
-            foreignField: "_id",
-            as: "employer_details1",
-          },
-        },
-        {
-          $unwind: {
-            path: "$employer_details1",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $lookup: {
-            from: "postemployertypes",
-            localField: "employmenttype",
-            foreignField: "_id",
-            as: "employment_type",
-          },
-        },
-        {
-          $unwind: {
-            path: "$employment_type",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-      ]).then(
-        (response) => {
-          // console.log("response: ", response);
-          resultSet = { msg: "success", list: response, statusCode: 200 };
-        },
-        (err) => {
-          // console.log("err: ", err);
-          resultSet = { msg: err.message, statusCode: 500 };
+      let datedata;
+
+      if (req.params.job_date) {
+        if (req.params.job_date == "last_three") {
+          var d = new Date();
+          d.setDate(new Date().getDate() - 3);
+        } else {
+          var d = new Date();
+          d.setDate(new Date().getDate() - 7);
         }
-      );
+        console.log(d);
+        var Datas = await PostJobTable.aggregate([
+          {
+            $match: {
+              is_delete: false,
+              $and: [
+                {
+                  createdOn: { $lte: new Date() },
+                  createdOn: {
+                    $gte: d,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $lookup: {
+              from: "employers",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "employer_details",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employer_details",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "employers",
+              localField: "assignto",
+              foreignField: "_id",
+              as: "employer_details1",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employer_details1",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "postemployertypes",
+              localField: "employmenttype",
+              foreignField: "_id",
+              as: "employment_type",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employment_type",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+        ]).then(
+          (response) => {
+            // console.log("response: ", response);
+            resultSet = { msg: "success", list: response, statusCode: 200 };
+          },
+          (err) => {
+            // console.log("err: ", err);
+            resultSet = { msg: err.message, statusCode: 500 };
+          }
+        );
+      } else {
+        const data = req.body;
+        const employmenttype = JSON.parse(data.employmenttype).map(
+          (e) => new mongoose.Types.ObjectId(e)
+        );
+        var Datas = await PostJobTable.aggregate([
+          {
+            $match: {
+              is_delete: false,
+              $or: [{ employmenttype: { $in: employmenttype } }],
+              $and: [
+                {
+                  createdOn: { $lte: new Date() },
+                  createdOn: {
+                    $gte: new Date().setDate(new Date().getDate() - 3),
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $lookup: {
+              from: "employers",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "employer_details",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employer_details",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "employers",
+              localField: "assignto",
+              foreignField: "_id",
+              as: "employer_details1",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employer_details1",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "postemployertypes",
+              localField: "employmenttype",
+              foreignField: "_id",
+              as: "employment_type",
+            },
+          },
+          {
+            $unwind: {
+              path: "$employment_type",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+        ]).then(
+          (response) => {
+            // console.log("response: ", response);
+            resultSet = { msg: "success", list: response, statusCode: 200 };
+          },
+          (err) => {
+            // console.log("err: ", err);
+            resultSet = { msg: err.message, statusCode: 500 };
+          }
+        );
+      }
+
       return resultSet;
     } catch (Error) {
       console.log("error: " + Error);
