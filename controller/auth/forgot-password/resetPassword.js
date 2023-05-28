@@ -7,6 +7,7 @@ const UserModel = require("../../../model/user.model");
 const otpModel = require("../../../model/otp.model");
 const { generateSalt, generateHash } = require("../../../utils/encrypt");
 const courseAdminModel = require("../../../model/courseAdmin.model");
+const employerModel = require("../../../model/TableCollections/TableEmployers");
 const router = express.Router();
 
 router.post("/reset-password", async function (req, res) {
@@ -20,6 +21,8 @@ router.post("/reset-password", async function (req, res) {
     let User;
     if (body.userType === "1") {
       User = courseAdminModel;
+    } else if (body.userType === "4") {
+      User = employerModel;
     } else {
       User = UserModel;
     }

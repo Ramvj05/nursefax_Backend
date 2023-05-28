@@ -11,6 +11,21 @@ const UserWishlistSchema = Schema({
   course_id: {
     type: mongoose.Schema.Types.ObjectId,
   },
+  exam_id: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
+  event_id: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
+  job_id: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
+  blog_id: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
+  type: {
+    type: String,
+  },
   Status: {
     type: Boolean,
     default: true,

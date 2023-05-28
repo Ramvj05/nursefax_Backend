@@ -2,10 +2,12 @@ const express = require("express");
 const router = express.Router();
 const Controller = require("../../Controllers/WishlistController");
 
-router.get("/", Controller.getWishlistData);
-router.get("/:id", Controller.getWishlistData);
-router.post("/", Controller.saveWishlist);
-router.put("/:id", Controller.updateWishlist);
-router.put("/delete/:id", Controller.deleteWishlist);
+router.post("/courses/", Controller.getCourseWishlistData);
+router.post("/blogs/", Controller.getBlogWishlistData);
+router.post("/events/", Controller.getEventWishlistData);
+router.post("/exams/", Controller.getExamWishlistData);
+router.post("/jobs/", Controller.getJobWishlistData);
+router.post("/", Controller.saveCourseWishlist);
+router.put("/delete/:id", Controller.deleteCourseWishlist);
 
 module.exports = router;

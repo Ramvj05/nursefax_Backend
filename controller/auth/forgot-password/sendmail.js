@@ -10,6 +10,7 @@ const { default: mongoose } = require("mongoose");
 const userModel = require("../../../model/user.model");
 const otpModel = require("../../../model/otp.model");
 const courseAdminModel = require("../../../model/courseAdmin.model");
+const employerModel = require("../../../model/TableCollections/TableEmployers");
 var defaultClient = ElasticEmail.ApiClient.instance;
 
 var apikey = defaultClient.authentications["apikey"];
@@ -124,17 +125,30 @@ router.get("/mail/:email", async function (req, res) {
     });
     if (user) {
       presentUser = user;
+      console.log("present user", presentUser);
     } else {
-      presentUser = await courseAdminModel.findOne({
+      const courseAdmin = await courseAdminModel.findOne({
         $or: [
           {
             email: useremail,
           },
         ],
       });
+      if (courseAdmin) {
+        presentUser = courseAdmin;
+        console.log("present ", presentUser);
+      } else {
+        presentUser = await employerModel.findOne({
+          $or: [
+            {
+              email: useremail,
+            },
+          ],
+        });
+      }
+      console.log(" user", presentUser);
     }
 
-    console.log("present user", presentUser);
     if (presentUser) {
       const otp = await axios.get(endpoints.otp.create + `/${useremail}`);
 

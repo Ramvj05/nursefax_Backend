@@ -36,11 +36,28 @@ async function getJobFilterData(req, res) {
         );
         rr.push({ employername: new RegExp(".*" + employername + ".*", "si") });
       }
+      if (data.job_date == "last_three") {
+        var d = new Date();
+        d.setDate(new Date().getDate() - 3);
+      } else if (data.job_date == "last24") {
+        var d = new Date();
+        d.setDate(new Date().getDate() - 1);
+      } else {
+        d.setDate(new Date().getDate() - 7);
+      }
       await PostJobTable.aggregate([
         {
           $match: {
             is_delete: false,
             $or: rr,
+            $and: [
+              {
+                createdOn: { $lte: new Date() },
+                createdOn: {
+                  $gte: d,
+                },
+              },
+            ],
           },
         },
         {
@@ -204,14 +221,6 @@ async function postJobfilterData(req, res) {
             $match: {
               is_delete: false,
               $or: [{ employmenttype: { $in: employmenttype } }],
-              $and: [
-                {
-                  createdOn: { $lte: new Date() },
-                  createdOn: {
-                    $gte: new Date().setDate(new Date().getDate() - 3),
-                  },
-                },
-              ],
             },
           },
           {
