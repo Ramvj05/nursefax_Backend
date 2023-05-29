@@ -62,7 +62,7 @@ async function getJobFilterData(req, res) {
       if (data.job_date == "last_three") {
         var d = new Date();
         d.setDate(new Date().getDate() - 3);
-      } else if (data.job_date == " ") {
+      } else if (data.job_date == "last_24") {
         var d = new Date();
         d.setDate(new Date().getDate() - 1);
       } else {
