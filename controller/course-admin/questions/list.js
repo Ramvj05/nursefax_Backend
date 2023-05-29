@@ -56,18 +56,18 @@ router.post("/list", authorizer, async function (req, res) {
       let totalElements = await QuestionModel.find(query).count();
       let questions;
       if (!user.roles.includes("STUDENT")) {
-        // questions = await pagination(
-        //   QuestionModel.find(query),
-        //   page,
-        //   pageSize,
-        //   "qId"
-        // );
-        questions = await QuestionModel.find({
-          deleted: false,
-          examId: {
-            $all: req.body.examId,
-          },
-        });
+        questions = await pagination(
+          QuestionModel.find(query),
+          page,
+          pageSize,
+          "qId"
+        );
+        // questions = await QuestionModel.find({
+        //   deleted: false,
+        //   examId: {
+        //     $all: req.body.examId,
+        //   },
+        // });
       } else {
         questions = await pagination(
           QuestionModel.find(query, { correctAnswer: 0 }),
