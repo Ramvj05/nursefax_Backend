@@ -14,50 +14,57 @@ async function getJobFilterData(req, res) {
       const uri = dbUri;
       await mongoose.connect(uri);
       const data = req.body;
-      var escape;
-      var city;
-      var employername;
+      var posttitle;
+      var country;
+      var state;
+      var speciality;
       const rr = [];
       if (data.posttitle && data.posttitle != "") {
-        escape = data.posttitle.replace(
+        posttitle = data.posttitle.replace(
           /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,
           "\\$&"
         );
-        rr.push({ posttitle: new RegExp(".*" + escape + ".*", "si") });
+        rr.push({
+          posttitle: new RegExp(".*" + posttitle + ".*", "si"),
+        });
       }
-      if (data.city && data.city != "") {
-        city = data.city.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-        rr.push({ city: new RegExp(".*" + city + ".*", "si") });
-      }
-      if (data.employername && data.employername != "") {
-        employername = data.employername.replace(
+      if (data.posttitle && data.posttitle != "") {
+        posttitle = data.posttitle.replace(
           /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,
           "\\$&"
         );
-        rr.push({ employername: new RegExp(".*" + employername + ".*", "si") });
+        rr.push({
+          keyword: new RegExp(".*" + posttitle + ".*", "si"),
+        });
       }
-      if (data.job_date == "last_three") {
-        var d = new Date();
-        d.setDate(new Date().getDate() - 3);
-      } else if (data.job_date == "last24") {
-        var d = new Date();
-        d.setDate(new Date().getDate() - 1);
-      } else {
-        d.setDate(new Date().getDate() - 7);
+      if (data.country && data.country != "") {
+        country = data.country.replace(
+          /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,
+          "\\$&"
+        );
+        rr.push({ country: new RegExp(".*" + country + ".*", "si") });
       }
+      if (data.state && data.state != "") {
+        state = data.state.replace(
+          /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,
+          "\\$&"
+        );
+        rr.push({ state: new RegExp(".*" + state + ".*", "si") });
+      }
+      if (data.speciality && data.speciality != "") {
+        speciality = data.speciality.replace(
+          /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,
+          "\\$&"
+        );
+        rr.push({ speciality: new RegExp(".*" + speciality + ".*", "si") });
+      }
+
       await PostJobTable.aggregate([
         {
           $match: {
             is_delete: false,
+            // $or: [{ keyword: { $in: rr } }, rr],
             $or: rr,
-            $and: [
-              {
-                createdOn: { $lte: new Date() },
-                createdOn: {
-                  $gte: d,
-                },
-              },
-            ],
           },
         },
         {
