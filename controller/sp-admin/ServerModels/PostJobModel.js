@@ -276,6 +276,7 @@ async function savePostJob(req, res) {
       ins.section = req.body.section;
       ins.postlable = req.body.postlable;
       ins.minsalary = req.body.minsalary;
+      ins.currency = req.body.currency;
       ins.maxsalary = req.body.maxsalary;
       ins.employername = req.body.employername;
       ins.employmenttype = req.body.employmenttype;
@@ -349,6 +350,7 @@ async function updatePostJob(req, res) {
       upd.description = req.body.description;
       upd.section = req.body.section;
       upd.minsalary = req.body.minsalary;
+      upd.currency = req.body.currency;
       upd.maxsalary = req.body.maxsalary;
       upd.postlable = req.body.postlable;
       upd.employername = req.body.employername;

@@ -28,6 +28,9 @@ const PostJobSchema = new Schema({
   maxsalary: {
     type: String,
   },
+  currency: {
+    type: String,
+  },
   postlable: {
     type: String,
   },

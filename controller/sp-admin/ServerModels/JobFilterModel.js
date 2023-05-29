@@ -18,6 +18,7 @@ async function getJobFilterData(req, res) {
       var country;
       var state;
       var speciality;
+      var employmenttype;
       const rr = [];
       if (data.posttitle && data.posttitle != "") {
         posttitle = data.posttitle.replace(
@@ -58,12 +59,32 @@ async function getJobFilterData(req, res) {
         );
         rr.push({ speciality: new RegExp(".*" + speciality + ".*", "si") });
       }
+      if (data.job_date == "last_three") {
+        var d = new Date();
+        d.setDate(new Date().getDate() - 3);
+      } else if (data.job_date == " ") {
+        var d = new Date();
+        d.setDate(new Date().getDate() - 1);
+      } else {
+        var d = new Date();
+        d.setDate(new Date().getDate() - 7);
+      }
+      rr.push({
+        createdOn: { $lte: new Date() },
+        createdOn: { $gte: d },
+      });
+      console.log(data.employmenttype);
+      if (data.employmenttype && data.employmenttype != "") {
+        employmenttype = JSON.parse(data.employmenttype).map(
+          (e) => new mongoose.Types.ObjectId(e)
+        );
+        rr.push({ employmenttype: { $in: employmenttype } });
+      }
 
       await PostJobTable.aggregate([
         {
           $match: {
             is_delete: false,
-            // $or: [{ keyword: { $in: rr } }, rr],
             $or: rr,
           },
         },
@@ -114,11 +135,13 @@ async function getJobFilterData(req, res) {
           resultSet = { msg: "success", list: response, statusCode: 200 };
         },
         (err) => {
+          console.log(err);
           resultSet = { msg: err.message, statusCode: 500 };
         }
       );
       return resultSet;
     } catch (Error) {
+      console.log(Error);
       resultSet = {
         msg: Error,
         statusCode: 501,
