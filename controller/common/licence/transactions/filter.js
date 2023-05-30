@@ -20,9 +20,9 @@ router.post("/list", authorizer, async (req, res) => {
       deleted: false,
     };
     try {
-      let totalElements = await TransactionModel.find(query).count();
+      let totalElements = await TransactionModel.find().count();
       const licenceData = await pagination(
-        TransactionModel.find(query),
+        TransactionModel.find(),
         page,
         pageSize
       );

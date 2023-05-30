@@ -17,9 +17,7 @@ async function getCourseWishlistData(request, res) {
         var data = await WishListModel.aggregate([
           {
             $match: {
-              // course_id,
               user_id,
-              type: "course",
               is_delete: false,
             },
           },
@@ -29,6 +27,14 @@ async function getCourseWishlistData(request, res) {
               localField: "user_id",
               foreignField: "_id",
               as: "userdetails",
+            },
+          },
+          {
+            $lookup: {
+              from: "courses",
+              localField: "course_id",
+              foreignField: "_id",
+              as: "coursesdeatils",
             },
           },
         ]).then(
@@ -100,6 +106,14 @@ async function getBlogWishlistData(request, res) {
               as: "userdetails",
             },
           },
+          {
+            $lookup: {
+              from: "blogs",
+              localField: "blog_id",
+              foreignField: "_id",
+              as: "blog_details",
+            },
+          },
         ]).then(
           (response) => {
             // console.log("response: " + response);
@@ -167,6 +181,14 @@ async function getEventWishlistData(request, res) {
               localField: "user_id",
               foreignField: "_id",
               as: "userdetails",
+            },
+          },
+          {
+            $lookup: {
+              from: "postevents",
+              localField: "event_id",
+              foreignField: "_id",
+              as: "event_details",
             },
           },
         ]).then(
@@ -238,6 +260,14 @@ async function getExamWishlistData(request, res) {
               as: "userdetails",
             },
           },
+          {
+            $lookup: {
+              from: "exams",
+              localField: "exam_id",
+              foreignField: "_id",
+              as: "exam_details",
+            },
+          },
         ]).then(
           (response) => {
             // console.log("response: " + response);
@@ -307,6 +337,14 @@ async function getJobWishlistData(request, res) {
               as: "userdetails",
             },
           },
+          {
+            $lookup: {
+              from: "postjobs",
+              localField: "job_id",
+              foreignField: "_id",
+              as: "exam_details",
+            },
+          },
         ]).then(
           (response) => {
             // console.log("response: " + response);
@@ -358,7 +396,7 @@ async function saveCourseWishlist(request, res) {
   if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
     try {
       let ins = {};
-      ins.user_id = data.user_id;
+      ins.user_id = decodeToken.id;
       ins.course_id = data.course_id;
       ins.exam_id = data.exam_id;
       ins.blog_id = data.blog_id;
