@@ -15,6 +15,7 @@ router.post("/list", authorizer, async function (req, res) {
     deleted: false,
   };
   Object.entries(req.body).map(([key, value]) => {
+    console.log(key);
     if (Array.isArray(value)) {
       if (value.length === 0) {
         query = { ...query, [key]: value };
@@ -45,8 +46,7 @@ router.post("/list", authorizer, async function (req, res) {
   // 	};
   // }
 
-  //   console.log("query ---------> ", JSON.stringify(query, null, 2));
-
+  // console.log("query ---------> ", JSON.stringify(query));
   try {
     if (
       user.roles.includes("LIST_QUESTIONS") ||
@@ -57,17 +57,16 @@ router.post("/list", authorizer, async function (req, res) {
       let questions;
       if (!user.roles.includes("STUDENT")) {
         questions = await pagination(
-          QuestionModel.find(query),
+          QuestionModel.find({
+            examId: {
+              $all: req.body.examId,
+            },
+            deleted: false,
+          }),
           page,
           pageSize,
           "qId"
         );
-        // questions = await QuestionModel.find({
-        //   deleted: false,
-        //   examId: {
-        //     $all: req.body.examId,
-        //   },
-        // });
       } else {
         questions = await pagination(
           QuestionModel.find(query, { correctAnswer: 0 }),
