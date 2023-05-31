@@ -37,31 +37,9 @@ router.post("/filter", authorizer, async function (req, res) {
       const { page, pageSize, examId, userId, isDone } = req.body;
       let allExam = [];
       let exam;
-      let inside = { examId: examId, userId: userId, isDone: isDone };
-      console.log(inside, "mmmmmmmmmmmmmmmmmmmm");
-      let totalElements = await DoExamModel.find({
-        deleted: false,
-        examId: examId,
-        userId: userId,
-        isDone: isDone,
-      }).count();
-      let iiiiiiiiiii = await DoExamModel.find({
-        deleted: false,
-        examId: examId,
-        userId: userId,
-        isDone: isDone,
-      });
-      console.log(iiiiiiiiiii, "iiiiiiiiiii");
-      exam = await pagination(
-        DoExamModel.find({
-          deleted: false,
-          examId: examId,
-          userId: userId,
-          isDone: isDone,
-        }),
-        page,
-        pageSize
-      );
+      let inside = { ...req.body };
+      let totalElements = await DoExamModel.find(inside).count();
+      exam = await pagination(DoExamModel.find(inside), page, pageSize);
       // console.log(exam.length);
       for (let i = 0; i < exam.length; i++) {
         const element = exam[i]._doc;

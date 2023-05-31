@@ -19,6 +19,15 @@ const userSchema = new Schema({
   mobile: {
     type: String,
   },
+  address1: {
+    type: String,
+  },
+  address2: {
+    type: String,
+  },
+  state: {
+    type: String,
+  },
   email: {
     type: String,
     required: true,

@@ -5,7 +5,7 @@ const { dbUri } = require("../../endpoints/endpoints");
 const User = require("../../model/user.model");
 const { generateSalt, generateHash } = require("../../utils/encrypt");
 const { default: axios } = require("axios");
-const hosturi = "http://localhost:3000/";
+const hosturi = "http://nursefax.com/";
 const router = express.Router();
 var geoip = require("geoip-lite");
 
