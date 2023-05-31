@@ -88,15 +88,15 @@ router.get("/get-licences/:id", authorizer, async (req, res) => {
     try {
       const licenceData = await LicenseModel.findOne(query);
       const OtherState = {
-        GST: licenceData.paidAmount * (18 / 100),
-        Base_Total:
-          licenceData.paidAmount - licenceData.paidAmount * (18 / 100),
+        Base_Total: licenceData.paidAmount / 1.18,
+        GST: licenceData.paidAmount - licenceData.paidAmount / 1.18,
       };
+      let GSTs = licenceData.paidAmount - licenceData.paidAmount / 1.18;
+      let GSTss = GSTs / 2;
       const TamilNadu = {
-        CGST: licenceData.paidAmount * (9 / 100),
-        SGST: licenceData.paidAmount * (9 / 100),
-        Base_Total:
-          licenceData.paidAmount - licenceData.paidAmount * (18 / 100),
+        CGST: GSTss,
+        SGST: GSTss,
+        Base_Total: licenceData.paidAmount / 1.18,
       };
       const userData = await userModel.findOne(
         {
