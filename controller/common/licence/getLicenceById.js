@@ -12,7 +12,7 @@ const trainingModel = require("../../../model/training.model");
 router.get("/get-licences/:id", authorizer, async (req, res) => {
   const { user } = req.headers.user;
   const { id } = req.params;
-  // console.log(user,"usersssss")
+  // console.log(user, "usersssss");
   await mongooes.connect(dbUri);
   if (user.roles.includes("ADMIN")) {
     let query = {
@@ -87,6 +87,17 @@ router.get("/get-licences/:id", authorizer, async (req, res) => {
     };
     try {
       const licenceData = await LicenseModel.findOne(query);
+      const OtherState = {
+        GST: licenceData.paidAmount * (18 / 100),
+        Base_Total:
+          licenceData.paidAmount - licenceData.paidAmount * (18 / 100),
+      };
+      const TamilNadu = {
+        CGST: licenceData.paidAmount * (9 / 100),
+        SGST: licenceData.paidAmount * (9 / 100),
+        Base_Total:
+          licenceData.paidAmount - licenceData.paidAmount * (18 / 100),
+      };
       const userData = await userModel.findOne(
         {
           _id: licenceData?.studentId,
@@ -127,6 +138,8 @@ router.get("/get-licences/:id", authorizer, async (req, res) => {
             ...licenceData?._doc,
             user: userData,
             course: courseData,
+            OtherState: OtherState,
+            TamilNadu: TamilNadu,
           },
           message: "Data Found",
           error: null,
@@ -146,8 +159,7 @@ router.get("/get-licences/:id", authorizer, async (req, res) => {
           error: err,
         });
     }
-  } 
-  else {
+  } else {
     res
       .header({
         "Content-Type": "application/json",
