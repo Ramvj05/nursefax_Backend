@@ -16,12 +16,12 @@ router.post("/reset-password", async function (req, res) {
     const uri = dbUri;
     await mongoose.connect(uri);
 
-    console.log(body);
+    console.log(body, "pppppppppppppppppppppppppppp");
 
     let User;
     if (body.userType === "1") {
       User = courseAdminModel;
-    } else if (body.userType === "4") {
+    } else if (body.userType == 4) {
       User = employerModel;
     } else {
       User = UserModel;
@@ -57,7 +57,7 @@ router.post("/reset-password", async function (req, res) {
         const hash = generateHash(req.body.password, salt);
         await User.findOneAndUpdate(
           {
-            deleted: false,
+            $or: [{ deleted: false }, { is_delete: false }],
             _id: presentUser?._id.toString(),
           },
           { password: hash },
@@ -66,7 +66,6 @@ router.post("/reset-password", async function (req, res) {
             new: true,
           }
         );
-
         res
           .header({
             "Content-Type": "application/json",
