@@ -87,14 +87,11 @@ async function getBlogWishlistData(request, res) {
     await mongoose.connect(uri);
     if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
       try {
-        const blog_id = new mongoose.Types.ObjectId(request.body.blog_id);
         const user_id = new mongoose.Types.ObjectId(decodeToken.id);
         var data = await WishListModel.aggregate([
           {
             $match: {
-              // blog_id,
               user_id,
-              type: "blog",
               is_delete: false,
             },
           },
@@ -164,14 +161,11 @@ async function getEventWishlistData(request, res) {
     await mongoose.connect(uri);
     if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
       try {
-        const event_id = new mongoose.Types.ObjectId(request.body.event_id);
         const user_id = new mongoose.Types.ObjectId(decodeToken.id);
         var data = await WishListModel.aggregate([
           {
             $match: {
-              // event_id,
               user_id,
-              type: "events",
               is_delete: false,
             },
           },
@@ -241,14 +235,11 @@ async function getExamWishlistData(request, res) {
     await mongoose.connect(uri);
     if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
       try {
-        const eam_id = new mongoose.Types.ObjectId(request.body.eam_id);
         const user_id = new mongoose.Types.ObjectId(decodeToken.id);
         var data = await WishListModel.aggregate([
           {
             $match: {
-              // eam_id,
               user_id,
-              type: "exam",
               is_delete: false,
             },
           },
@@ -318,14 +309,11 @@ async function getJobWishlistData(request, res) {
     await mongoose.connect(uri);
     if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
       try {
-        const job_id = new mongoose.Types.ObjectId(request.body.job_id);
         const user_id = new mongoose.Types.ObjectId(decodeToken.id);
         var data = await WishListModel.aggregate([
           {
             $match: {
-              // job_id,
               user_id,
-              type: "job",
               is_delete: false,
             },
           },
@@ -397,11 +385,11 @@ async function saveCourseWishlist(request, res) {
     try {
       let ins = {};
       ins.user_id = decodeToken.id;
-      ins.course_id = data.course_id;
-      ins.exam_id = data.exam_id;
-      ins.blog_id = data.blog_id;
-      ins.event_id = data.event_id;
-      ins.job_id = data.job_id;
+      ins.course_id = data.COURSE_ID;
+      ins.exam_id = data.EXAM_ID;
+      ins.blog_id = data.BLOG_ID;
+      ins.event_id = data.EVENT_ID;
+      ins.job_id = data.JOB_ID;
       ins.type = data.type;
       let insert = new WishListModel(ins);
       await insert.save().then(

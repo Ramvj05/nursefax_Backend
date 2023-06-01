@@ -699,38 +699,38 @@ async function savePostEventApplyEvent(request, res) {
         event_id: request.body.event_id,
         createdBy: decodeToken.id,
       });
-      if (!data.length) {
-        let ins = {};
-        ins.event_id = request.body.event_id;
-        ins.createdBy = decodeToken.id;
-        ins.createdOn = new Date();
-        ins.modifyOn = new Date();
-        // console.log("ins", ins);
+      // if (!data.length) {
+      let ins = {};
+      ins.event_id = request.body.event_id;
+      ins.createdBy = decodeToken.id;
+      ins.createdOn = new Date();
+      ins.modifyOn = new Date();
+      // console.log("ins", ins);
 
-        let insert = new PostEventApply(ins);
-        await insert.save().then(
-          (response) => {
-            sendeventmail(response);
-            // console.log(response, "iiiiiiiiiiiii");
-            resultSet = {
-              msg: "Event Applied successfully",
-              statusCode: 200,
-            };
-          },
-          (err) => {
-            // console.log("err: ", err);
-            resultSet = {
-              msg: err.message,
-              statusCode: 500,
-            };
-          }
-        );
-      } else {
-        resultSet = {
-          msg: "You Already Applied This Event",
-          statusCode: 500,
-        };
-      }
+      let insert = new PostEventApply(ins);
+      await insert.save().then(
+        (response) => {
+          sendeventmail(response);
+          // console.log(response, "iiiiiiiiiiiii");
+          resultSet = {
+            msg: "Event Applied successfully",
+            statusCode: 200,
+          };
+        },
+        (err) => {
+          // console.log("err: ", err);
+          resultSet = {
+            msg: err.message,
+            statusCode: 500,
+          };
+        }
+      );
+      // } else {
+      //   resultSet = {
+      //     msg: "You Already Applied This Event",
+      //     statusCode: 500,
+      //   };
+      // }
 
       return resultSet;
     } catch (Error) {
@@ -890,7 +890,6 @@ async function getUserEventData(request, res) {
 async function sendeventmail(request, res) {
   try {
     // const { email: useremail } = req.params;
-    console.log(request, "kkkkkkkkkkkkkkkkkkkkk");
     let emailsApi = new ElasticEmail.EmailsApi();
 
     const uri = dbUri;
@@ -902,7 +901,13 @@ async function sendeventmail(request, res) {
         },
       ],
     });
-    console.log(user, "kkkkkkkkkkkkkkkkkkkkkkkkkk");
+    const Event = await PostEventTable.findOne({
+      $or: [
+        {
+          _id: request.event_id,
+        },
+      ],
+    });
 
     if (user) {
       const emailData = {
@@ -935,9 +940,9 @@ async function sendeventmail(request, res) {
 									<div style="border-bottom:1px solid #eee">
 									<a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">nursefax.com</a>
 									</div>
-									<p style="font-size:1.1em">Hi, ${user.userName}</p>
-									<p>Thank you for choosing Nursefax.<br/> Use the following OTP to complete your Reset Password procedures.<br /> OTP is valid for 10 minutes</p>
-									<h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${user.email}</h2>
+									<p style="font-size:1.1em">Hi, ${user.fullName}</p>
+									<p>Thank you for choosing Nursefax.<br/> NurseFax Event Deatils.<br /> ${user.email}</p>
+									<h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${Event.name}</h2>
 									<p style="font-size:0.9em;">Regards,<br />Nursefax.com</p>
 									<hr style="border:none;border-top:1px solid #eee" />
 									
@@ -951,53 +956,22 @@ async function sendeventmail(request, res) {
           From: "Nursefax Support <info@nursefax.com>",
           EnvelopeFrom: "Nursefax Support <info@nursefax.com>",
           ReplyTo: "Nursefax Support <info@nursefax.com>",
-          Subject: "Nursefax Password Reset Support",
+          Subject: "Nursefax Event",
         },
       };
       const callback = async (error, data, response) => {
         if (error) {
           console.error(error);
-          res.status(500).send({
-            statsCode: 500,
-            data: null,
-            message: "Somthing went wrong",
-            error: error,
-          });
+          resultSet = { msg: "success", error: response, statusCode: 500 };
         } else {
           console.log("API called successfully.");
           console.log("Email sent.");
 
-          await otpModel.findByIdAndUpdate(
-            otp.data?.data?._id,
-            {
-              transactionID: data?.TransactionID,
-            },
-            { new: true }
-          );
-
-          res.status(200).send({
-            statsCode: 200,
-            data,
-            message: "Mail sent successfully",
-            error: null,
-          });
+          resultSet = { msg: "success", list: response, statusCode: 200 };
         }
+        return resultSet;
       };
-      emailsApi
-        .emailsTransactionalPost(emailData)
-        .then((response) => {
-          resultSet = {
-            msg: "Mail sent successfully",
-            statusCode: 200,
-          };
-        })
-        .catch((error) => {
-          resultSet = {
-            msg: "Mail sent error",
-            statusCode: 500,
-          };
-        });
-      return resultSet;
+      emailsApi.emailsTransactionalPost(emailData, callback);
     } else {
       res.status(404).send({
         statsCode: 404,

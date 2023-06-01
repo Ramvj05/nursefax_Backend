@@ -77,7 +77,7 @@ router.get("/result/:id", authorizer, async function (req, res) {
           })
           .status(200)
           .send({
-            data: { ...resultData.result, test },
+            data: { result: resultData.result, test },
             message: "exam found successfully",
             statsCode: 200,
             error: null,
