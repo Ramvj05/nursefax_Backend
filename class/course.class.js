@@ -7,6 +7,7 @@ class Course {
     features,
     courseFeatures,
     whyTakeCourse,
+    course_provider,
     keywords,
     sections,
     faqs,
@@ -31,6 +32,7 @@ class Course {
     this.phone = phone;
     this.features = features;
     this.courseFeatures = courseFeatures;
+    this.course_provider = course_provider;
     this.whyTakeCourse = whyTakeCourse;
     this.keywords = keywords;
     this.sections = sections;

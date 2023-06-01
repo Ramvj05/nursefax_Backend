@@ -53,11 +53,9 @@ router.get("/result/:id", authorizer, async function (req, res) {
         const test = await TestModel.findById(testId);
         let questions = sortingArray(dataQ);
         let total = sortingArray(data?.data?.data?.questionsDb);
-        console.log("questions.length", questions.length);
         // if (questions.length === total.length) {
         let result = giveMeAnswer(questions, total, exam);
 
-        console.log(result);
         let resultData = await DoExamModel.findByIdAndUpdate(
           {
             deleted: false,
@@ -77,7 +75,7 @@ router.get("/result/:id", authorizer, async function (req, res) {
           })
           .status(200)
           .send({
-            data: { result: resultData.result, test },
+            data: [{ result: resultData.result, test }],
             message: "exam found successfully",
             statsCode: 200,
             error: null,

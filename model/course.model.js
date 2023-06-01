@@ -53,6 +53,9 @@ const courseSchema = new Schema({
   description: {
     type: String,
   },
+  course_provider: {
+    type: String,
+  },
   price: {
     type: Number,
   },

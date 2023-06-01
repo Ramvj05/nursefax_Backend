@@ -34,7 +34,7 @@ router.post("/list", authorizer, async function (req, res) {
 
       const { page, pageSize } = req.body;
       let exam;
-
+      console.log(query, "iiiiiiiiiiiiiiiiiiiii");
       let totalElements = await ExamPoolModel.find(query).count();
 
       exam = await pagination(ExamPoolModel.find(query), page, pageSize);

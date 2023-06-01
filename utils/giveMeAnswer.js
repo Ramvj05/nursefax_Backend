@@ -1,9 +1,9 @@
 const checkRadioAnswer = (i, questions, total) => {
-  console.log(
-    Array.isArray(total?.[i]?.correctAnswer),
-    total?.[i]?.correctAnswer.map((ele) => ele.value),
-    questions?.[i]?.userAnswer
-  );
+  // console.log(
+  //   Array.isArray(total?.[i]?.correctAnswer),
+  //   total?.[i]?.correctAnswer.map((ele) => ele.value),
+  //   questions?.[i]?.userAnswer
+  // );
   if (
     Array.isArray(total?.[i]?.correctAnswer) &&
     total?.[i]?.correctAnswer
@@ -42,7 +42,7 @@ const checkFIBAnswer = (i, questions, total) => {
   }
 };
 const checkAnswer = (i, questions, total, type) => {
-  console.log(questions?.[i]?.action, questions?.[i]?.action);
+  // console.log(questions?.[i]?.action, questions?.[i]?.action);
   if (
     questions?.[i]?.action === "FINISHED" ||
     questions?.[i]?.action === "REVIEW"
@@ -65,7 +65,7 @@ const checkAnswer = (i, questions, total, type) => {
 };
 
 const giveMeAnswer = (q, t, e) => {
-  console.log(q, t, e, "ppppppppppppppppppppppp");
+  console.log("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm", q, t, e);
   let exam = e;
   let questions = q;
   let count = 0;
@@ -91,59 +91,61 @@ const giveMeAnswer = (q, t, e) => {
         break;
     }
   };
-
-  if (questions.length === total.length) {
-    for (let i = 0; i < questions.length; i++) {
-      console.log(questions?.[i]?.typeOfQuestion, total?.[i]?.typeOfQuestion);
-      if (
-        questions?.[i]?.typeOfQuestion === "RADIO" &&
-        total?.[i]?.typeOfQuestion === "RADIO"
-      ) {
-        let r = checkAnswer(i, questions, total, "RADIO");
-        maintainAnswer(r);
-      } else if (
-        questions?.[i]?.typeOfQuestion === "CHECKBOX" &&
-        total?.[i]?.typeOfQuestion === "CHECKBOX"
-      ) {
-        let r = checkAnswer(i, questions, total, "CHECKBOX");
-        maintainAnswer(r);
-      } else if (
-        questions?.[i]?.typeOfQuestion === "FIB" &&
-        total?.[i]?.typeOfQuestion === "FIB"
-      ) {
-        let r = checkAnswer(i, questions, total, "FIB");
-        maintainAnswer(r);
-      }
-
-      allQuestion = [...allQuestion, { ...total?.[i], ...questions?.[i] }];
+  // if (questions.length === total.length) {
+  for (let i = 0; i < questions.length; i++) {
+    // console.log(
+    //   "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",
+    //   questions?.[i]?.typeOfQuestion,
+    //   total?.[i]?.typeOfQuestion
+    // );
+    if (
+      questions?.[i]?.typeOfQuestion === "RADIO" &&
+      total?.[i]?.typeOfQuestion === "RADIO"
+    ) {
+      let r = checkAnswer(i, questions, total, "RADIO");
+      maintainAnswer(r);
+    } else if (
+      questions?.[i]?.typeOfQuestion === "CHECKBOX" &&
+      total?.[i]?.typeOfQuestion === "CHECKBOX"
+    ) {
+      let r = checkAnswer(i, questions, total, "CHECKBOX");
+      maintainAnswer(r);
+    } else if (
+      questions?.[i]?.typeOfQuestion === "FIB" &&
+      total?.[i]?.typeOfQuestion === "FIB"
+    ) {
+      let r = checkAnswer(i, questions, total, "FIB");
+      maintainAnswer(r);
     }
-    let result = {
-      testId: exam.testId,
-      correctAnswer: {
-        count,
-        array: correctAnswer,
-        percentage: (count / total.length) * 100,
-      },
-      wrongAnswer: {
-        count: wrongAnswer?.length,
-        array: wrongAnswer,
-        percentage: (wrongAnswer?.length / total.length) * 100,
-      },
-
-      notAnswered: {
-        count: notAnswered?.length,
-        array: notAnswered,
-        percentage: (notAnswered?.length / total.length) * 100,
-      },
-
-      totalQuestion: {
-        count: allQuestion.length,
-        array: allQuestion,
-      },
-      scoreType: "percentile",
-    };
-    return result;
+    allQuestion = [...allQuestion, { ...total?.[i], ...questions?.[i] }];
   }
+  let result = {
+    testId: exam.testId,
+    correctAnswer: {
+      count,
+      array: correctAnswer,
+      percentage: (count / total.length) * 100,
+    },
+    wrongAnswer: {
+      count: wrongAnswer?.length,
+      array: wrongAnswer,
+      percentage: (wrongAnswer?.length / total.length) * 100,
+    },
+
+    notAnswered: {
+      count: notAnswered?.length,
+      array: notAnswered,
+      percentage: (notAnswered?.length / total.length) * 100,
+    },
+
+    totalQuestion: {
+      count: allQuestion.length,
+      array: allQuestion,
+    },
+    scoreType: "percentile",
+  };
+  return result;
+  // }
 };
 
 module.exports = giveMeAnswer;

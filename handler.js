@@ -30,6 +30,7 @@ const postjob = require("./controller/common/Routers/PostJob");
 const postevent = require("./controller/common/Routers/PostEvent");
 const employertype = require("./controller/common/Routers/EmployerType");
 const jobfilter = require("./controller/common/Routers/JobFilter");
+const related = require("./controller/common/Routers/Related");
 
 const bodyParser = require("body-parser");
 
@@ -83,6 +84,7 @@ app.use("/api/postjob", postjob);
 app.use("/api/event", postevent);
 app.use("/api/employertype", employertype);
 app.use("/api/jobfilter", jobfilter);
+app.use("/api/related", related);
 
 var PORT = 4000 || process.env.PORT;
 app.listen(PORT, () => {
