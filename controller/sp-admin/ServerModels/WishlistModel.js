@@ -17,6 +17,7 @@ async function getCourseWishlistData(request, res) {
         var data = await WishListModel.aggregate([
           {
             $match: {
+              type: "COURSE",
               user_id,
               is_delete: false,
             },
@@ -91,6 +92,8 @@ async function getBlogWishlistData(request, res) {
         var data = await WishListModel.aggregate([
           {
             $match: {
+              type: "BLOG",
+
               user_id,
               is_delete: false,
             },
@@ -165,6 +168,8 @@ async function getEventWishlistData(request, res) {
         var data = await WishListModel.aggregate([
           {
             $match: {
+              type: "EVENT",
+
               user_id,
               is_delete: false,
             },
@@ -239,6 +244,8 @@ async function getExamWishlistData(request, res) {
         var data = await WishListModel.aggregate([
           {
             $match: {
+              type: "EXAM",
+
               user_id,
               is_delete: false,
             },
@@ -313,6 +320,8 @@ async function getJobWishlistData(request, res) {
         var data = await WishListModel.aggregate([
           {
             $match: {
+              type: "JOB",
+
               user_id,
               is_delete: false,
             },
