@@ -9,6 +9,15 @@ const BannerTestimonialSchema = new Schema({
   testimonial: {
     type: String,
   },
+  user_image: {
+    type: String,
+  },
+  name: {
+    type: String,
+  },
+  description: {
+    type: String,
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
   },

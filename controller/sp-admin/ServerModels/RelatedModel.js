@@ -206,7 +206,6 @@ async function getRatings(request, response) {
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
-      const { decodeToken, user } = request.headers.user;
       await mongoose.connect(uri);
       if (typeof request.params.id !== "undefined") {
         const course_id = new mongoose.Types.ObjectId(request.params.id);
