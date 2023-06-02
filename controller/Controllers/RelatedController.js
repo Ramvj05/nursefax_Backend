@@ -19,10 +19,10 @@ const saveRatings = async (req, res, next) => {
   }
 };
 const getRatings = async (req, res, next) => {
-  if (await Auth.authorizer(req, res, next)) {
-    var data = await Related.getRatings(req, res);
-    res.status(data.statusCode).send(data);
-  }
+  // if (await Auth.authorizer(req, res, next)) {
+  var data = await Related.getRatings(req, res);
+  res.status(data.statusCode).send(data);
+  // }
 };
 const deleteRatings = async (req, res, next) => {
   if (await Auth.authorizer(req, res, next)) {
