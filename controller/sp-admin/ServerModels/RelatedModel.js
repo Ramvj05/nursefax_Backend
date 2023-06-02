@@ -210,11 +210,31 @@ async function getRatings(request, response) {
       const { decodeToken, user } = req.headers.user;
       await mongoose.connect(uri);
       if (typeof request.params.id !== "undefined") {
-      } else {
-        const data = await RatingsModel.findOne({ _id: req.params.id }).then(
+        const data = await RatingsModel.find({
+          course_id: request.params.id,
+          is_delete: false,
+        }).then(
           (response) => {
             resultSet = {
-              msg: "Ratings Created successfully",
+              msg: "Listed Suucessfully",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
+      } else {
+        const data = await RatingsModel.findOne({ is_delete: false }).then(
+          (response) => {
+            resultSet = {
+              msg: "Listed Suucessfully",
+              list: response,
               statusCode: 200,
             };
           },
