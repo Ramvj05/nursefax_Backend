@@ -209,10 +209,11 @@ async function getRatings(request, response) {
       const { decodeToken, user } = request.headers.user;
       await mongoose.connect(uri);
       if (typeof request.params.id !== "undefined") {
+        const course_id = new mongoose.Types.ObjectId(request.params.id);
         const data = await RatingsModel.aggregate([
           {
             $match: {
-              course_id: request.params.id,
+              course_id,
               is_delete: false,
             },
           },
