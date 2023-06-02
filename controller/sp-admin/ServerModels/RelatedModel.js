@@ -159,7 +159,7 @@ async function saveRatings(request, response) {
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
-      const { decodeToken, user } = req.headers.user;
+      const { decodeToken, user } = request.headers.user;
       await mongoose.connect(uri);
       const data = request.body;
       let ins = {};
@@ -168,7 +168,6 @@ async function saveRatings(request, response) {
       ins.ratings = data.ratings;
       ins.comments = data.comments;
       ins.status = data.status;
-      ins.is_delete = data.is_delete;
       ins.createDt = new Date();
       ins.modifyDt = new Date();
       let insert = new RatingsModel(ins);
@@ -207,7 +206,7 @@ async function getRatings(request, response) {
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
-      const { decodeToken, user } = req.headers.user;
+      const { decodeToken, user } = request.headers.user;
       await mongoose.connect(uri);
       if (typeof request.params.id !== "undefined") {
         const data = await RatingsModel.find({
@@ -268,7 +267,7 @@ async function deleteRatings(request, response) {
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
-      const { decodeToken, user } = req.headers.user;
+      const { decodeToken, user } = request.headers.user;
       await mongoose.connect(uri);
       await RatingsModel.updateOne(
         {
@@ -314,7 +313,7 @@ async function updateRatings(request, response) {
   if (request != "" && typeof request !== "undefined") {
     try {
       const uri = dbUri;
-      const { decodeToken, user } = req.headers.user;
+      const { decodeToken, user } = request.headers.user;
       await mongoose.connect(uri);
       const data = request.body;
       let upd = {};
