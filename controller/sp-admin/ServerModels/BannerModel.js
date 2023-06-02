@@ -70,6 +70,9 @@ async function saveBanner(request, response) {
       let ins = {};
       ins.createdBy = decodeToken.id;
       ins.mobile_banner = data.mobile_banner;
+      ins.name = data.name;
+      ins.user_image = data.user_image;
+      ins.description = data.description;
       ins.banner = data.banner;
       ins.testimonial = data.testimonial;
       ins.createDt = new Date();
@@ -117,6 +120,9 @@ async function updateBanner(request, response) {
       upd.createdBy = decodeToken.id;
       upd.mobile_banner = data.mobile_banner;
       upd.banner = data.banner;
+      upd.name = data.name;
+      upd.user_image = data.user_image;
+      upd.description = data.description;
       upd.testimonial = data.testimonial;
       upd.modifyDt = new Date();
       const UpdateBanner = await BannerModel.updateMany(

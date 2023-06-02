@@ -209,10 +209,22 @@ async function getRatings(request, response) {
       const { decodeToken, user } = request.headers.user;
       await mongoose.connect(uri);
       if (typeof request.params.id !== "undefined") {
-        const data = await RatingsModel.find({
-          course_id: request.params.id,
-          is_delete: false,
-        }).then(
+        const data = await RatingsModel.aggregate([
+          {
+            $match: {
+              course_id: request.params.id,
+              is_delete: false,
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "user_id",
+              foreignField: "_id",
+              as: "user_details",
+            },
+          },
+        ]).then(
           (response) => {
             resultSet = {
               msg: "Listed Suucessfully",
@@ -229,7 +241,21 @@ async function getRatings(request, response) {
           }
         );
       } else {
-        const data = await RatingsModel.findOne({ is_delete: false }).then(
+        const data = await RatingsModel.aggregate([
+          {
+            $match: {
+              is_delete: false,
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "user_id",
+              foreignField: "_id",
+              as: "user_details",
+            },
+          },
+        ]).then(
           (response) => {
             resultSet = {
               msg: "Listed Suucessfully",
