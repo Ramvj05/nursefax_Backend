@@ -169,8 +169,8 @@ async function saveRatings(request, response) {
       ins.comments = data.comments;
       ins.status = data.status;
       ins.is_delete = data.is_delete;
-      ins.createDt = data.createDt;
-      ins.modifyDt = data.modifyDt;
+      ins.createDt = new Date();
+      ins.modifyDt = new Date();
       let insert = new RatingsModel(ins);
       await insert.save().then(
         (response) => {
@@ -318,10 +318,11 @@ async function updateRatings(request, response) {
       await mongoose.connect(uri);
       const data = request.body;
       let upd = {};
-      upd.user_id = decodeToken.id;
-      upd.course_id = data.course_id;
+      // upd.user_id = decodeToken.id;
+      // upd.course_id = data.course_id;
       upd.ratings = data.ratings;
       upd.comments = data.comments;
+      upd.modifyDt = new Date();
       await RatingsModel.updateMany(
         {
           _id: request.params.id,
