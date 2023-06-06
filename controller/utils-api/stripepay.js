@@ -16,18 +16,19 @@ const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 router.post("/create-checkout-session", cors(), async (req, res) => {
   let { amounts, id } = req.body;
-  let amount = Math.round(amounts * 100);
-  // console.log(amount,"ooooooooooooooooo");
+  let amount = amounts;
+  // let amount = Math.round(amounts * 100);
+  console.log(amount, "ooooooooooooooooo");
 
   try {
     const payment = await stripe.paymentIntents.create({
       amount,
-      currency: "INR",
+      currency: "USD",
       description: "NurseFax Course Enrolment",
       payment_method: id,
       confirm: true,
     });
-    // console.log("Paymentsssssssssssssss", payment.status)
+    console.log("Paymentsssssssssssssss", payment.status);
     if (payment.status === "succeeded") {
       // Payment successful!
       res.json({

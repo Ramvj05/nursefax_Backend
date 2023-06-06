@@ -8,6 +8,7 @@ class UserClass {
     about,
     emailVerified,
     mobileVerified,
+    state,
     country,
     countryCode,
     mcc,
@@ -19,6 +20,7 @@ class UserClass {
     this.fullName = fullName;
     this.profileUri = profileUri;
     this.password = password;
+    this.state = state;
     this.mobile = mobile;
     this.email = email;
     this.about = about;
