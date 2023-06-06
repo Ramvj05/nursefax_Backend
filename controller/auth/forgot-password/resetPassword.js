@@ -16,10 +16,8 @@ router.post("/reset-password", async function (req, res) {
     const uri = dbUri;
     await mongoose.connect(uri);
 
-    console.log(body, "pppppppppppppppppppppppppppp");
-
     let User;
-    if (body.userType === "1") {
+    if (body.userType == "1") {
       User = courseAdminModel;
     } else if (body.userType == 4) {
       User = employerModel;
