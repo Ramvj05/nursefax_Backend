@@ -6,6 +6,9 @@ const BannerTestimonialSchema = new Schema({
   banner: {
     type: String,
   },
+  mobile_banner: {
+    type: String,
+  },
   testimonial: {
     type: String,
   },
