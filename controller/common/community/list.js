@@ -7,78 +7,78 @@ const pagination = require("../../../utils/pagination");
 
 const router = express.Router();
 
-router.get("/list", authorizer, async function (req, res) {
-  const { user } = req.headers.user;
+router.get("/list", async function (req, res) {
+  // const { user } = req.headers.user;
   const uri = dbUri;
   await mongoose.connect(uri);
 
   try {
-    if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
-      let query = {
-        deleted: false,
-      };
-      const { page, pageSize } = req.query;
-      const totalElements = await CommunityModel.find(query).count();
-      let community;
+    // if (user.roles.includes("ADMIN") || user.roles.includes("STUDENT")) {
+    let query = {
+      deleted: false,
+    };
+    const { page, pageSize } = req.query;
+    const totalElements = await CommunityModel.find(query).count();
+    let community;
 
-      console.log(page, pageSize);
-      community = await pagination(CommunityModel.find(query), page, pageSize);
+    console.log(page, pageSize);
+    community = await pagination(CommunityModel.find(query), page, pageSize);
 
-      if (community.length > 0) {
-        res
-          .header({
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          })
-          .status(200)
-          .send({
-            data: community,
-            message: "Data listed successfully",
-            statsCode: 200,
-            pageable: {
-              totalElements,
-              page,
-              pageSize,
-              currentSize: community.length,
-              hasNextPage:
-                page && pageSize ? pageSize * page < totalElements : false,
-              hasPreviousPage: page ? page > 1 : false,
-              totalPages: pageSize ? Math.ceil(totalElements / pageSize) : 0,
-            },
-            error: null,
-          });
-      } else {
-        res
-          .header({
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          })
-          .status(200)
-          .send({
-            data: [],
-            message: "No community Found",
-            statsCode: 200,
-            error: {
-              message: "No data present",
-            },
-          });
-      }
+    if (community.length > 0) {
+      res
+        .header({
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        })
+        .status(200)
+        .send({
+          data: community,
+          message: "Data listed successfully",
+          statsCode: 200,
+          pageable: {
+            totalElements,
+            page,
+            pageSize,
+            currentSize: community.length,
+            hasNextPage:
+              page && pageSize ? pageSize * page < totalElements : false,
+            hasPreviousPage: page ? page > 1 : false,
+            totalPages: pageSize ? Math.ceil(totalElements / pageSize) : 0,
+          },
+          error: null,
+        });
     } else {
       res
         .header({
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         })
-        .status(401)
+        .status(200)
         .send({
-          data: null,
-          message: "You do not have access to get question",
-          statsCode: 401,
+          data: [],
+          message: "No community Found",
+          statsCode: 200,
           error: {
-            message: "Access denied",
+            message: "No data present",
           },
         });
     }
+    // } else {
+    //   res
+    //     .header({
+    //       "Content-Type": "application/json",
+    //       "Access-Control-Allow-Origin": "*",
+    //     })
+    //     .status(401)
+    //     .send({
+    //       data: null,
+    //       message: "You do not have access to get question",
+    //       statsCode: 401,
+    //       error: {
+    //         message: "Access denied",
+    //       },
+    //     });
+    // }
   } catch (err) {
     console.log(err);
     res
