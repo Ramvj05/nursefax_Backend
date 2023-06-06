@@ -224,6 +224,14 @@ async function getRatings(request, response) {
               as: "user_details",
             },
           },
+          {
+            $lookup: {
+              from: "courses",
+              localField: "course_id",
+              foreignField: "_id",
+              as: "course_details",
+            },
+          },
         ]).then(
           (response) => {
             resultSet = {
@@ -253,6 +261,14 @@ async function getRatings(request, response) {
               localField: "user_id",
               foreignField: "_id",
               as: "user_details",
+            },
+          },
+          {
+            $lookup: {
+              from: "courses",
+              localField: "course_id",
+              foreignField: "_id",
+              as: "course_details",
             },
           },
         ]).then(
