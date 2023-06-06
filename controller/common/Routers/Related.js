@@ -7,6 +7,7 @@ router.get("/course/:id", Controller.getCourseRealted);
 router.get("/job/:id", Controller.getJobRelated);
 router.get("/rating/", Controller.getRatings);
 router.get("/rating/:id", Controller.getRatings);
+router.get("/rating/course/:course_id", Controller.getRatings);
 router.put("/rating/delete/:id", Controller.deleteRatings);
 router.put("/rating/update/:id", Controller.updateRatings);
 

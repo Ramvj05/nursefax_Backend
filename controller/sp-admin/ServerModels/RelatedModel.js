@@ -207,12 +207,53 @@ async function getRatings(request, response) {
     try {
       const uri = dbUri;
       await mongoose.connect(uri);
-      if (typeof request.params.id !== "undefined") {
-        const course_id = new mongoose.Types.ObjectId(request.params.id);
+      if (typeof request.params.course_id !== "undefined") {
+        const course_id = new mongoose.Types.ObjectId(request.params.course_id);
         const data = await RatingsModel.aggregate([
           {
             $match: {
               course_id,
+              is_delete: false,
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "user_id",
+              foreignField: "_id",
+              as: "user_details",
+            },
+          },
+          {
+            $lookup: {
+              from: "courses",
+              localField: "course_id",
+              foreignField: "_id",
+              as: "course_details",
+            },
+          },
+        ]).then(
+          (response) => {
+            resultSet = {
+              msg: "Listed Suucessfully",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
+      } else if (typeof request.params.id !== "undefined") {
+        const _id = new mongoose.Types.ObjectId(request.params.id);
+        const data = await RatingsModel.aggregate([
+          {
+            $match: {
+              _id,
               is_delete: false,
             },
           },
@@ -288,7 +329,6 @@ async function getRatings(request, response) {
           }
         );
       }
-
       return resultSet;
     } catch (Error) {
       resultSet = {
