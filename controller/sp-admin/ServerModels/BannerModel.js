@@ -181,7 +181,7 @@ async function deleteBanner(request, response) {
       ).then(
         (response) => {
           resultSet = {
-            msg: "Ratings deleted successfully",
+            msg: "Banner deleted successfully",
             statusCode: 200,
           };
         },

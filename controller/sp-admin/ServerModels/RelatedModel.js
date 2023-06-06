@@ -363,7 +363,7 @@ async function deleteRatings(request, response) {
       ).then(
         (response) => {
           resultSet = {
-            msg: "Ratings Created successfully",
+            msg: "Ratings Deleted successfully",
             statusCode: 200,
           };
         },
@@ -414,7 +414,7 @@ async function updateRatings(request, response) {
       ).then(
         (response) => {
           resultSet = {
-            msg: "Ratings Created successfully",
+            msg: "Ratings Updated successfully",
             statusCode: 200,
           };
         },
