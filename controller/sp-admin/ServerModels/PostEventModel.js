@@ -699,38 +699,39 @@ async function savePostEventApplyEvent(request, res) {
         event_id: request.body.event_id,
         createdBy: decodeToken.id,
       });
-      // if (!data.length) {
-      let ins = {};
-      ins.event_id = request.body.event_id;
-      ins.createdBy = decodeToken.id;
-      ins.createdOn = new Date();
-      ins.modifyOn = new Date();
-      // console.log("ins", ins);
+      console.log(!data.length);
+      if (!data.length) {
+        let ins = {};
+        ins.event_id = request.body.event_id;
+        ins.createdBy = decodeToken.id;
+        ins.createdOn = new Date();
+        ins.modifyOn = new Date();
+        // console.log("ins", ins);
 
-      let insert = new PostEventApply(ins);
-      await insert.save().then(
-        (response) => {
-          sendeventmail(response);
-          // console.log(response, "iiiiiiiiiiiii");
-          resultSet = {
-            msg: "Event Applied successfully",
-            statusCode: 200,
-          };
-        },
-        (err) => {
-          // console.log("err: ", err);
-          resultSet = {
-            msg: err.message,
-            statusCode: 500,
-          };
-        }
-      );
-      // } else {
-      //   resultSet = {
-      //     msg: "You Already Applied This Event",
-      //     statusCode: 500,
-      //   };
-      // }
+        let insert = new PostEventApply(ins);
+        await insert.save().then(
+          (response) => {
+            sendeventmail(response);
+            // console.log(response, "iiiiiiiiiiiii");
+            resultSet = {
+              msg: "Event Applied successfully",
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            // console.log("err: ", err);
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
+      } else {
+        resultSet = {
+          msg: "You Already Applied This Event",
+          statusCode: 500,
+        };
+      }
 
       return resultSet;
     } catch (Error) {
