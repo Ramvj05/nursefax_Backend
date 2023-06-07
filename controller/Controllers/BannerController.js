@@ -7,6 +7,10 @@ const getBanner = async (req, res, next) => {
   var data = await Related.getBanner(req, res);
   res.status(data.statusCode).send(data);
 };
+const getTestimonial = async (req, res, next) => {
+  var data = await Related.getTestimonial(req, res);
+  res.status(data.statusCode).send(data);
+};
 
 const saveBanner = async (req, res, next) => {
   if (await Auth.authorizer(req, res, next)) {
@@ -32,4 +36,5 @@ module.exports = {
   updateBanner,
   deleteBanner,
   saveBanner,
+  getTestimonial,
 };

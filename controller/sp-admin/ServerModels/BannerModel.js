@@ -28,7 +28,70 @@ async function getBanner(request, res) {
           }
         );
       } else {
-        var data = await BannerModel.find({ is_delete: false }).then(
+        var data = await BannerModel.find({
+          is_delete: false,
+          type: "Banner",
+        }).then(
+          (response) => {
+            resultSet = {
+              msg: "success",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
+      }
+      return resultSet;
+    } catch (Error) {
+      resultSet = {
+        msg: Error,
+        statusCode: 501,
+      };
+      return resultSet;
+    }
+  } else {
+    resultSet = {
+      msg: "No direct Access Allowed",
+      statusCode: 500,
+    };
+    return resultSet;
+  }
+}
+async function getTestimonial(request, res) {
+  if (request != "" && typeof request !== "undefined") {
+    try {
+      const uri = dbUri;
+      await mongoose.connect(uri);
+      if (typeof request.params.id !== "undefined") {
+        var dataa = await BannerModel.find({
+          _id: request.params.id,
+          is_delete: false,
+        }).then(
+          (response) => {
+            resultSet = {
+              msg: "success",
+              list: response,
+              statusCode: 200,
+            };
+          },
+          (err) => {
+            resultSet = {
+              msg: err.message,
+              statusCode: 500,
+            };
+          }
+        );
+      } else {
+        var data = await BannerModel.find({
+          is_delete: false,
+          type: "Testimonial",
+        }).then(
           (response) => {
             resultSet = {
               msg: "success",
@@ -74,6 +137,7 @@ async function saveBanner(request, response) {
       ins.user_image = data.user_image;
       ins.description = data.description;
       ins.banner = data.banner;
+      ins.type = data.type;
       ins.testimonial = data.testimonial;
       ins.createDt = new Date();
       ins.modifyDt = new Date();
@@ -120,6 +184,7 @@ async function updateBanner(request, response) {
       upd.createdBy = decodeToken.id;
       upd.mobile_banner = data.mobile_banner;
       upd.banner = data.banner;
+      upd.type = data.type;
       upd.name = data.name;
       upd.user_image = data.user_image;
       upd.description = data.description;
@@ -215,4 +280,5 @@ module.exports = {
   updateBanner,
   deleteBanner,
   saveBanner,
+  getTestimonial,
 };

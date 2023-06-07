@@ -12,6 +12,9 @@ const BannerTestimonialSchema = new Schema({
   testimonial: {
     type: String,
   },
+  type: {
+    type: String,
+  },
   user_image: {
     type: String,
   },
